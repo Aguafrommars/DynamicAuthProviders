@@ -1,32 +1,9 @@
 {
   "tagFormat": "${version}",
   "noCi": true,
-  "verifyConditions": [ "@semantic-release/changelog", "@semantic-release/git" ],
-  "analyzeCommits": {
-    "path": "@sien/commit-analyzer",
-    "preset": "angular",
-    "parserOpts": {
-      "noteKeywords": [ "BREAKING CHANGE", "BREAKING CHANGES", "BREAKING" ]
-    }
-  },
-  "verifyRelease": "@sien/verify-release",
-  "prepare": [
-    "@semantic-release/changelog",
-    {
-      "path": "@semantic-release/git",
-      "assets": [ "CHANGELOG.md" ],
-      "message": "chore(release): ${nextRelease.version} ***NO_CI***\n\n${nextRelease.notes}"
-    }
-  ],
-  "generateNotes": "@sien/release-note-generator",
-  "publish": [],
-  "success": [],
-  "fail": [],
-  "plugins": [
-    ["@semantic-release/commit-analyzer", {
-      "preset": "angular",
-      "parserOpts": {
-        "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES"]
-      }
-    }]]
+  "verifyConditions": [ "@semantic-release/github", "@semantic-release/changelog", "@semantic-release/git" ],
+  "analyzeCommits": "@semantic-release/commit-analyzer",
+  "publish": "@semantic-release/github",
+  "success": "@semantic-release/github",
+  "fail": "@semantic-release/github"
 }

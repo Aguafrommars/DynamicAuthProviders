@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
@@ -6,7 +7,10 @@ namespace Aguacongas.AspNetCore.Authentication
     {
         public static AuthenticationBuilder AddDynamic(this AuthenticationBuilder builder)
         {
-            return new DynamicAuthenticationBuilder(builder.Services);
+            builder.Services
+                .AddSingleton<OptionsMonitorCacheWrapperFactory>()
+                .AddTransient<DynamicManager>();
+            return builder;
         }
     }
 }

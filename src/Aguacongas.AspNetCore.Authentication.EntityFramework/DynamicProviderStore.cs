@@ -16,7 +16,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public virtual async Task Add(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task AddAsync(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (definition == null)
             {
@@ -28,7 +28,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public virtual async Task Remove(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task RemoveAsync(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (definition == null)
             {
@@ -39,7 +39,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public virtual async Task Update(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task UpdateAsync(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (definition == null)
             {
@@ -52,7 +52,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public virtual async Task<ProviderDefinition> FindByScheme(string scheme, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<ProviderDefinition> FindBySchemeAsync(string scheme, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(scheme))
             {

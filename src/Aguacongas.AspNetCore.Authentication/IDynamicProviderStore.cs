@@ -8,9 +8,9 @@ namespace Aguacongas.AspNetCore.Authentication
     {
         IQueryable<ProviderDefinition> ProviderDefinitions { get; }
 
-        Task Add(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
-        Task<ProviderDefinition> FindByScheme(string scheme, CancellationToken cancellationToken = default(CancellationToken));
-        Task Remove(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
-        Task Update(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
+        Task AddAsync(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ProviderDefinition> FindBySchemeAsync(string scheme, CancellationToken cancellationToken = default(CancellationToken));
+        Task RemoveAsync(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
+        Task UpdateAsync(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

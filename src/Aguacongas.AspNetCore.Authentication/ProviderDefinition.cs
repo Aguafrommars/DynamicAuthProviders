@@ -7,7 +7,7 @@ namespace Aguacongas.AspNetCore.Authentication
 {
     public class ProviderDefinition
     {
-        public string Scheme { get; set; }
+        public string Id { get; set; }
 
         public string DisplayName { get; set; }
 

@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.Twitter;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.IdentityModel.Protocols.WsFederation;
+using Xunit.Sdk;
 
 namespace Aguacongas.AspNetCore.Authentication.Test
 {
@@ -52,7 +53,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager>();
+            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
             var cookieOptions = new CookieAuthenticationOptions
             {
                 Cookie = new CookieBuilder
@@ -61,7 +62,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 }
             };
 
-            await sut.AddAsync(CookieAuthenticationDefaults.AuthenticationScheme, "test", typeof(CookieAuthenticationHandler), (AuthenticationSchemeOptions)cookieOptions);
+            await sut.AddAsync(CookieAuthenticationDefaults.AuthenticationScheme, "test", typeof(CookieAuthenticationHandler), cookieOptions);
             var state = await VerifyAddedAsync<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, provider);
 
             var storedOptions = JsonConvert.DeserializeObject<CookieAuthenticationOptions>(state.definition.SerializedOptions);
@@ -97,7 +98,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager>();
+            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
             var facebookOptions = new FacebookOptions
             {
                 AppId = "test",
@@ -142,7 +143,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager>();
+            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
             var googleOptions = new GoogleOptions
             {
                 ClientId = "test",
@@ -188,7 +189,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager>();
+            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
             var jwtBearerOptions = new JwtBearerOptions
             {
                 Authority = "test"
@@ -228,7 +229,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager>();
+            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
             var msAccountOptions = new MicrosoftAccountOptions
             {
                 ClientId = "test",
@@ -273,7 +274,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager>();
+            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
             var msAccountOptions = new OpenIdConnectOptions
             {
                 ClientId = "test",
@@ -315,7 +316,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager>();
+            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
             var twittertOptions = new TwitterOptions
             {
                 ConsumerKey = "test",
@@ -357,7 +358,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager>();
+            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
             var wsFederationOptions = new WsFederationOptions
             {
                 Configuration = new WsFederationConfiguration
@@ -382,7 +383,122 @@ namespace Aguacongas.AspNetCore.Authentication.Test
 
             Assert.True(eventCalled);
         }
+        [Fact]
+        public async Task UpdateAsync_should_update_handler()
+        {
+            var eventCalled = false;
+            Task onTicketReceived(TicketReceivedContext context)
+            {
+                eventCalled = true;
+                return Task.CompletedTask;
+            }
 
+            var provider = CreateServiceProvider(options =>
+            {
+                options.AddCookie()
+                    .AddWsFederation(configure =>
+                    {
+                        configure.Events.OnTicketReceived = onTicketReceived;
+                    });
+            });
+
+            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
+
+            var cookieOptions = new CookieAuthenticationOptions
+            {
+                Cookie = new CookieBuilder
+                {
+                    Domain = "test"
+                }
+            };
+
+            await sut.AddAsync<CookieAuthenticationHandler, CookieAuthenticationOptions>("test", "test", cookieOptions);            
+            await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
+
+            var wsFederationOptions = new WsFederationOptions
+            {
+                Configuration = new WsFederationConfiguration
+                {
+                    Issuer = "test"
+                }
+            };
+
+            await sut.UpdateAsync<WsFederationHandler, WsFederationOptions>("test", "new name", wsFederationOptions);
+            var state = await VerifyAddedAsync<WsFederationOptions>("test", provider);
+
+            var storedOptions = JsonConvert.DeserializeObject<WsFederationOptions>(state.definition.SerializedOptions);
+            _output.WriteLine(state.definition.SerializedOptions);
+
+            Assert.Equal(wsFederationOptions.Configuration.Issuer, storedOptions.Configuration.Issuer);
+
+            var httpContext = new Mock<HttpContext>().Object;
+            state.options.Events.OnTicketReceived(new TicketReceivedContext(
+                httpContext,
+                state.scheme as AuthenticationScheme,
+                state.options as WsFederationOptions,
+                new AuthenticationTicket(new ClaimsPrincipal(), "test")));
+
+            Assert.True(eventCalled);
+        }
+
+        [Fact]
+        public async Task RemoveAsync_should_remove_handler()
+        {
+            var provider = CreateServiceProvider(options =>
+            {
+                options.AddCookie();
+            });
+
+            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
+
+            var cookieOptions = new CookieAuthenticationOptions
+            {
+                Cookie = new CookieBuilder
+                {
+                    Domain = "test"
+                }
+            };
+
+            await sut.AddAsync<CookieAuthenticationHandler, CookieAuthenticationOptions>("test", "test", cookieOptions);
+            await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
+
+            await sut.RemoveAsync("test");
+            await Assert.ThrowsAsync<NotNullException>(() => VerifyAddedAsync<WsFederationOptions>("test", provider));
+        }
+
+        [Fact]
+        public async Task Load_should_load_configuration()
+        {
+            var provider = CreateServiceProvider(options =>
+            {
+                options.AddCookie();
+            });
+
+            var store = provider.GetRequiredService<IDynamicProviderStore<ProviderDefinition>>();
+
+            var cookieOptions = new CookieAuthenticationOptions
+            {
+                Cookie = new CookieBuilder
+                {
+                    Domain = "test"
+                }
+            };
+
+            var definition = new ProviderDefinition
+            {
+                Id = "test",
+                HandlerTypeName = typeof(CookieAuthenticationHandler).FullName,
+                SerializedOptions = JsonConvert.SerializeObject(cookieOptions, DynamicManager<ProviderDefinition>.JsonSerializerSettings)
+            };
+
+            await store.AddAsync(definition);
+
+            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
+
+            sut.Load();
+
+            await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
+        }
         protected virtual IServiceCollection AddStore(IServiceCollection services)
         {
             return services.AddEntityFrameworkStore<ProviderDbContext>(options =>
@@ -399,7 +515,6 @@ namespace Aguacongas.AspNetCore.Authentication.Test
             var schemeProvider = provider.GetRequiredService<IAuthenticationSchemeProvider>();
             var scheme = await schemeProvider.GetSchemeAsync(schemeName);
             Assert.NotNull(scheme);
-            Assert.Equal("test", scheme.DisplayName);
 
             var optionsMonitorCache = provider.GetRequiredService<IOptionsMonitorCache<TOptions>>();
             var options = optionsMonitorCache.GetOrAdd(schemeName, () => default(TOptions));

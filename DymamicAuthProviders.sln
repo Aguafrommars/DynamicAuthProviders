@@ -15,14 +15,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.npmrc = .npmrc
 		.releaserc.json = .releaserc.json
 		GitVersion.yml = GitVersion.yml
+		NuGet.Config = NuGet.Config
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication", "src\Aguacongas.AspNetCore.Authentication\Aguacongas.AspNetCore.Authentication.csproj", "{1A94B6E3-5AE2-4EF2-B023-11B8F8840742}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aguacongas.AspNetCore.Authentication.Test", "test\Aguacongas.AspNetCore.Authentication.Test\Aguacongas.AspNetCore.Authentication.Test.csproj", "{62FC7AE9-E522-4C65-9954-D3EC4C84B35E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication.Test", "test\Aguacongas.AspNetCore.Authentication.Test\Aguacongas.AspNetCore.Authentication.Test.csproj", "{62FC7AE9-E522-4C65-9954-D3EC4C84B35E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aguacongas.AspNetCore.Authentication.Sample", "sample\Aguacongas.AspNetCore.Authentication.Sample\Aguacongas.AspNetCore.Authentication.Sample.csproj", "{B5A1BB45-B621-4EE9-A409-306F4768D597}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication.Sample", "sample\Aguacongas.AspNetCore.Authentication.Sample\Aguacongas.AspNetCore.Authentication.Sample.csproj", "{B5A1BB45-B621-4EE9-A409-306F4768D597}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication.EntityFramework", "src\Aguacongas.AspNetCore.Authentication.EntityFramework\Aguacongas.AspNetCore.Authentication.EntityFramework.csproj", "{8CC87457-C579-4E39-A1C4-BAADADF500DE}"
 EndProject

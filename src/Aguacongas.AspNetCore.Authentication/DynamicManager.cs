@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,13 +11,7 @@ namespace Aguacongas.AspNetCore.Authentication
 {
     public class DynamicManager
     {
-        private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            Formatting = Formatting.None,
-            DefaultValueHandling = DefaultValueHandling.Ignore            
-        };
+        private readonly JsonSerializerSettings _jsonSerializerSettings;
         private readonly IDynamicProviderStore _store;
         private readonly ILogger<DynamicManager> _logger;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
@@ -25,17 +21,27 @@ namespace Aguacongas.AspNetCore.Authentication
             OptionsMonitorCacheWrapperFactory wrapperFactory,
             IDynamicProviderStore store, ILogger<DynamicManager> logger)
         {
+            var contractResolver = new ContractResolver();
+            _jsonSerializerSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                Formatting = Formatting.None,
+                DefaultValueHandling = DefaultValueHandling.Ignore,
+                ContractResolver = contractResolver
+            };
+
             _schemeProvider = schemeProvider;
             _wrapperFactory = wrapperFactory;
             _store = store;
             _logger = logger;
         }
 
-        public Task AddAsync<THandlerType, TOptions>(string scheme, string displayName, THandlerType handlerType, TOptions options, CancellationToken cancellationToken = default(CancellationToken))
-            where THandlerType : AuthenticationHandler<TOptions>
+        public Task AddAsync<THandler, TOptions>(string scheme, string displayName, TOptions options, CancellationToken cancellationToken = default(CancellationToken))
+            where THandler : AuthenticationHandler<TOptions>
             where TOptions : AuthenticationSchemeOptions, new()
         {
-            return AddAsync(scheme, displayName, typeof(THandlerType), (AuthenticationSchemeOptions)options, cancellationToken);
+            return AddAsync(scheme, displayName, typeof(THandler), (AuthenticationSchemeOptions)options, cancellationToken);
         }
         public async Task AddAsync(string scheme, string displayName, Type handlerType, AuthenticationSchemeOptions options, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -46,7 +52,7 @@ namespace Aguacongas.AspNetCore.Authentication
             }
 
             var optionsType = genericTypeArguments[0];
-            var optionsMonitorCache = _wrapperFactory.GetOrCreate(optionsType);
+            var optionsMonitorCache = _wrapperFactory.Get(optionsType);
 
             if (await _schemeProvider.GetSchemeAsync(scheme) != null)
             {
@@ -69,7 +75,7 @@ namespace Aguacongas.AspNetCore.Authentication
             _schemeProvider.AddScheme(new AuthenticationScheme(scheme, displayName, handlerType));
             optionsMonitorCache.TryAdd(scheme, options);
 
-            _logger.LogInformation("Scheme {scheme}, {displayName} added for {handlerType} with options {options}", scheme, displayName, handlerType, serializerOptions);
+            _logger.LogInformation("Scheme {scheme} added with name {displayName} for {handlerType} with options {options}", scheme, displayName, handlerType, serializerOptions);
         }
 
         public async Task UpdateAsync(string scheme, string displayName, Type handlerType, AuthenticationSchemeOptions options, CancellationToken cancellationToken = default(CancellationToken))
@@ -100,7 +106,7 @@ namespace Aguacongas.AspNetCore.Authentication
             definition.SerializedOptions = serializerOptions;
             await _store.UpdateAsync(definition);
 
-            var optionsMonitorCache = _wrapperFactory.GetOrCreate(optionsType);
+            var optionsMonitorCache = _wrapperFactory.Get(optionsType);
 
             _schemeProvider.RemoveScheme(scheme);
             optionsMonitorCache.TryRemove(scheme);
@@ -116,7 +122,7 @@ namespace Aguacongas.AspNetCore.Authentication
             {
                 var handlerType = Type.GetType(definition.HandlerTypeName);
                 var optionsType = handlerType.GenericTypeArguments[0];
-                var optionsMonitorCache = _wrapperFactory.GetOrCreate(optionsType);
+                var optionsMonitorCache = _wrapperFactory.Get(optionsType);
 
                 await _store.RemoveAsync(definition, cancellationToken);
                 _schemeProvider.RemoveScheme(scheme);
@@ -131,7 +137,7 @@ namespace Aguacongas.AspNetCore.Authentication
                 var scheme = definition.Id;
                 var handlerType = Type.GetType(definition.HandlerTypeName);
                 var optionsType = handlerType.GenericTypeArguments[0];
-                var optionsMonitorCache = _wrapperFactory.GetOrCreate(optionsType);
+                var optionsMonitorCache = _wrapperFactory.Get(optionsType);
                 var options = JsonConvert.DeserializeObject(definition.SerializedOptions, optionsType) as AuthenticationSchemeOptions;
 
                 _schemeProvider.AddScheme(new AuthenticationScheme(scheme, definition.DisplayName, handlerType));
@@ -141,11 +147,7 @@ namespace Aguacongas.AspNetCore.Authentication
 
         protected virtual string SerializeOptions(AuthenticationSchemeOptions options, Type optionsType)
         {
-            var evts = options.Events;
-            options.Events = null;
-            var serializerOptions = JsonConvert.SerializeObject(options, optionsType, _jsonSerializerSettings);
-            options.Events = evts;
-            return serializerOptions;
+            return JsonConvert.SerializeObject(options, optionsType, _jsonSerializerSettings);
         }
 
         private Type[] GetGenericTypeArguments(Type type)

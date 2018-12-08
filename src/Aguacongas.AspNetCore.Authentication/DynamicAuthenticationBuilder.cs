@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
@@ -13,7 +12,10 @@ namespace Aguacongas.AspNetCore.Authentication
 
         public override AuthenticationBuilder AddScheme<TOptions, THandler>(string authenticationScheme, string displayName, Action<TOptions> configureOptions)
         {
-            Services.AddTransient<THandler>();
+            Services.AddSingleton(provider => new OptionsMonitorCacheWrapper<TOptions>(
+                provider.GetRequiredService<IOptionsMonitorCache<TOptions>>(),
+                configure => configureOptions?.Invoke((TOptions)configure)));
+            base.AddScheme<TOptions, THandler>(authenticationScheme, displayName, configureOptions);
             return this;
         }
     }

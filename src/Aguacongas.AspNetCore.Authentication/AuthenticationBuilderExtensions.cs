@@ -10,7 +10,7 @@ namespace Aguacongas.AspNetCore.Authentication
             builder.Services
                 .AddSingleton<OptionsMonitorCacheWrapperFactory>()
                 .AddTransient<DynamicManager>();
-            return builder;
+            return new DynamicAuthenticationBuilder(builder.Services);
         }
     }
 }

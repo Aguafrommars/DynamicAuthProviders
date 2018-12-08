@@ -46,15 +46,27 @@ namespace Aguacongas.AspNetCore.Authentication
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class OptionsMonitorCacheWrapperFactory
     {
         private readonly IServiceProvider _serviceProvider;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OptionsMonitorCacheWrapperFactory"/> class.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider.</param>
         public OptionsMonitorCacheWrapperFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
+        /// <summary>
+        /// Gets the <see cref="IOptionsMonitorCache{AuthenticationSchemeOptions}"/>. for the option type
+        /// </summary>
+        /// <param name="optionsType">Type of the options.</param>
+        /// <returns></returns>
         public IOptionsMonitorCache<AuthenticationSchemeOptions> Get(Type optionsType)
         {
             var type = typeof(OptionsMonitorCacheWrapper<>).MakeGenericType(optionsType);

@@ -4,13 +4,14 @@ using System.Threading.Tasks;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
-    public interface IDynamicProviderStore
+    public interface IDynamicProviderStore<TDefinition> 
+        where TDefinition: ProviderDefinition, new()
     {
-        IQueryable<ProviderDefinition> ProviderDefinitions { get; }
+        IQueryable<TDefinition> ProviderDefinitions { get; }
 
-        Task AddAsync(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
-        Task<ProviderDefinition> FindBySchemeAsync(string scheme, CancellationToken cancellationToken = default(CancellationToken));
-        Task RemoveAsync(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
-        Task UpdateAsync(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
+        Task AddAsync(TDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
+        Task<TDefinition> FindBySchemeAsync(string scheme, CancellationToken cancellationToken = default(CancellationToken));
+        Task RemoveAsync(TDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
+        Task UpdateAsync(TDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

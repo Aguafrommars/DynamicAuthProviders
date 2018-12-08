@@ -1,25 +1,35 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
-    public class DynamicManager
+    public class DynamicManager : DynamicManager<ProviderDefinition>
+    {
+        public DynamicManager(IAuthenticationSchemeProvider schemeProvider,
+            OptionsMonitorCacheWrapperFactory wrapperFactory,
+            IDynamicProviderStore<ProviderDefinition> store,
+            ILogger<DynamicManager<ProviderDefinition>> logger)
+            : base(schemeProvider, wrapperFactory, store, logger)
+        {
+        }
+    }
+
+    public class DynamicManager<TDefinition>
+        where TDefinition: ProviderDefinition, new()
     {
         private readonly JsonSerializerSettings _jsonSerializerSettings;
-        private readonly IDynamicProviderStore _store;
-        private readonly ILogger<DynamicManager> _logger;
+        private readonly IDynamicProviderStore<TDefinition>_store;
+        private readonly ILogger<DynamicManager<TDefinition>> _logger;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly OptionsMonitorCacheWrapperFactory _wrapperFactory;
 
         public DynamicManager(IAuthenticationSchemeProvider schemeProvider,
             OptionsMonitorCacheWrapperFactory wrapperFactory,
-            IDynamicProviderStore store, ILogger<DynamicManager> logger)
+            IDynamicProviderStore<TDefinition> store, ILogger<DynamicManager<TDefinition>> logger)
         {
             var contractResolver = new ContractResolver();
             _jsonSerializerSettings = new JsonSerializerSettings
@@ -64,7 +74,7 @@ namespace Aguacongas.AspNetCore.Authentication
 
             var handlerTypeName = handlerType.FullName;
 
-            await _store.AddAsync(new ProviderDefinition
+            await _store.AddAsync(new TDefinition
             {
                 DisplayName = displayName,
                 Id = scheme,

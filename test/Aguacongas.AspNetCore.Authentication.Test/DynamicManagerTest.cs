@@ -393,7 +393,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
 
         private static async Task<dynamic> VerifyAddedAsync<TOptions>(string schemeName, IServiceProvider provider) where TOptions : AuthenticationSchemeOptions
         {
-            var store = provider.GetRequiredService<IDynamicProviderStore>();
+            var store = provider.GetRequiredService<IDynamicProviderStore<ProviderDefinition>>();
             var definition = await store.FindBySchemeAsync(schemeName);
             Assert.NotNull(definition);
             var schemeProvider = provider.GetRequiredService<IAuthenticationSchemeProvider>();

@@ -5,18 +5,25 @@ using System.Threading.Tasks;
 
 namespace Aguacongas.AspNetCore.Authentication.EntityFramework
 {
-    public class DynamicProviderStore : IDynamicProviderStore
+    public class DynamicProviderStore: DynamicProviderStore<ProviderDefinition>
+    {
+        public DynamicProviderStore(ProviderDbContext context):base(context)
+        { }
+    }
+
+    public class DynamicProviderStore<TDefinition> : IDynamicProviderStore<TDefinition>
+        where TDefinition: ProviderDefinition, new()
     {
         private readonly ProviderDbContext _context;
 
-        public virtual IQueryable<ProviderDefinition> ProviderDefinitions => _context.Set<ProviderDefinition>();
+        public virtual IQueryable<TDefinition> ProviderDefinitions => _context.Set<TDefinition>();
 
         public DynamicProviderStore(ProviderDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public virtual async Task AddAsync(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task AddAsync(TDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (definition == null)
             {
@@ -28,7 +35,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public virtual async Task RemoveAsync(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task RemoveAsync(TDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (definition == null)
             {
@@ -39,7 +46,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public virtual async Task UpdateAsync(ProviderDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task UpdateAsync(TDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (definition == null)
             {
@@ -52,14 +59,14 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public virtual async Task<ProviderDefinition> FindBySchemeAsync(string scheme, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<TDefinition> FindBySchemeAsync(string scheme, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(scheme))
             {
                 throw new ArgumentException($"Parameter {nameof(scheme)} cannor be null or empty");
             }
             cancellationToken.ThrowIfCancellationRequested();
-            return await _context.FindAsync<ProviderDefinition>(new[] { scheme }, cancellationToken);
+            return await _context.FindAsync<TDefinition>(new[] { scheme }, cancellationToken);
         }
     }
 }

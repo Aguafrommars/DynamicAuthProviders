@@ -5,12 +5,6 @@ using System.Threading.Tasks;
 
 namespace Aguacongas.AspNetCore.Authentication.EntityFramework
 {
-    public class DynamicProviderStore: DynamicProviderStore<ProviderDefinition>
-    {
-        public DynamicProviderStore(ProviderDbContext context):base(context)
-        { }
-    }
-
     public class DynamicProviderStore<TDefinition> : IDynamicProviderStore<TDefinition>
         where TDefinition: ProviderDefinition, new()
     {

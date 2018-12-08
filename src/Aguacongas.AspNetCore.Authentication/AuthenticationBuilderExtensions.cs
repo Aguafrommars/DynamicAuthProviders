@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Aguacongas.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 
-namespace Aguacongas.AspNetCore.Authentication
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class AuthenticationBuilderExtensions
     {
@@ -12,7 +12,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// The builder.
         /// </param>
         /// <returns></returns>
-        public static AuthenticationBuilder AddDynamic(this AuthenticationBuilder builder)
+        public static DynamicAuthenticationBuilder AddDynamic(this AuthenticationBuilder builder)
         {
             return AddDynamic<ProviderDefinition>(builder);
         }
@@ -23,7 +23,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <typeparam name="TDefinition">The type of the provider definition.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
-        public static AuthenticationBuilder AddDynamic<TDefinition>(this AuthenticationBuilder builder)
+        public static DynamicAuthenticationBuilder AddDynamic<TDefinition>(this AuthenticationBuilder builder)
             where TDefinition: ProviderDefinition, new()
         {
             builder.Services

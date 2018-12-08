@@ -499,9 +499,9 @@ namespace Aguacongas.AspNetCore.Authentication.Test
 
             await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
         }
-        protected virtual IServiceCollection AddStore(IServiceCollection services)
+        protected virtual DynamicAuthenticationBuilder AddStore(DynamicAuthenticationBuilder builder)
         {
-            return services.AddEntityFrameworkStore<ProviderDbContext>(options =>
+            return builder.AddEntityFrameworkStore(options =>
             {
                 options.UseInMemoryDatabase(Guid.NewGuid().ToString());
             });
@@ -525,8 +525,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
         private IServiceProvider CreateServiceProvider(Action<AuthenticationBuilder> addHandlers = null)
         {
             var services = new ServiceCollection();
-            var provider = AddStore(services)
-                .AddLogging(configure =>
+            var builder = services.AddLogging(configure =>
                 {
                     configure.AddConsole()
                         .AddDebug();
@@ -534,7 +533,9 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 .AddAuthentication()
                 .AddDynamic();
 
-            addHandlers?.Invoke(provider);
+            AddStore(builder);
+
+            addHandlers?.Invoke(builder);
 
             return services.BuildServiceProvider();
         }       

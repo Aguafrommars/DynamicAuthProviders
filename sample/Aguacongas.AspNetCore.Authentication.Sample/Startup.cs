@@ -31,6 +31,12 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services
+                .AddAuthentication()
+                // the order is important, 1st add dynamic, then store, then providers you want to manage dynamically
+                .AddDynamic()
+                .AddEntityFrameworkStore()
+                .AddGoogle();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -49,16 +55,17 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseCookiePolicy();
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseHttpsRedirection()
+                .UseStaticFiles()
+                .UseCookiePolicy()
+                .UseMvc(routes =>
+                {
+                    routes.MapRoute(
+                        name: "default",
+                        template: "{controller=Home}/{action=Index}/{id?}");
+                })
+                // load dynamyc authentication configuration from store
+                .LoadDynamicAuthenticationConfiguration();
         }
     }
 }

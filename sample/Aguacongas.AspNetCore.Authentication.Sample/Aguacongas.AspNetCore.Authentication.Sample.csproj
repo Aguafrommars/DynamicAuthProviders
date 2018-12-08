@@ -13,6 +13,7 @@
 
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Aguacongas.AspNetCore.Authentication.EntityFramework\Aguacongas.AspNetCore.Authentication.EntityFramework.csproj" />
     <ProjectReference Include="..\..\src\Aguacongas.AspNetCore.Authentication\Aguacongas.AspNetCore.Authentication.csproj" />
   </ItemGroup>
 

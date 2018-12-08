@@ -1,48 +1,47 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
-    public class DynamicManager : DynamicManager<ProviderDefinition>
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DynamicManager"/> class.
-        /// </summary>
-        /// <param name="schemeProvider">The scheme provider.</param>
-        /// <param name="wrapperFactory">The wrapper factory.</param>
-        /// <param name="store">The store.</param>
-        /// <param name="logger">The logger.</param>
-        public DynamicManager(IAuthenticationSchemeProvider schemeProvider,
-            OptionsMonitorCacheWrapperFactory wrapperFactory,
-            IDynamicProviderStore<ProviderDefinition> store,
-            ILogger<DynamicManager<ProviderDefinition>> logger)
-            : base(schemeProvider, wrapperFactory, store, logger)
-        {
-        }
-    }
-
     public class DynamicManager<TDefinition>
         where TDefinition: ProviderDefinition, new()
     {
-        private static readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                Formatting = Formatting.None,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                ContractResolver = new ContractResolver()
-            };
-
         private readonly IDynamicProviderStore<TDefinition>_store;
         private readonly ILogger<DynamicManager<TDefinition>> _logger;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly OptionsMonitorCacheWrapperFactory _wrapperFactory;
 
+        /// <summary>
+        /// Gets or sets the json serializer settings.
+        /// </summary>
+        /// <value>
+        /// The json serializer settings.
+        /// </value>
+        public static JsonSerializerSettings JsonSerializerSettings { get; } = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            Formatting = Formatting.None,
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            ContractResolver = new ContractResolver()
+        };
+
+        /// <summary>
+        /// Gets or sets the function to serialize the provider definition.
+        /// </summary>
+        /// <value>
+        /// The serialize function.
+        /// </value>
         public Func<AuthenticationSchemeOptions, Type, string> Serialize { get; set; } = SerializeOptions;
+
+        public Func<string, Type, AuthenticationSchemeOptions> Deserialize { get; set; } = DeserializeOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicManager{TDefinition}"/> class.
@@ -55,10 +54,10 @@ namespace Aguacongas.AspNetCore.Authentication
             OptionsMonitorCacheWrapperFactory wrapperFactory,
             IDynamicProviderStore<TDefinition> store, ILogger<DynamicManager<TDefinition>> logger)
         {
-            _schemeProvider = schemeProvider;
-            _wrapperFactory = wrapperFactory;
-            _store = store;
-            _logger = logger;
+            _schemeProvider = schemeProvider ?? throw new ArgumentNullException(nameof(schemeProvider));
+            _wrapperFactory = wrapperFactory ?? throw new ArgumentNullException(nameof(wrapperFactory));
+            _store = store ?? throw new ArgumentNullException(nameof(store));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -75,7 +74,7 @@ namespace Aguacongas.AspNetCore.Authentication
             where THandler : AuthenticationHandler<TOptions>
             where TOptions : AuthenticationSchemeOptions, new()
         {
-            return AddAsync(scheme, displayName, typeof(THandler), (AuthenticationSchemeOptions)options, cancellationToken);
+            return AddAsync(scheme, displayName, typeof(THandler), options, cancellationToken);
         }
 
         /// <summary>
@@ -126,6 +125,22 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <summary>
         /// Updates the scheme asynchronously.
         /// </summary>
+        /// <typeparam name="THandler">The type of the handler.</typeparam>
+        /// <typeparam name="TOptions">The type of the options.</typeparam>
+        /// <param name="scheme">The scheme.</param>
+        /// <param name="displayName">The display name.</param>
+        /// <param name="options">The options.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public Task UpdateAsync<THandler, TOptions>(string scheme, string displayName, TOptions options, CancellationToken cancellationToken = default(CancellationToken))        
+            where THandler : AuthenticationHandler<TOptions>
+            where TOptions : AuthenticationSchemeOptions, new()
+        {
+            return UpdateAsync(scheme, displayName, typeof(THandler), options, cancellationToken);
+        }
+        /// <summary>
+        /// Updates the scheme asynchronously.
+        /// </summary>
         /// <param name="scheme">The scheme.</param>
         /// <param name="displayName">The display name.</param>
         /// <param name="handlerType">Type of the handler.</param>
@@ -139,7 +154,7 @@ namespace Aguacongas.AspNetCore.Authentication
         public async Task UpdateAsync(string scheme, string displayName, Type handlerType, AuthenticationSchemeOptions options, CancellationToken cancellationToken = default(CancellationToken))
         {
             var genericTypeArguments = GetGenericTypeArguments(handlerType);
-            if (handlerType.GetInterface(nameof(IAuthenticationHandler)) == null || handlerType.GenericTypeArguments.Length == 0)
+            if (handlerType.GetInterface(nameof(IAuthenticationHandler)) == null || genericTypeArguments.Length == 0)
             {
                 throw new ArgumentException($"Parameter {nameof(handlerType)} should be a {nameof(AuthenticationHandler<AuthenticationSchemeOptions>)}");
             }
@@ -171,6 +186,8 @@ namespace Aguacongas.AspNetCore.Authentication
 
             _schemeProvider.AddScheme(new AuthenticationScheme(scheme, displayName, handlerType));
             optionsMonitorCache.TryAdd(scheme, options);
+
+            _logger.LogInformation("Scheme {scheme} updated with name {displayName} for {handlerType} with options {options}", scheme, displayName, handlerType, serializerOptions);
         }
 
         /// <summary>
@@ -191,6 +208,8 @@ namespace Aguacongas.AspNetCore.Authentication
                 await _store.RemoveAsync(definition, cancellationToken);
                 _schemeProvider.RemoveScheme(scheme);
                 optionsMonitorCache.TryRemove(scheme);
+
+                _logger.LogInformation("Scheme {scheme} removed for handler type {handlerType}", scheme, handlerType);
             }
         }
 
@@ -199,22 +218,34 @@ namespace Aguacongas.AspNetCore.Authentication
         /// </summary>
         public void Load()
         {
-            foreach(var definition in _store.ProviderDefinitions)
+            var platform = Environment.OSVersion.Platform.ToString();
+            var runtimeAssemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(platform);
+
+            foreach (var definition in _store.ProviderDefinitions)
             {
                 var scheme = definition.Id;
-                var handlerType = Type.GetType(definition.HandlerTypeName);
-                var optionsType = handlerType.GenericTypeArguments[0];
+                var handlerType = runtimeAssemblyNames
+                    .Select(Assembly.Load)
+                    .SelectMany(a => a.ExportedTypes)
+                    .First(t => t.FullName == definition.HandlerTypeName);
+
+                var optionsType = GetGenericTypeArguments(handlerType)[0];
                 var optionsMonitorCache = _wrapperFactory.Get(optionsType);
-                var options = JsonConvert.DeserializeObject(definition.SerializedOptions, optionsType) as AuthenticationSchemeOptions;
+                var options = Deserialize(definition.SerializedOptions, optionsType);
 
                 _schemeProvider.AddScheme(new AuthenticationScheme(scheme, definition.DisplayName, handlerType));
                 optionsMonitorCache.TryAdd(scheme, options);
             }
         }
 
-        protected static string SerializeOptions(AuthenticationSchemeOptions options, Type optionsType)
+        private static string SerializeOptions(AuthenticationSchemeOptions options, Type optionsType)
         {
-            return JsonConvert.SerializeObject(options, optionsType, _jsonSerializerSettings);
+            return JsonConvert.SerializeObject(options, optionsType, JsonSerializerSettings);
+        }
+
+        private static AuthenticationSchemeOptions DeserializeOptions(string value, Type optionsType)
+        {
+            return JsonConvert.DeserializeObject(value, optionsType) as AuthenticationSchemeOptions;
         }
 
         private Type[] GetGenericTypeArguments(Type type)
@@ -230,14 +261,6 @@ namespace Aguacongas.AspNetCore.Authentication
             }
 
             return GetGenericTypeArguments(type.BaseType);
-        }
-
-        class OptionsMonitorCacheWrapper
-        {
-            public OptionsMonitorCacheWrapper(Type optionsType)
-            {
-
-            }
         }
     }
 }

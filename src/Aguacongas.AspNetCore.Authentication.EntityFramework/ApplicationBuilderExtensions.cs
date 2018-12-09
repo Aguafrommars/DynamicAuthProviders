@@ -1,4 +1,6 @@
-﻿using Aguacongas.AspNetCore.Authentication;
+﻿// Project: DymamicAuthProviders
+// Copyright (c) 2018 @Olivier Lefebvre
+using Aguacongas.AspNetCore.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Text;

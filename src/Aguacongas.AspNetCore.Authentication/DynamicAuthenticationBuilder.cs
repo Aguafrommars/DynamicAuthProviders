@@ -1,18 +1,29 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿// Project: DymamicAuthProviders
+// Copyright (c) 2018 @Olivier Lefebvre
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
+    public enum SchemeAction
+    {
+        Added,
+        Removed
+    }
     public class DynamicAuthenticationBuilder : AuthenticationBuilder
     {
+        private readonly Action<string, SchemeAction> _notify;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicAuthenticationBuilder"/> class.
         /// </summary>
         /// <param name="services">The services being configured.</param>
-        public DynamicAuthenticationBuilder(IServiceCollection services): base(services)
-        { }
+        public DynamicAuthenticationBuilder(IServiceCollection services, Action<string, SchemeAction> notify): base(services)
+        {
+            _notify = notify;
+        }
 
         /// <summary>
         /// Adds a <see cref="T:Microsoft.AspNetCore.Authentication.AuthenticationScheme" /> which can be used by <see cref="T:Microsoft.AspNetCore.Authentication.IAuthenticationService" />.
@@ -29,7 +40,12 @@ namespace Aguacongas.AspNetCore.Authentication
         {
             Services.AddSingleton(provider => new OptionsMonitorCacheWrapper<TOptions>(
                 provider.GetRequiredService<IOptionsMonitorCache<TOptions>>(),
-                configure => configureOptions?.Invoke((TOptions)configure)));
+                (name, configure) =>
+                {
+                    _notify?.Invoke(name, SchemeAction.Added);
+                    configureOptions?.Invoke((TOptions)configure);
+                },
+                name => _notify(name, SchemeAction.Removed)));
             base.AddScheme<TOptions, THandler>(authenticationScheme, displayName, configureOptions);
             return this;
         }

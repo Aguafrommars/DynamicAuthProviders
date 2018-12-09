@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using System;
-
+﻿// Project: DymamicAuthProviders
+// Copyright (c) 2018 @Olivier Lefebvre
 namespace Aguacongas.AspNetCore.Authentication
 {
+    /// <summary>
+    /// Scheme definition for entity framework store
+    /// </summary>
+    /// <seealso cref="Aguacongas.AspNetCore.Authentication.SchemeDefinitionBase" />
     public class SchemeDefinition: SchemeDefinitionBase
     {
         /// <summary>

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿// Project: DymamicAuthProviders
+// Copyright (c) 2018 @Olivier Lefebvre
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
@@ -9,13 +11,15 @@ namespace Aguacongas.AspNetCore.Authentication
     {
         private readonly Type _type;
         private readonly object _parent;
-        private readonly Action<AuthenticationSchemeOptions> _configure;
+        private readonly Action<string, AuthenticationSchemeOptions> _onAdded;
+        private readonly Action<string> _onRemoved;
 
-        public OptionsMonitorCacheWrapper(object parent, Action<AuthenticationSchemeOptions> configure)
+        public OptionsMonitorCacheWrapper(object parent, Action<string, AuthenticationSchemeOptions> onAdded, Action<string> onRemoved)
         {
             _parent = parent;
             _type = parent.GetType();
-            _configure = configure;
+            _onAdded = onAdded;
+            _onRemoved = onRemoved;
         }
 
         public void Clear()
@@ -25,24 +29,25 @@ namespace Aguacongas.AspNetCore.Authentication
 
         public AuthenticationSchemeOptions GetOrAdd(string name, Func<AuthenticationSchemeOptions> createOptions)
         {
-            return (AuthenticationSchemeOptions)_type
-                .GetMethod("GetOrAdd")
-                .Invoke(_parent, new object[] { name, createOptions });
+            throw new NotImplementedException();
         }
 
         public bool TryAdd(string name, AuthenticationSchemeOptions options)
         {
-            _configure?.Invoke(options);
-            return (bool)_type
+            var result = (bool)_type
                 .GetMethod("TryAdd")
                 .Invoke(_parent, new object[] { name, options });
+            _onAdded?.Invoke(name, options);
+            return result;
         }
 
         public bool TryRemove(string name)
         {
-            return (bool)_type
+            var result = (bool)_type
                 .GetMethod("TryRemove")
                 .Invoke(_parent, new object[] { name });
+            _onRemoved?.Invoke(name);
+            return result;
         }
     }
 

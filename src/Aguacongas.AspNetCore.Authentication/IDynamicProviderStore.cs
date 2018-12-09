@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿// Project: DymamicAuthProviders
+// Copyright (c) 2018 @Olivier Lefebvre
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

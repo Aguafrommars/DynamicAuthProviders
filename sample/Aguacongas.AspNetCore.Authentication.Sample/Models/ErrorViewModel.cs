@@ -1,3 +1,5 @@
+// Project: DymamicAuthProviders
+// Copyright (c) 2018 @Olivier Lefebvre
 using System;
 
 namespace Aguacongas.AspNetCore.Authentication.Sample.Models

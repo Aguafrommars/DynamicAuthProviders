@@ -1,3 +1,5 @@
+// Project: DymamicAuthProviders
+// Copyright (c) 2018 @Olivier Lefebvre
 using Aguacongas.AspNetCore.Authentication.EntityFramework;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
@@ -611,7 +613,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                         .AddDebug();
                 })
                 .AddAuthentication()
-                .AddDynamic<SchemeDefinition>();
+                .AddDynamic<SchemeDefinition>(null);
 
             AddStore(builder);
 

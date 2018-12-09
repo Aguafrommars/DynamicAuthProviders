@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿// Project: DymamicAuthProviders
+// Copyright (c) 2018 @Olivier Lefebvre
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -10,43 +11,53 @@ using System.Threading.Tasks;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
-    public class DynamicManager<TDefinition>
-        where TDefinition: SchemeDefinitionBase, new()
+
+    /// <summary>
+    /// Dynamic scheme manager
+    /// </summary>
+    /// <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
+    public class DynamicManager<TSchemeDefinition>
+        where TSchemeDefinition: SchemeDefinitionBase, new()
     {
-        private readonly IDynamicProviderStore<TDefinition>_store;
-        private readonly ILogger<DynamicManager<TDefinition>> _logger;
+        private readonly IDynamicProviderStore<TSchemeDefinition>_store;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly OptionsMonitorCacheWrapperFactory _wrapperFactory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DynamicManager{TDefinition}"/> class.
+        /// Initializes a new instance of the <see cref="DynamicManager{TSchemeDefinition}"/> class.
         /// </summary>
         /// <param name="schemeProvider">The scheme provider.</param>
         /// <param name="wrapperFactory">The wrapper factory.</param>
         /// <param name="store">The store.</param>
-        /// <param name="logger">The logger.</param>
+        /// <exception cref="ArgumentNullException">
+        /// schemeProvider
+        /// or
+        /// wrapperFactory
+        /// or
+        /// store
+        /// </exception>
         public DynamicManager(IAuthenticationSchemeProvider schemeProvider,
             OptionsMonitorCacheWrapperFactory wrapperFactory,
-            IDynamicProviderStore<TDefinition> store, ILogger<DynamicManager<TDefinition>> logger)
+            IDynamicProviderStore<TSchemeDefinition> store)
         {
             _schemeProvider = schemeProvider ?? throw new ArgumentNullException(nameof(schemeProvider));
             _wrapperFactory = wrapperFactory ?? throw new ArgumentNullException(nameof(wrapperFactory));
             _store = store ?? throw new ArgumentNullException(nameof(store));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
-        /// Adds the scheme asynchronously.
+        /// Adds a scheme asynchronously.
         /// </summary>
-        /// <param name="scheme">The scheme.</param>
-        /// <param name="displayName">The display name.</param>
-        /// <param name="handlerType">Type of the handler.</param>
-        /// <param name="options">The options.</param>
+        /// <param name="definition">The definition.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException">Parameter {nameof(handlerType)} should be a {nameof(AuthenticationHandler<AuthenticationSchemeOptions>)}</exception>
-        public async Task AddAsync(TDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        /// <exception cref="ArgumentNullException">definition</exception>
+        public async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (definition == null)
+            {
+                throw new ArgumentNullException(nameof(definition));
+            }
             var handlerType = definition.HandlerType;
             var optionsType = GetOptionsType(handlerType);
             var optionsMonitorCache = _wrapperFactory.Get(optionsType);
@@ -64,27 +75,26 @@ namespace Aguacongas.AspNetCore.Authentication
         }
 
         /// <summary>
-        /// Updates the scheme asynchronously.
+        /// Updates the scheme asynchronous.
         /// </summary>
-        /// <param name="scheme">The scheme.</param>
-        /// <param name="displayName">The display name.</param>
-        /// <param name="handlerType">Type of the handler.</param>
-        /// <param name="options">The options.</param>
+        /// <param name="definition">The definition.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException">Parameter {nameof(handlerType)} should be a {nameof(AuthenticationHandler<AuthenticationSchemeOptions>)}</exception>
-        /// <exception cref="InvalidOperationException">
-        /// The scheme {scheme} is not found
-        /// </exception>
-        public async Task UpdateAsync(TDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        /// <exception cref="ArgumentNullException">definition</exception>
+        /// <exception cref="InvalidOperationException">The scheme does not exist.</exception>
+        public async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (definition == null)
+            {
+                throw new ArgumentNullException(nameof(definition));
+            }
             var handlerType = definition.HandlerType;
             var optionsType = GetOptionsType(handlerType);
             var scheme = definition.Scheme;
 
             if (await _schemeProvider.GetSchemeAsync(scheme) == null)
             {
-                throw new InvalidOperationException($"The scheme {scheme} does not exist");
+                throw new InvalidOperationException($"The scheme {scheme} does not exist.");
             }
 
             await _store.UpdateAsync(definition, cancellationToken);
@@ -99,13 +109,18 @@ namespace Aguacongas.AspNetCore.Authentication
         }
 
         /// <summary>
-        /// Removes the scheme asynchronously.
+        /// Removes the scheme asynchronous.
         /// </summary>
         /// <param name="scheme">The scheme.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException">scheme cannot be null or white space.</exception>
         public async Task RemoveAsync(string scheme, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (string.IsNullOrWhiteSpace(scheme))
+            {
+                throw new ArgumentException($"{nameof(scheme)} cannot be null or white space.");
+            }
             var definition = await _store.FindBySchemeAsync(scheme, cancellationToken);
             if (definition == null)
             {
@@ -116,6 +131,21 @@ namespace Aguacongas.AspNetCore.Authentication
                 _schemeProvider.RemoveScheme(scheme);
                 optionsMonitorCache.TryRemove(scheme);
             }
+        }
+
+        /// <summary>
+        /// Finds the definition by scheme asynchronous.
+        /// </summary>
+        /// <param name="scheme">The scheme.</param>
+        /// <returns>The scheme definition or null.</returns>
+        /// <exception cref="ArgumentException">scheme cannot be null or white space.</exception>
+        public Task<TSchemeDefinition> FindBySchemeAsync(string scheme)
+        {
+            if (string.IsNullOrWhiteSpace(scheme))
+            {
+                throw new ArgumentException($"{nameof(scheme)} cannot be null or white space.");
+            }
+            return _store.FindBySchemeAsync(scheme);
         }
 
         /// <summary>

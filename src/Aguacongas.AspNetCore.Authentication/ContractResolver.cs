@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿// Project: DymamicAuthProviders
+// Copyright (c) 2018 @Olivier Lefebvre
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Reflection;

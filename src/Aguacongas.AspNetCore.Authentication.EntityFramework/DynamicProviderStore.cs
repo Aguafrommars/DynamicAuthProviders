@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyModel;
+﻿// Project: DymamicAuthProviders
+// Copyright (c) 2018 @Olivier Lefebvre
+using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -11,7 +13,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
     public class DynamicProviderStore<TDefinition> : IDynamicProviderStore<TDefinition>
         where TDefinition: SchemeDefinition, new()
     {
-        private readonly ProviderDbContext<TDefinition> _context;
+        private readonly SchemeDbContext<TDefinition> _context;
         private readonly IAuthenticationSchemeOptionsSerializer _authenticationSchemeOptionsSerializer;
         private readonly ILogger<DynamicProviderStore<TDefinition>> _logger;
 
@@ -24,7 +26,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             })
             .AsQueryable();
 
-        public DynamicProviderStore(ProviderDbContext<TDefinition> context, IAuthenticationSchemeOptionsSerializer authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore<TDefinition>> logger)
+        public DynamicProviderStore(SchemeDbContext<TDefinition> context, IAuthenticationSchemeOptionsSerializer authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore<TDefinition>> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _authenticationSchemeOptionsSerializer = authenticationSchemeOptionsSerializer ?? throw new ArgumentNullException(nameof(authenticationSchemeOptionsSerializer));

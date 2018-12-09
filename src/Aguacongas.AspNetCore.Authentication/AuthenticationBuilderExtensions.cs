@@ -1,5 +1,8 @@
-﻿using Aguacongas.AspNetCore.Authentication;
+﻿// Project: DymamicAuthProviders
+// Copyright (c) 2018 @Olivier Lefebvre
+using Aguacongas.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
+using System;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -8,16 +11,17 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Adds the dynamic.
         /// </summary>
-        /// <typeparam name="TDefinition">The type of the provider definition.</typeparam>
+        /// <typeparam name="TDefinition">The type of the definition.</typeparam>
         /// <param name="builder">The builder.</param>
+        /// <param name="notify">The action to call on scheme added or removed.</param>
         /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddDynamic<TDefinition>(this AuthenticationBuilder builder)
+        public static DynamicAuthenticationBuilder AddDynamic<TDefinition>(this AuthenticationBuilder builder, Action<string, SchemeAction> notify = null)
             where TDefinition: SchemeDefinitionBase, new()
         {
             builder.Services
                 .AddSingleton<OptionsMonitorCacheWrapperFactory>()
                 .AddTransient<DynamicManager<TDefinition>>();
-            return new DynamicAuthenticationBuilder(builder.Services);
+            return new DynamicAuthenticationBuilder(builder.Services, notify);
         }
     }
 }

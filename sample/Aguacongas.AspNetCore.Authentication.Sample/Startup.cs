@@ -47,7 +47,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                 })
                 .AddGoogle()
                 .AddFacebook()
-                .AddGoogle()
+                .AddTwitter()
                 .AddMicrosoftAccount();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

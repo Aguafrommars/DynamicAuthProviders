@@ -3,6 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <Authors>Olivier Lefebvre</Authors>
+    <Copyright>Copyright (c) 2018 @Olivier Lefebvre</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/aguacongas/DymamicAuthProviders/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/aguacongas/DymamicAuthProviders/tree/master/sample/Aguacongas.AspNetCore.Authentication.Sample</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/aguacongas/DymamicAuthProviders</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>aspnetcore authentication security sample</PackageTags>
   </PropertyGroup>
 
 

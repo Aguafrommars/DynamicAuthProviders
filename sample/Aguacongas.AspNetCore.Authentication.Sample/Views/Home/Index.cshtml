@@ -1,4 +1,5 @@
-﻿@{
+﻿@inject DynamicManager<SchemeDefinition> manager
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -6,3 +7,10 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+<h5>Manage your authentication</h5>
+<ul class="list-unstyled">
+    @foreach (var type in manager.ManagedHandlerType)
+    {
+        <li>@type.Name</li>
+    }
+</ul>

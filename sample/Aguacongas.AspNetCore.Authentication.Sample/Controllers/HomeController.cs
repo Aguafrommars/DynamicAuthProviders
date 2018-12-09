@@ -1,12 +1,8 @@
 ﻿// Project: DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Aguacongas.AspNetCore.Authentication.Sample.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
 {

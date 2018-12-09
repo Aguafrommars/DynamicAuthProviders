@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Aguacongas.AspNetCore.Authentication.Sample
 {
@@ -37,15 +39,24 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
 
             services
                 .AddAuthentication()
-                // the order is important, 1st add dynamic, then store, then providers you want to manage dynamically
+                .AddOpenIdConnect()
+                // The order is important, 1st add dynamic, then store, then providers you want to manage dynamically.
+                // OpenIdConnect should appears in managed handlers list, however, if you move it after AddDynamic, it will.
                 .AddDynamic(options =>
                 {
-                    options.UseInMemoryDatabase(Guid.NewGuid().ToString());
-                }, (context) => 
-                {
-                    Debug.WriteLine($"The scheme {context.Scheme} has been {context.Action}");
+                    options.UseInMemoryDatabase("sample");
                 })
-                .AddGoogle()
+                .AddGoogle(options =>
+                {
+                    // You can defined default configuration for managed handlers.
+                    options.Events.OnTicketReceived = context =>
+                    {
+                        var provider = context.HttpContext.RequestServices;
+                        var logger = provider.GetRequiredService<ILogger<TicketReceivedContext>>();
+                        logger.LogInformation($"Ticket received for scheme {context.Scheme}");
+                        return Task.CompletedTask;
+                    };
+                })
                 .AddFacebook()
                 .AddTwitter()
                 .AddMicrosoftAccount();

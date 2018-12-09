@@ -2,7 +2,6 @@
 // Copyright (c) 2018 @Olivier Lefebvre
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyModel;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +11,74 @@ using System.Threading.Tasks;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
+    public class PersistentDynamicManager<TSchemeDefinition> : DynamicManager<TSchemeDefinition>
+        where TSchemeDefinition : SchemeDefinitionBase, new()
+    {
+        private readonly IDynamicProviderStore<TSchemeDefinition> _store;
+        public PersistentDynamicManager(IAuthenticationSchemeProvider schemeProvider, OptionsMonitorCacheWrapperFactory wrapperFactory, IDynamicProviderStore<TSchemeDefinition> store, IEnumerable<Type> managedTypes)
+            : base(schemeProvider, wrapperFactory, managedTypes)
+        {
+            _store = store ?? throw new ArgumentNullException(nameof(store));
+        }
+
+        public override async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await base.AddAsync(definition, cancellationToken);
+            await _store.AddAsync(definition, cancellationToken);
+        }
+
+        public override async Task RemoveAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await base.RemoveAsync(name, cancellationToken);
+            var definition = await _store.FindBySchemeAsync(name);
+            if (definition != null)
+            {
+                await _store.RemoveAsync(definition, cancellationToken);
+            }
+        }
+
+        public override async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await base.UpdateAsync(definition, cancellationToken);
+            await _store.UpdateAsync(definition, cancellationToken);
+        }
+        /// <summary>
+        /// Finds the definition by scheme asynchronous.
+        /// </summary>
+        /// <param name="scheme">The scheme.</param>
+        /// <returns>The scheme definition or null.</returns>
+        /// <exception cref="ArgumentException">scheme cannot be null or white space.</exception>
+        public virtual Task<TSchemeDefinition> FindBySchemeAsync(string scheme)
+        {
+            if (string.IsNullOrWhiteSpace(scheme))
+            {
+                throw new ArgumentException($"{nameof(scheme)} cannot be null or white space.");
+            }
+            return _store.FindBySchemeAsync(scheme);
+        }
+
+
+        /// <summary>
+        /// Loads the configuration.
+        /// </summary>
+        public virtual void Load()
+        {
+            var platform = Environment.OSVersion.Platform.ToString();
+            var runtimeAssemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(platform);
+
+            foreach (var definition in _store.SchemeDefinitions)
+            {
+                var scheme = definition.Scheme;
+                var handlerType = runtimeAssemblyNames
+                    .Select(Assembly.Load)
+                    .SelectMany(a => a.ExportedTypes)
+                    .First(t => t == definition.HandlerType);
+
+
+                base.AddAsync(definition).GetAwaiter().GetResult();
+            }
+        }
+    }
 
     /// <summary>
     /// Dynamic scheme manager
@@ -20,7 +87,6 @@ namespace Aguacongas.AspNetCore.Authentication
     public class DynamicManager<TSchemeDefinition>
         where TSchemeDefinition: SchemeDefinitionBase, new()
     {
-        private readonly IDynamicProviderStore<TSchemeDefinition>_store;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly OptionsMonitorCacheWrapperFactory _wrapperFactory;
 
@@ -41,12 +107,10 @@ namespace Aguacongas.AspNetCore.Authentication
         /// </exception>
         public DynamicManager(IAuthenticationSchemeProvider schemeProvider,
             OptionsMonitorCacheWrapperFactory wrapperFactory,
-            IDynamicProviderStore<TSchemeDefinition> store,
             IEnumerable<Type> managedTypes)
         {
             _schemeProvider = schemeProvider ?? throw new ArgumentNullException(nameof(schemeProvider));
             _wrapperFactory = wrapperFactory ?? throw new ArgumentNullException(nameof(wrapperFactory));
-            _store = store ?? throw new ArgumentNullException(nameof(store));
             ManagedHandlerType = managedTypes ?? throw new ArgumentNullException(nameof(managedTypes));
         }
 
@@ -74,7 +138,6 @@ namespace Aguacongas.AspNetCore.Authentication
                 optionsMonitorCache.TryRemove(scheme);
             }
 
-            await _store.AddAsync(definition, cancellationToken);
             _schemeProvider.AddScheme(new AuthenticationScheme(scheme, definition.DisplayName, handlerType));
             optionsMonitorCache.TryAdd(scheme, definition.Options);
         }
@@ -102,8 +165,6 @@ namespace Aguacongas.AspNetCore.Authentication
                 throw new InvalidOperationException($"The scheme {scheme} does not exist.");
             }
 
-            await _store.UpdateAsync(definition, cancellationToken);
-
             var optionsMonitorCache = _wrapperFactory.Get(optionsType);
 
             _schemeProvider.RemoveScheme(scheme);
@@ -116,65 +177,25 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <summary>
         /// Removes the scheme asynchronous.
         /// </summary>
-        /// <param name="scheme">The scheme.</param>
+        /// <param name="name">The scheme.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException">scheme cannot be null or white space.</exception>
-        public virtual async Task RemoveAsync(string scheme, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task RemoveAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (string.IsNullOrWhiteSpace(scheme))
+            if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException($"{nameof(scheme)} cannot be null or white space.");
+                throw new ArgumentException($"{nameof(name)} cannot be null or white space.");
             }
-            var definition = await _store.FindBySchemeAsync(scheme, cancellationToken);
-            if (definition == null)
+
+            var scheme = await _schemeProvider.GetSchemeAsync(name);
+            if(scheme != null)
             {
-                var optionsType = GetOptionsType(definition.HandlerType);
+                var optionsType = GetOptionsType(scheme.HandlerType);
                 var optionsMonitorCache = _wrapperFactory.Get(optionsType);
 
-                await _store.RemoveAsync(definition, cancellationToken);
-                _schemeProvider.RemoveScheme(scheme);
-                optionsMonitorCache.TryRemove(scheme);
-            }
-        }
-
-        /// <summary>
-        /// Finds the definition by scheme asynchronous.
-        /// </summary>
-        /// <param name="scheme">The scheme.</param>
-        /// <returns>The scheme definition or null.</returns>
-        /// <exception cref="ArgumentException">scheme cannot be null or white space.</exception>
-        public virtual Task<TSchemeDefinition> FindBySchemeAsync(string scheme)
-        {
-            if (string.IsNullOrWhiteSpace(scheme))
-            {
-                throw new ArgumentException($"{nameof(scheme)} cannot be null or white space.");
-            }
-            return _store.FindBySchemeAsync(scheme);
-        }
-
-        /// <summary>
-        /// Loads the configuration.
-        /// </summary>
-        public virtual void Load()
-        {
-            var platform = Environment.OSVersion.Platform.ToString();
-            var runtimeAssemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(platform);
-
-            foreach (var definition in _store.SchemeDefinitions)
-            {
-                var scheme = definition.Scheme;
-                var handlerType = runtimeAssemblyNames
-                    .Select(Assembly.Load)
-                    .SelectMany(a => a.ExportedTypes)
-                    .First(t => t == definition.HandlerType);
-
-
-                var optionsType = GetOptionsType(handlerType);
-                var optionsMonitorCache = _wrapperFactory.Get(optionsType);
-
-                _schemeProvider.AddScheme(new AuthenticationScheme(scheme, definition.DisplayName, handlerType));
-                optionsMonitorCache.TryAdd(scheme, definition.Options);
+                _schemeProvider.RemoveScheme(name);
+                optionsMonitorCache.TryRemove(name);
             }
         }
 

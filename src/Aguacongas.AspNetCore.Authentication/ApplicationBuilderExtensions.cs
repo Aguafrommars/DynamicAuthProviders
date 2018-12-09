@@ -35,7 +35,7 @@ namespace Microsoft.AspNetCore.Builder
         {
             using (var scope = provider.CreateScope())
             {
-                var manager = scope.ServiceProvider.GetRequiredService<DynamicManager<TDefinition>>();
+                var manager = scope.ServiceProvider.GetRequiredService<PersistentDynamicManager<TDefinition>>();
                 manager.Load();
             }
             return provider;

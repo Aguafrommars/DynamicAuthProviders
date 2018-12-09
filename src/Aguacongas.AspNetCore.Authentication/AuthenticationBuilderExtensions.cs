@@ -18,20 +18,25 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder">The builder.</param>
         /// <param name="notify">The action to call on scheme added or removed.</param>
         /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddDynamic<TSchemeDefinition>(this AuthenticationBuilder builder, Action<NotificationContext> notify = null)
+        public static DynamicAuthenticationBuilder AddDynamic<TSchemeDefinition>(this AuthenticationBuilder builder)
             where TSchemeDefinition: SchemeDefinitionBase, new()
         {
-            var dynamicBuilder = new DynamicAuthenticationBuilder(builder.Services, notify);
+            var dynamicBuilder = new DynamicAuthenticationBuilder(builder.Services);
             builder.Services
                 .AddSingleton<OptionsMonitorCacheWrapperFactory>()
-                .AddTransient(provider => new DynamicManager<TSchemeDefinition>
+                .AddTransient(provider => new PersistentDynamicManager<TSchemeDefinition>
                 (
                     provider.GetRequiredService<IAuthenticationSchemeProvider>(),
                     provider.GetRequiredService<OptionsMonitorCacheWrapperFactory>(),
                     provider.GetRequiredService<IDynamicProviderStore<TSchemeDefinition>>(),
                     dynamicBuilder.HandlerTypes
-                )
-                );
+                ))
+                .AddTransient(provider => new DynamicManager<TSchemeDefinition>
+                (
+                    provider.GetRequiredService<IAuthenticationSchemeProvider>(),
+                    provider.GetRequiredService<OptionsMonitorCacheWrapperFactory>(),
+                    dynamicBuilder.HandlerTypes
+                ));
             return dynamicBuilder;
         }
     }

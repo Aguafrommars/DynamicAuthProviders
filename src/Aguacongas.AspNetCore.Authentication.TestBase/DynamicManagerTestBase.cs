@@ -62,7 +62,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
             Assert.Contains(typeof(CookieAuthenticationHandler), sut.ManagedHandlerType);
 
             var cookieOptions = new CookieAuthenticationOptions
@@ -116,7 +116,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
             Assert.Contains(typeof(FacebookHandler), sut.ManagedHandlerType);
 
             var facebookOptions = new FacebookOptions
@@ -170,7 +170,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
             Assert.Contains(typeof(GoogleHandler), sut.ManagedHandlerType);
 
             var googleOptions = new GoogleOptions
@@ -238,7 +238,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 Options = jwtBearerOptions
             };
 
-            var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
             Assert.Contains(typeof(JwtBearerHandler), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
@@ -289,7 +289,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 Options = msAccountOptions
             };
 
-            var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
             Assert.Contains(typeof(MicrosoftAccountHandler), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
@@ -344,7 +344,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 Options = oidcptions
             };
 
-            var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
             Assert.Contains(typeof(OpenIdConnectHandler), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
@@ -396,7 +396,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 Options = twittertOptions
             };
 
-            var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
             Assert.Contains(typeof(TwitterHandler), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
@@ -450,7 +450,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 Options = wsFederationOptions
             };
 
-            var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
             Assert.Contains(typeof(WsFederationHandler), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
@@ -504,7 +504,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 Options = cookieOptions
             };
 
-            var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
             Assert.Contains(typeof(CookieAuthenticationHandler), sut.ManagedHandlerType);
             Assert.Contains(typeof(WsFederationHandler), sut.ManagedHandlerType);
 
@@ -568,14 +568,14 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 Options = cookieOptions
             };
 
-            var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
             Assert.Contains(typeof(CookieAuthenticationHandler), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
             await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
 
             await sut.RemoveAsync("test");
-            await Assert.ThrowsAsync<NotNullException>(() => VerifyAddedAsync<WsFederationOptions>("test", provider));
+            await Assert.ThrowsAsync<NullReferenceException>(() => VerifyAddedAsync<WsFederationOptions>("test", provider));
         }
 
         [Fact]
@@ -605,7 +605,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
 
             await store.AddAsync(definition);
 
-            var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
 
             sut.Load();
 
@@ -613,7 +613,6 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
         }
         protected abstract DynamicAuthenticationBuilder AddStore(DynamicAuthenticationBuilder builder);
 
-        private bool notifyMethodCalled;
         private async Task<dynamic> VerifyAddedAsync<TOptions>(string schemeName, IServiceProvider provider) where TOptions : AuthenticationSchemeOptions
         {
             var store = provider.GetRequiredService<IDynamicProviderStore<TSchemeDefinition>>();
@@ -627,7 +626,6 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             var options = optionsMonitorCache.GetOrAdd(schemeName, () => default(TOptions));
             Assert.NotNull(options);
 
-            Assert.True(notifyMethodCalled);
             return new { definition, scheme, options };
         }
 
@@ -640,17 +638,11 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                     .AddDebug();
             })
                 .AddAuthentication()
-                .AddDynamic<TSchemeDefinition>(notify: context =>
-                {
-                    _output.WriteLine($"{context.Scheme} has been {context.Action}");
-                    notifyMethodCalled = true;
-                });
+                .AddDynamic<TSchemeDefinition>();
 
             AddStore(builder);
 
             addHandlers?.Invoke(builder);
-
-            notifyMethodCalled = false;
 
             return services.BuildServiceProvider();
         }

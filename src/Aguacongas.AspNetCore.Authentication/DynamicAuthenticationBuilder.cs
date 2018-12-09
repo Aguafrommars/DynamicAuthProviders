@@ -8,18 +8,12 @@ using System.Collections.Generic;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
-    public enum SchemeAction
-    {
-        Added,
-        Removed
-    }
     /// <summary>
     /// Configure the DI for dynamic scheme management.
     /// </summary>
     /// <seealso cref="Microsoft.AspNetCore.Authentication.AuthenticationBuilder" />
     public class DynamicAuthenticationBuilder : AuthenticationBuilder
     {
-        private readonly Action<NotificationContext> _notify;
         private readonly List<Type> _handlerTypes = new List<Type>();
 
         /// <summary>
@@ -34,10 +28,8 @@ namespace Aguacongas.AspNetCore.Authentication
         /// Initializes a new instance of the <see cref="DynamicAuthenticationBuilder"/> class.
         /// </summary>
         /// <param name="services">The services.</param>
-        /// <param name="notify">The notify.</param>
-        public DynamicAuthenticationBuilder(IServiceCollection services, Action<NotificationContext> notify): base(services)
+        public DynamicAuthenticationBuilder(IServiceCollection services): base(services)
         {
-            _notify = notify;
             HandlerTypes = _handlerTypes;
         }
 
@@ -62,9 +54,7 @@ namespace Aguacongas.AspNetCore.Authentication
                     (name, configure) =>
                     {
                         configureOptions?.Invoke((TOptions)configure);
-                        _notify?.Invoke(new NotificationContext(provider, name, SchemeAction.Added));
-                    },
-                    name => _notify?.Invoke(new NotificationContext(provider, name, SchemeAction.Removed))
+                    }
                 )
             );
             base.AddScheme<TOptions, THandler>(authenticationScheme, displayName, configureOptions);

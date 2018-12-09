@@ -14,11 +14,11 @@ namespace Aguacongas.AspNetCore.Authentication
     /// <typeparam name="TOptions">The type of the options.</typeparam>
     /// <seealso cref="Microsoft.Extensions.Options.IOptionsMonitorCache{Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions}" />
     public class OptionsMonitorCacheWrapper<TOptions> : IOptionsMonitorCache<AuthenticationSchemeOptions>
+        where TOptions: AuthenticationSchemeOptions, new()
     {
         private readonly Type _type;
-        private readonly object _parent;
+        private readonly IOptionsMonitorCache<TOptions> _parent;
         private readonly Action<string, AuthenticationSchemeOptions> _onAdded;
-        private readonly Action<string> _onRemoved;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OptionsMonitorCacheWrapper{TOptions}"/> class.
@@ -27,12 +27,11 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <param name="onAdded">The on added.</param>
         /// <param name="onRemoved">The on removed.</param>
         /// <remarks>For internal user, you should not use this class</remarks>
-        public OptionsMonitorCacheWrapper(object parent, Action<string, AuthenticationSchemeOptions> onAdded, Action<string> onRemoved)
+        public OptionsMonitorCacheWrapper(IOptionsMonitorCache<TOptions> parent, Action<string, AuthenticationSchemeOptions> onAdded)
         {
             _parent = parent ?? throw new ArgumentNullException(nameof(parent));
             _type = parent.GetType();
-            _onAdded = onAdded;
-            _onRemoved = onRemoved;
+            _onAdded = onAdded ?? throw new ArgumentNullException(nameof(onAdded)); ;
         }
 
         /// <summary>
@@ -40,7 +39,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// </summary>
         public void Clear()
         {
-            _type.GetMethod("Clear").Invoke(_parent, null);
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -68,10 +67,8 @@ namespace Aguacongas.AspNetCore.Authentication
         /// </returns>
         public bool TryAdd(string name, AuthenticationSchemeOptions options)
         {
-            var result = (bool)_type
-                .GetMethod("TryAdd")
-                .Invoke(_parent, new object[] { name, options });
-            _onAdded?.Invoke(name, options);
+            var result = _parent.TryAdd(name, (TOptions)options);
+            _onAdded.Invoke(name, options);
             return result;
         }
 
@@ -84,11 +81,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// </returns>
         public bool TryRemove(string name)
         {
-            var result = (bool)_type
-                .GetMethod("TryRemove")
-                .Invoke(_parent, new object[] { name });
-            _onRemoved?.Invoke(name);
-            return result;
+            return _parent.TryRemove(name);
         }
     }
 

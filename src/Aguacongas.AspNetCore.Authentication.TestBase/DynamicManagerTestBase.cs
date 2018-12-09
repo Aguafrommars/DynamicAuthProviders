@@ -63,6 +63,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             });
 
             var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            Assert.Contains(typeof(CookieAuthenticationHandler), sut.ManagedHandlerType);
+
             var cookieOptions = new CookieAuthenticationOptions
             {
                 Cookie = new CookieBuilder
@@ -115,6 +117,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             });
 
             var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            Assert.Contains(typeof(FacebookHandler), sut.ManagedHandlerType);
+
             var facebookOptions = new FacebookOptions
             {
                 AppId = "test",
@@ -167,6 +171,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             });
 
             var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            Assert.Contains(typeof(GoogleHandler), sut.ManagedHandlerType);
+
             var googleOptions = new GoogleOptions
             {
                 ClientId = "test",
@@ -233,6 +239,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            Assert.Contains(typeof(JwtBearerHandler), sut.ManagedHandlerType);
+
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<JwtBearerOptions>("test", provider);
 
@@ -282,6 +290,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            Assert.Contains(typeof(MicrosoftAccountHandler), sut.ManagedHandlerType);
+
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<MicrosoftAccountOptions>("test", provider);
 
@@ -335,6 +345,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            Assert.Contains(typeof(OpenIdConnectHandler), sut.ManagedHandlerType);
+
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<OpenIdConnectOptions>("test", provider);
 
@@ -385,6 +397,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            Assert.Contains(typeof(TwitterHandler), sut.ManagedHandlerType);
+
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<TwitterOptions>("test", provider);
 
@@ -437,6 +451,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            Assert.Contains(typeof(WsFederationHandler), sut.ManagedHandlerType);
+
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<WsFederationOptions>("test", provider);
 
@@ -489,6 +505,9 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            Assert.Contains(typeof(CookieAuthenticationHandler), sut.ManagedHandlerType);
+            Assert.Contains(typeof(WsFederationHandler), sut.ManagedHandlerType);
+
             await Assert.ThrowsAsync<InvalidOperationException>(() => sut.UpdateAsync(definition));
 
             await sut.AddAsync(definition);
@@ -550,6 +569,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            Assert.Contains(typeof(CookieAuthenticationHandler), sut.ManagedHandlerType);
+
             await sut.AddAsync(definition);
             await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
 

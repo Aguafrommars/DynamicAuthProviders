@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
@@ -19,6 +20,15 @@ namespace Aguacongas.AspNetCore.Authentication
     public class DynamicAuthenticationBuilder : AuthenticationBuilder
     {
         private readonly Action<NotificationContext> _notify;
+        private readonly List<Type> _handlerTypes = new List<Type>();
+
+        /// <summary>
+        /// Gets the handler types managed by this instance.
+        /// </summary>
+        /// <value>
+        /// The handler types.
+        /// </value>
+        public IEnumerable<Type> HandlerTypes { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicAuthenticationBuilder"/> class.
@@ -28,6 +38,7 @@ namespace Aguacongas.AspNetCore.Authentication
         public DynamicAuthenticationBuilder(IServiceCollection services, Action<NotificationContext> notify): base(services)
         {
             _notify = notify;
+            HandlerTypes = _handlerTypes;
         }
 
         /// <summary>
@@ -43,14 +54,19 @@ namespace Aguacongas.AspNetCore.Authentication
         /// </returns>
         public override AuthenticationBuilder AddScheme<TOptions, THandler>(string authenticationScheme, string displayName, Action<TOptions> configureOptions)
         {
-            Services.AddSingleton(provider => new OptionsMonitorCacheWrapper<TOptions>(
-                provider.GetRequiredService<IOptionsMonitorCache<TOptions>>(),
-                (name, configure) =>
-                {
-                    configureOptions?.Invoke((TOptions)configure);
-                    _notify?.Invoke(new NotificationContext(provider, name, SchemeAction.Added));
-                },
-                name => _notify?.Invoke(new NotificationContext(provider, name, SchemeAction.Removed))));
+            _handlerTypes.Add(typeof(THandler));
+            Services.AddSingleton(provider => 
+                new OptionsMonitorCacheWrapper<TOptions>
+                (
+                    provider.GetRequiredService<IOptionsMonitorCache<TOptions>>(),
+                    (name, configure) =>
+                    {
+                        configureOptions?.Invoke((TOptions)configure);
+                        _notify?.Invoke(new NotificationContext(provider, name, SchemeAction.Added));
+                    },
+                    name => _notify?.Invoke(new NotificationContext(provider, name, SchemeAction.Removed))
+                )
+            );
             base.AddScheme<TOptions, THandler>(authenticationScheme, displayName, configureOptions);
             return this;
         }

@@ -14,17 +14,25 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Configures the DI for dynamic scheme management.
         /// </summary>
-        /// <typeparam name="TDefinition">The type of the definition.</typeparam>
+        /// <typeparam name="TSchemeDefinition">The type of the definition.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <param name="notify">The action to call on scheme added or removed.</param>
         /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddDynamic<TDefinition>(this AuthenticationBuilder builder, Action<NotificationContext> notify = null)
-            where TDefinition: SchemeDefinitionBase, new()
+        public static DynamicAuthenticationBuilder AddDynamic<TSchemeDefinition>(this AuthenticationBuilder builder, Action<NotificationContext> notify = null)
+            where TSchemeDefinition: SchemeDefinitionBase, new()
         {
+            var dynamicBuilder = new DynamicAuthenticationBuilder(builder.Services, notify);
             builder.Services
                 .AddSingleton<OptionsMonitorCacheWrapperFactory>()
-                .AddTransient<DynamicManager<TDefinition>>();
-            return new DynamicAuthenticationBuilder(builder.Services, notify);
+                .AddTransient(provider => new DynamicManager<TSchemeDefinition>
+                (
+                    provider.GetRequiredService<IAuthenticationSchemeProvider>(),
+                    provider.GetRequiredService<OptionsMonitorCacheWrapperFactory>(),
+                    provider.GetRequiredService<IDynamicProviderStore<TSchemeDefinition>>(),
+                    dynamicBuilder.HandlerTypes
+                )
+                );
+            return dynamicBuilder;
         }
     }
 }

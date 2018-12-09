@@ -43,7 +43,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                     options.UseInMemoryDatabase(Guid.NewGuid().ToString());
                 }, (context) => 
                 {
-                    Debug.WriteLine($"{context.Scheme} has been {context.Action}");
+                    Debug.WriteLine($"The scheme {context.Scheme} has been {context.Action}");
                 })
                 .AddGoogle()
                 .AddFacebook()

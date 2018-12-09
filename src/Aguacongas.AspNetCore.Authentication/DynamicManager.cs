@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -23,6 +24,8 @@ namespace Aguacongas.AspNetCore.Authentication
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly OptionsMonitorCacheWrapperFactory _wrapperFactory;
 
+        public virtual IEnumerable<Type> ManagedHandlerType { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicManager{TSchemeDefinition}"/> class.
         /// </summary>
@@ -38,11 +41,13 @@ namespace Aguacongas.AspNetCore.Authentication
         /// </exception>
         public DynamicManager(IAuthenticationSchemeProvider schemeProvider,
             OptionsMonitorCacheWrapperFactory wrapperFactory,
-            IDynamicProviderStore<TSchemeDefinition> store)
+            IDynamicProviderStore<TSchemeDefinition> store,
+            IEnumerable<Type> managedTypes)
         {
             _schemeProvider = schemeProvider ?? throw new ArgumentNullException(nameof(schemeProvider));
             _wrapperFactory = wrapperFactory ?? throw new ArgumentNullException(nameof(wrapperFactory));
             _store = store ?? throw new ArgumentNullException(nameof(store));
+            ManagedHandlerType = managedTypes ?? throw new ArgumentNullException(nameof(managedTypes));
         }
 
         /// <summary>
@@ -52,7 +57,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">definition</exception>
-        public async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (definition == null)
             {
@@ -82,7 +87,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">definition</exception>
         /// <exception cref="InvalidOperationException">The scheme does not exist.</exception>
-        public async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (definition == null)
             {
@@ -115,7 +120,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException">scheme cannot be null or white space.</exception>
-        public async Task RemoveAsync(string scheme, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task RemoveAsync(string scheme, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(scheme))
             {
@@ -139,7 +144,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <param name="scheme">The scheme.</param>
         /// <returns>The scheme definition or null.</returns>
         /// <exception cref="ArgumentException">scheme cannot be null or white space.</exception>
-        public Task<TSchemeDefinition> FindBySchemeAsync(string scheme)
+        public virtual Task<TSchemeDefinition> FindBySchemeAsync(string scheme)
         {
             if (string.IsNullOrWhiteSpace(scheme))
             {
@@ -151,7 +156,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <summary>
         /// Loads the configuration.
         /// </summary>
-        public void Load()
+        public virtual void Load()
         {
             var platform = Environment.OSVersion.Platform.ToString();
             var runtimeAssemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(platform);

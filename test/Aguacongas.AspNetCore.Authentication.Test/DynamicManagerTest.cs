@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Moq;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -13,14 +14,14 @@ namespace Aguacongas.AspNetCore.Authentication.Test
         [Fact]
         public async Task Assertions()
         {
-            Assert.Throws<ArgumentNullException>(() => new DynamicManager<FakeSchemeDefinition>(null, null, null));
+            Assert.Throws<ArgumentNullException>(() => new DynamicManager<FakeSchemeDefinition>(null, null, null, null));
             var schemeProviderMock = new Mock<IAuthenticationSchemeProvider>().Object;
-            Assert.Throws<ArgumentNullException>(() => new DynamicManager<FakeSchemeDefinition>(schemeProviderMock, null, null));
+            Assert.Throws<ArgumentNullException>(() => new DynamicManager<FakeSchemeDefinition>(schemeProviderMock, null, null, null));
             var serviceProviderMock = new Mock<IServiceProvider>().Object;
             var factory = new OptionsMonitorCacheWrapperFactory(serviceProviderMock);
-            Assert.Throws<ArgumentNullException>(() => new DynamicManager<FakeSchemeDefinition>(schemeProviderMock, factory, null));
+            Assert.Throws<ArgumentNullException>(() => new DynamicManager<FakeSchemeDefinition>(schemeProviderMock, factory, null, null));
             var storeMock = new Mock<IDynamicProviderStore<FakeSchemeDefinition>>().Object;
-            var manager = new DynamicManager<FakeSchemeDefinition>(schemeProviderMock, factory, storeMock);
+            var manager = new DynamicManager<FakeSchemeDefinition>(schemeProviderMock, factory, storeMock, new List<Type>());
             await Assert.ThrowsAsync<ArgumentNullException>(() => manager.AddAsync(null));
             await Assert.ThrowsAsync<ArgumentNullException>(() => manager.UpdateAsync(null));
             await Assert.ThrowsAsync<ArgumentException>(() => manager.RemoveAsync(null));

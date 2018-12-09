@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Project: DymamicAuthProviders
+// Copyright (c) 2018 @Olivier Lefebvre
+using System;
 using Xunit;
 
 namespace Aguacongas.AspNetCore.Authentication.Test

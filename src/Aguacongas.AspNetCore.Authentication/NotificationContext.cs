@@ -10,10 +10,10 @@ namespace Aguacongas.AspNetCore.Authentication
     public class NotificationContext
     {
         /// <summary>
-        /// Gets the services.
+        /// Gets the services provider.
         /// </summary>
         /// <value>
-        /// The services.
+        /// The services provider.
         /// </value>
         public IServiceProvider Services { get; }
         /// <summary>

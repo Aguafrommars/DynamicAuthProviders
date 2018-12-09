@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using Xunit.Abstractions;
 
-namespace Aguacongas.AspNetCore.Authentication.Test
+namespace Aguacongas.AspNetCore.Authentication.EntityFramework.Test
 {
     public class DynamicManagerTest: DynamicManagerTestBase<SchemeDefinition>
     {

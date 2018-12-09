@@ -156,7 +156,7 @@ namespace Aguacongas.AspNetCore.Authentication
             var platform = Environment.OSVersion.Platform.ToString();
             var runtimeAssemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(platform);
 
-            foreach (var definition in _store.ProviderDefinitions)
+            foreach (var definition in _store.SchemeDefinitions)
             {
                 var scheme = definition.Scheme;
                 var handlerType = runtimeAssemblyNames

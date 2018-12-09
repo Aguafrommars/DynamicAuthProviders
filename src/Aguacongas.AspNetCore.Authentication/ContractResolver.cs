@@ -8,7 +8,7 @@ using System.Reflection;
 namespace Aguacongas.AspNetCore.Authentication
 {
     /// <summary>
-    /// Ignore delegate ContractResolver
+    /// Ignore delegate, interface and read-only property ContractResolver
     /// </summary>
     public class ContractResolver : DefaultContractResolver
     {

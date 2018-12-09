@@ -6,6 +6,9 @@ using System;
 
 namespace Microsoft.AspNetCore.Builder
 {
+    /// <summary>
+    /// IApplicationBuilder extensions to load configuration
+    /// </summary>
     public static class ApplicationBuilderExtensions
     {
         /// <summary>

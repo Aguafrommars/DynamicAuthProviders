@@ -3,11 +3,13 @@
 using Microsoft.AspNetCore.Authentication;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
+    /// <summary>
+    /// Manage <see cref="AuthenticationSchemeOptions"/> serialization.
+    /// </summary>
+    /// <seealso cref="Aguacongas.AspNetCore.Authentication.IAuthenticationSchemeOptionsSerializer" />
     public class AuthenticationSchemeOptionsSerializer : IAuthenticationSchemeOptionsSerializer
     {
         /// <summary>

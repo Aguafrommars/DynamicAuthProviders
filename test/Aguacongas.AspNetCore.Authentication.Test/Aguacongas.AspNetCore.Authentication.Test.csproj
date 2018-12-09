@@ -7,6 +7,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.0" />
+    <PackageReference Include="Moq" Version="4.10.1" />
+    <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -14,8 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Aguacongas.AspNetCore.Authentication.EntityFramework\Aguacongas.AspNetCore.Authentication.EntityFramework.csproj" />
-    <ProjectReference Include="..\..\src\Aguacongas.AspNetCore.Authentication.TestBase\Aguacongas.AspNetCore.Authentication.TestBase.csproj" />
+    <ProjectReference Include="..\..\src\Aguacongas.AspNetCore.Authentication\Aguacongas.AspNetCore.Authentication.csproj" />
   </ItemGroup>
 
 </Project>

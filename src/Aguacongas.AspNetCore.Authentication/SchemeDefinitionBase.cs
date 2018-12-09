@@ -5,6 +5,9 @@ using System;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
+    /// <summary>
+    /// Base class for scheme definition
+    /// </summary>
     public abstract class SchemeDefinitionBase
     {
         /// <summary>

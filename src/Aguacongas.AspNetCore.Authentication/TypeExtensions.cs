@@ -4,8 +4,17 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace System
 {
+    /// <summary>
+    /// Type extensions
+    /// </summary>
     public static class TypeExtensions
     {
+        /// <summary>
+        /// Gets the type of the authentication scheme options.
+        /// </summary>
+        /// <param name="handlerType">Type of the handler.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentException">Parameter {nameof(handlerType)} should be a {nameof(AuthenticationHandler<AuthenticationSchemeOptions>)}</exception>
         public static Type GetAuthenticationSchemeOptionsType(this Type handlerType)
         {
             if (handlerType.GetInterface(nameof(IAuthenticationHandler)) == null)

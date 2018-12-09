@@ -1,47 +1,37 @@
 // Project: DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
-using Aguacongas.AspNetCore.Authentication.EntityFramework;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using System;
-using Xunit;
 using Microsoft.AspNetCore.Authentication;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Logging;
 using Moq;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Facebook;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using System.Net.Http;
-using Microsoft.AspNetCore.Authentication.Google;
-using Xunit.Abstractions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authentication.Twitter;
-using Microsoft.AspNetCore.Authentication.WsFederation;
-using Microsoft.IdentityModel.Protocols.WsFederation;
-using Xunit.Sdk;
-using Aguacongas.AspNetCore.Authentication.TestBase;
+using System;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace Aguacongas.AspNetCore.Authentication.Test
 {
-    public class DynamicManagerTest: DynamicManagerTestBase<SchemeDefinition>
+    public class DynamicManagerTest
     {
-        public DynamicManagerTest(ITestOutputHelper output): base(output)
+        [Fact]
+        public async Task Assertions()
         {
-        }
-
-        protected override DynamicAuthenticationBuilder AddStore(DynamicAuthenticationBuilder builder)
-        {
-            return builder.AddEntityFrameworkStore(options =>
-            {
-                options.UseInMemoryDatabase(Guid.NewGuid().ToString());
-            });
+            Assert.Throws<ArgumentNullException>(() => new DynamicManager<FakeSchemeDefinition>(null, null, null));
+            var schemeProviderMock = new Mock<IAuthenticationSchemeProvider>().Object;
+            Assert.Throws<ArgumentNullException>(() => new DynamicManager<FakeSchemeDefinition>(schemeProviderMock, null, null));
+            var serviceProviderMock = new Mock<IServiceProvider>().Object;
+            var factory = new OptionsMonitorCacheWrapperFactory(serviceProviderMock);
+            Assert.Throws<ArgumentNullException>(() => new DynamicManager<FakeSchemeDefinition>(schemeProviderMock, factory, null));
+            var storeMock = new Mock<IDynamicProviderStore<FakeSchemeDefinition>>().Object;
+            var manager = new DynamicManager<FakeSchemeDefinition>(schemeProviderMock, factory, storeMock);
+            await Assert.ThrowsAsync<ArgumentNullException>(() => manager.AddAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => manager.UpdateAsync(null));
+            await Assert.ThrowsAsync<ArgumentException>(() => manager.RemoveAsync(null));
+            await Assert.ThrowsAsync<ArgumentException>(() => manager.RemoveAsync(""));
+            await Assert.ThrowsAsync<ArgumentException>(() => manager.RemoveAsync("  "));
+            await Assert.ThrowsAsync<ArgumentException>(() => manager.FindBySchemeAsync(null));
+            await Assert.ThrowsAsync<ArgumentException>(() => manager.FindBySchemeAsync(""));
+            await Assert.ThrowsAsync<ArgumentException>(() => manager.FindBySchemeAsync("  "));
         }
     }
+    public class FakeSchemeDefinition : SchemeDefinitionBase
+    { }
+
 }

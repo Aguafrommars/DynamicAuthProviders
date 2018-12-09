@@ -1,3 +1,5 @@
+// Project: DymamicAuthProviders
+// Copyright (c) 2018 @Olivier Lefebvre
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Facebook;
@@ -25,10 +27,18 @@ using Xunit.Sdk;
 
 namespace Aguacongas.AspNetCore.Authentication.TestBase
 {
+    /// <summary>
+    /// Base test suite to verify if the store implementation work as expecter
+    /// </summary>
+    /// <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
     public abstract class DynamicManagerTestBase<TSchemeDefinition>
         where TSchemeDefinition: SchemeDefinitionBase, new()
     {
         private readonly ITestOutputHelper _output;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DynamicManagerTestBase{TSchemeDefinition}"/> class.
+        /// </summary>
+        /// <param name="output">The output.</param>
         public DynamicManagerTestBase(ITestOutputHelper output)
         {
             _output = output;
@@ -479,6 +489,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<DynamicManager<TSchemeDefinition>>();
+            await Assert.ThrowsAsync<InvalidOperationException>(() => sut.UpdateAsync(definition));
+
             await sut.AddAsync(definition);
             await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
 

@@ -6,14 +6,48 @@ using System.Threading.Tasks;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
-    public interface IDynamicProviderStore<TDefinition> 
-        where TDefinition: SchemeDefinitionBase, new()
+    /// <summary>
+    /// Interface for store use by <see cref="DynamicManager{TSchemeDefinition}"/>
+    /// </summary>
+    /// <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
+    public interface IDynamicProviderStore<TSchemeDefinition> 
+        where TSchemeDefinition: SchemeDefinitionBase, new()
     {
-        IQueryable<TDefinition> ProviderDefinitions { get; }
+        /// <summary>
+        /// Gets the scheme definitions list.
+        /// </summary>
+        /// <value>
+        /// The scheme definitions list.
+        /// </value>
+        IQueryable<TSchemeDefinition> SchemeDefinitions { get; }
 
-        Task AddAsync(TDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
-        Task<TDefinition> FindBySchemeAsync(string scheme, CancellationToken cancellationToken = default(CancellationToken));
-        Task RemoveAsync(TDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
-        Task UpdateAsync(TDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
+        /// <summary>
+        /// Adds a defnition asynchronously.
+        /// </summary>
+        /// <param name="definition">The definition.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
+        /// <summary>
+        /// Finds scheme definition by scheme asynchronous.
+        /// </summary>
+        /// <param name="scheme">The scheme.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>An instance of TSchemeDefinition or null.</returns>
+        Task<TSchemeDefinition> FindBySchemeAsync(string scheme, CancellationToken cancellationToken = default(CancellationToken));
+        /// <summary>
+        /// Removes a scheme definition asynchronous.
+        /// </summary>
+        /// <param name="definition">The definition.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task RemoveAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
+        /// <summary>
+        /// Updates a scheme definition asynchronous.
+        /// </summary>
+        /// <param name="definition">The definition.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

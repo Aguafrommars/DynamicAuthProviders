@@ -8,10 +8,13 @@ using System;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// <see cref="DynamicAuthenticationBuilder"/> extensions.
+    /// </summary>
     public static class DynamicAuthenticationBuilderExtensions
     {
         /// <summary>
-        /// Adds the dynamic.
+        /// Configures the DI for dynamic scheme management.
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="optionsAction">The options action.</param>
@@ -24,7 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Adds the dynamic.
+        /// Configures the DI for dynamic scheme management.
         /// </summary>
         /// <typeparam name="TContext">The type of the context.</typeparam>
         /// <param name="builder">The builder.</param>
@@ -39,7 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Adds the dynamic.
+        /// Configures the DI for dynamic scheme management.
         /// </summary>
         /// <typeparam name="TDefinition">The type of the provider definition.</typeparam>
         /// <param name="builder">The builder.</param>

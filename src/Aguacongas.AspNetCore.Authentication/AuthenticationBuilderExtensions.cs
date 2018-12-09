@@ -6,10 +6,13 @@ using System;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// AuthenticationBuilder extensions
+    /// </summary>
     public static class AuthenticationBuilderExtensions
     {
         /// <summary>
-        /// Adds the dynamic.
+        /// Configures the DI for dynamic scheme management.
         /// </summary>
         /// <typeparam name="TDefinition">The type of the definition.</typeparam>
         /// <param name="builder">The builder.</param>

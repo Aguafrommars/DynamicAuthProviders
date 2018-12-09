@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="optionsAction">The options action.</param>
         /// <param name="notify">The action to call on scheme added or removed.</param>
         /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddDynamic(this AuthenticationBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null, Action<string, SchemeAction> notify = null)
+        public static DynamicAuthenticationBuilder AddDynamic(this AuthenticationBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null, Action<NotificationContext> notify = null)
         {
             return builder.AddDynamic<SchemeDefinition>(notify)
                 .AddEntityFrameworkStore(optionsAction);
@@ -34,7 +34,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="optionsAction">The db context options builder action.</param>
         /// <param name="notify">The action to call on scheme added or removed.</param>
         /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddDynamic<TContext>(this AuthenticationBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null, Action<string, SchemeAction> notify = null)
+        public static DynamicAuthenticationBuilder AddDynamic<TContext>(this AuthenticationBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null, Action<NotificationContext> notify = null)
             where TContext : SchemeDbContext<SchemeDefinition>
         {
             return builder.AddDynamic<SchemeDefinition>(notify)
@@ -47,7 +47,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TDefinition">The type of the provider definition.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddDynamic<TContext, TSchemeDefinition>(this AuthenticationBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null, Action<string, SchemeAction> notify = null)
+        public static DynamicAuthenticationBuilder AddDynamic<TContext, TSchemeDefinition>(this AuthenticationBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null, Action<NotificationContext> notify = null)
             where TSchemeDefinition: SchemeDefinition, new()
             where TContext : SchemeDbContext<TSchemeDefinition>
         {

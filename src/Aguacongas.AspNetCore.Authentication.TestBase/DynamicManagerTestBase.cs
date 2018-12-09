@@ -592,7 +592,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
         }
         protected abstract DynamicAuthenticationBuilder AddStore(DynamicAuthenticationBuilder builder);
 
-        private static async Task<dynamic> VerifyAddedAsync<TOptions>(string schemeName, IServiceProvider provider) where TOptions : AuthenticationSchemeOptions
+        private bool notifyMethodCalled;
+        private async Task<dynamic> VerifyAddedAsync<TOptions>(string schemeName, IServiceProvider provider) where TOptions : AuthenticationSchemeOptions
         {
             var store = provider.GetRequiredService<IDynamicProviderStore<TSchemeDefinition>>();
             var definition = await store.FindBySchemeAsync(schemeName);
@@ -604,6 +605,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             var optionsMonitorCache = provider.GetRequiredService<IOptionsMonitorCache<TOptions>>();
             var options = optionsMonitorCache.GetOrAdd(schemeName, () => default(TOptions));
             Assert.NotNull(options);
+
+            Assert.True(notifyMethodCalled);
             return new { definition, scheme, options };
         }
 
@@ -616,11 +619,17 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                     .AddDebug();
             })
                 .AddAuthentication()
-                .AddDynamic<TSchemeDefinition>(null);
+                .AddDynamic<TSchemeDefinition>(notify: context =>
+                {
+                    _output.WriteLine($"{context.Scheme} has been {context.Action}");
+                    notifyMethodCalled = true;
+                });
 
             AddStore(builder);
 
             addHandlers?.Invoke(builder);
+
+            notifyMethodCalled = false;
 
             return services.BuildServiceProvider();
         }

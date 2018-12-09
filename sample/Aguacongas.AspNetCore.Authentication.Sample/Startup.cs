@@ -2,6 +2,7 @@
 // Copyright (c) 2018 @Olivier Lefebvre
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -36,9 +38,17 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
             services
                 .AddAuthentication()
                 // the order is important, 1st add dynamic, then store, then providers you want to manage dynamically
-                .AddDynamic()
-                .AddEntityFrameworkStore()
-                .AddGoogle();
+                .AddDynamic(options =>
+                {
+                    options.UseInMemoryDatabase(Guid.NewGuid().ToString());
+                }, (context) => 
+                {
+                    Debug.WriteLine($"{context.Scheme} has been {context.Action}");
+                })
+                .AddGoogle()
+                .AddFacebook()
+                .AddGoogle()
+                .AddMicrosoftAccount();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

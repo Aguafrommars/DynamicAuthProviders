@@ -18,7 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder">The builder.</param>
         /// <param name="notify">The action to call on scheme added or removed.</param>
         /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddDynamic<TDefinition>(this AuthenticationBuilder builder, Action<string, SchemeAction> notify = null)
+        public static DynamicAuthenticationBuilder AddDynamic<TDefinition>(this AuthenticationBuilder builder, Action<NotificationContext> notify = null)
             where TDefinition: SchemeDefinitionBase, new()
         {
             builder.Services

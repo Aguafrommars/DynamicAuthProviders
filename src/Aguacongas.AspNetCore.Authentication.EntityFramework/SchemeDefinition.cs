@@ -1,28 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
-    public class ProviderDefinition
+    public class SchemeDefinition: SchemeDefinitionBase
     {
-        /// <summary>
-        /// Gets or sets the identifier.
-        /// </summary>
-        /// <value>
-        /// The identifier.
-        /// </value>
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the display name.
-        /// </summary>
-        /// <value>
-        /// The display name.
-        /// </value>
-        public string DisplayName { get; set; }
-
         /// <summary>
         /// Gets or sets the name of the handler type.
         /// </summary>

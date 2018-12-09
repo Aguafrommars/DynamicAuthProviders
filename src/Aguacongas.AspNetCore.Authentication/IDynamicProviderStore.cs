@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Aguacongas.AspNetCore.Authentication
 {
     public interface IDynamicProviderStore<TDefinition> 
-        where TDefinition: ProviderDefinition, new()
+        where TDefinition: SchemeDefinitionBase, new()
     {
         IQueryable<TDefinition> ProviderDefinitions { get; }
 

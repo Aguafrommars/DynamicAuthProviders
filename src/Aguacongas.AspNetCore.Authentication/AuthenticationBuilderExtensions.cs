@@ -8,23 +8,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Adds the dynamic.
         /// </summary>
-        /// <param name="builder">
-        /// The builder.
-        /// </param>
-        /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddDynamic(this AuthenticationBuilder builder)
-        {
-            return AddDynamic<ProviderDefinition>(builder);
-        }
-
-        /// <summary>
-        /// Adds the dynamic.
-        /// </summary>
         /// <typeparam name="TDefinition">The type of the provider definition.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
         public static DynamicAuthenticationBuilder AddDynamic<TDefinition>(this AuthenticationBuilder builder)
-            where TDefinition: ProviderDefinition, new()
+            where TDefinition: SchemeDefinitionBase, new()
         {
             builder.Services
                 .AddSingleton<OptionsMonitorCacheWrapperFactory>()

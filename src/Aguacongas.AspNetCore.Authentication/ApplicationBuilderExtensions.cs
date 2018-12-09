@@ -9,21 +9,11 @@ namespace Microsoft.AspNetCore.Builder
         /// <summary>
         /// Loads the dynamic authentication configuration.
         /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <returns></returns>
-        public static IApplicationBuilder LoadDynamicAuthenticationConfiguration(this IApplicationBuilder builder)
-        {
-            return LoadDynamicAuthenticationConfiguration<ProviderDefinition>(builder);
-        }
-
-        /// <summary>
-        /// Loads the dynamic authentication configuration.
-        /// </summary>
         /// <typeparam name="TDefinition">The type of the definition.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
         public static IApplicationBuilder LoadDynamicAuthenticationConfiguration<TDefinition>(this IApplicationBuilder builder)
-            where TDefinition: ProviderDefinition, new()
+            where TDefinition: SchemeDefinitionBase, new()
         {
             builder.ApplicationServices.LoadDynamicAuthenticationConfiguration<TDefinition>();
             return builder;
@@ -36,7 +26,7 @@ namespace Microsoft.AspNetCore.Builder
         /// <param name="provider">The provider.</param>
         /// <returns></returns>
         public static IServiceProvider LoadDynamicAuthenticationConfiguration<TDefinition>(this IServiceProvider provider)
-            where TDefinition : ProviderDefinition, new()
+            where TDefinition : SchemeDefinitionBase, new()
         {
             var manager = provider.GetRequiredService<DynamicManager<TDefinition>>();
             manager.Load();

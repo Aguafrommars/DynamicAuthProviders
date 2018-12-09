@@ -53,7 +53,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
+            var sut = provider.GetRequiredService<DynamicManager<SchemeDefinition>>();
             var cookieOptions = new CookieAuthenticationOptions
             {
                 Cookie = new CookieBuilder
@@ -62,7 +62,14 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 }
             };
 
-            await sut.AddAsync(CookieAuthenticationDefaults.AuthenticationScheme, "test", typeof(CookieAuthenticationHandler), cookieOptions);
+            var definition = new SchemeDefinition
+            {
+                Scheme = CookieAuthenticationDefaults.AuthenticationScheme,
+                DisplayName = "test",
+                HandlerType = typeof(CookieAuthenticationHandler),
+                Options = cookieOptions
+            };
+            await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, provider);
 
             var storedOptions = JsonConvert.DeserializeObject<CookieAuthenticationOptions>(state.definition.SerializedOptions);
@@ -98,14 +105,21 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
+            var sut = provider.GetRequiredService<DynamicManager<SchemeDefinition>>();
             var facebookOptions = new FacebookOptions
             {
                 AppId = "test",
                 AppSecret = "test"
             };
+            var definition = new SchemeDefinition
+            {
+                Scheme = "test",
+                DisplayName = "test",
+                HandlerType = typeof(FacebookHandler),
+                Options = facebookOptions
+            };
 
-            await sut.AddAsync<FacebookHandler, FacebookOptions>("test", "test", facebookOptions);
+            await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<FacebookOptions>("test", provider);
 
             var storedOptions = JsonConvert.DeserializeObject<FacebookOptions>(state.definition.SerializedOptions);
@@ -143,14 +157,21 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
+            var sut = provider.GetRequiredService<DynamicManager<SchemeDefinition>>();
             var googleOptions = new GoogleOptions
             {
                 ClientId = "test",
                 ClientSecret = "test"
             };
 
-            await sut.AddAsync<GoogleHandler, GoogleOptions>("test", "test", googleOptions);
+            var definition = new SchemeDefinition
+            {
+                Scheme = "test",
+                DisplayName = "test",
+                HandlerType = typeof(GoogleHandler),
+                Options = googleOptions
+            };
+            await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<GoogleOptions>("test", provider);
 
             var storedOptions = JsonConvert.DeserializeObject<GoogleOptions>(state.definition.SerializedOptions);
@@ -189,13 +210,21 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
             var jwtBearerOptions = new JwtBearerOptions
             {
                 Authority = "test"
             };
 
-            await sut.AddAsync<JwtBearerHandler, JwtBearerOptions>("test", "test", jwtBearerOptions);
+            var definition = new SchemeDefinition
+            {
+                Scheme = "test",
+                DisplayName = "test",
+                HandlerType = typeof(JwtBearerHandler),
+                Options = jwtBearerOptions
+            };
+
+            var sut = provider.GetRequiredService<DynamicManager<SchemeDefinition>>();
+            await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<JwtBearerOptions>("test", provider);
 
             var storedOptions = JsonConvert.DeserializeObject<JwtBearerOptions>(state.definition.SerializedOptions);
@@ -229,14 +258,22 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
             var msAccountOptions = new MicrosoftAccountOptions
             {
                 ClientId = "test",
                 ClientSecret = "test"
             };
 
-            await sut.AddAsync<MicrosoftAccountHandler, MicrosoftAccountOptions>("test", "test", msAccountOptions);
+            var definition = new SchemeDefinition
+            {
+                Scheme = "test",
+                DisplayName = "test",
+                HandlerType = typeof(MicrosoftAccountHandler),
+                Options = msAccountOptions
+            };
+
+            var sut = provider.GetRequiredService<DynamicManager<SchemeDefinition>>();
+            await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<MicrosoftAccountOptions>("test", provider);
 
             var storedOptions = JsonConvert.DeserializeObject<MicrosoftAccountOptions>(state.definition.SerializedOptions);
@@ -274,20 +311,28 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
-            var msAccountOptions = new OpenIdConnectOptions
+            var oidcptions = new OpenIdConnectOptions
             {
                 ClientId = "test",
                 ClientSecret = "test"
             };
 
-            await sut.AddAsync<OpenIdConnectHandler, OpenIdConnectOptions>("test", "test", msAccountOptions);
+            var definition = new SchemeDefinition
+            {
+                Scheme = "test",
+                DisplayName = "test",
+                HandlerType = typeof(OpenIdConnectHandler),
+                Options = oidcptions
+            };
+
+            var sut = provider.GetRequiredService<DynamicManager<SchemeDefinition>>();
+            await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<OpenIdConnectOptions>("test", provider);
 
             var storedOptions = JsonConvert.DeserializeObject<OpenIdConnectOptions>(state.definition.SerializedOptions);
             _output.WriteLine(state.definition.SerializedOptions);
 
-            Assert.Equal(msAccountOptions.ClientId, storedOptions.ClientId);
+            Assert.Equal(oidcptions.ClientId, storedOptions.ClientId);
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnTicketReceived(new TicketReceivedContext(
                 httpContext,                
@@ -316,14 +361,22 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
             var twittertOptions = new TwitterOptions
             {
                 ConsumerKey = "test",
                 ConsumerSecret = "test"
             };
 
-            await sut.AddAsync<TwitterHandler, TwitterOptions>("test", "test", twittertOptions);
+            var definition = new SchemeDefinition
+            {
+                Scheme = "test",
+                DisplayName = "test",
+                HandlerType = typeof(TwitterHandler),
+                Options = twittertOptions
+            };
+
+            var sut = provider.GetRequiredService<DynamicManager<SchemeDefinition>>();
+            await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<TwitterOptions>("test", provider);
 
             var storedOptions = JsonConvert.DeserializeObject<TwitterOptions>(state.definition.SerializedOptions);
@@ -358,7 +411,6 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
             var wsFederationOptions = new WsFederationOptions
             {
                 Configuration = new WsFederationConfiguration
@@ -367,7 +419,16 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 }
             };
 
-            await sut.AddAsync<WsFederationHandler, WsFederationOptions>("test", "test", wsFederationOptions);
+            var definition = new SchemeDefinition
+            {
+                Scheme = "test",
+                DisplayName = "test",
+                HandlerType = typeof(WsFederationHandler),
+                Options = wsFederationOptions
+            };
+
+            var sut = provider.GetRequiredService<DynamicManager<SchemeDefinition>>();
+            await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<WsFederationOptions>("test", provider);
 
             var storedOptions = JsonConvert.DeserializeObject<WsFederationOptions>(state.definition.SerializedOptions);
@@ -402,8 +463,6 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                     });
             });
 
-            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
-
             var cookieOptions = new CookieAuthenticationOptions
             {
                 Cookie = new CookieBuilder
@@ -412,7 +471,16 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 }
             };
 
-            await sut.AddAsync<CookieAuthenticationHandler, CookieAuthenticationOptions>("test", "test", cookieOptions);            
+            var definition = new SchemeDefinition
+            {
+                Scheme = "test",
+                DisplayName = "test",
+                HandlerType = typeof(CookieAuthenticationHandler),
+                Options = cookieOptions
+            };
+
+            var sut = provider.GetRequiredService<DynamicManager<SchemeDefinition>>();
+            await sut.AddAsync(definition);
             await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
 
             var wsFederationOptions = new WsFederationOptions
@@ -423,13 +491,18 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 }
             };
 
-            await sut.UpdateAsync<WsFederationHandler, WsFederationOptions>("test", "new name", wsFederationOptions);
+            definition.Options = wsFederationOptions;
+            definition.DisplayName = "new name";
+            definition.HandlerType = typeof(WsFederationHandler);
+
+            await sut.UpdateAsync(definition);
             var state = await VerifyAddedAsync<WsFederationOptions>("test", provider);
 
             var storedOptions = JsonConvert.DeserializeObject<WsFederationOptions>(state.definition.SerializedOptions);
             _output.WriteLine(state.definition.SerializedOptions);
 
             Assert.Equal(wsFederationOptions.Configuration.Issuer, storedOptions.Configuration.Issuer);
+            Assert.Equal(state.scheme.DisplayName, definition.DisplayName);
 
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnTicketReceived(new TicketReceivedContext(
@@ -449,8 +522,6 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 options.AddCookie();
             });
 
-            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
-
             var cookieOptions = new CookieAuthenticationOptions
             {
                 Cookie = new CookieBuilder
@@ -459,7 +530,16 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 }
             };
 
-            await sut.AddAsync<CookieAuthenticationHandler, CookieAuthenticationOptions>("test", "test", cookieOptions);
+            var definition = new SchemeDefinition
+            {
+                Scheme = "test",
+                DisplayName = "test",
+                HandlerType = typeof(CookieAuthenticationHandler),
+                Options = cookieOptions
+            };
+
+            var sut = provider.GetRequiredService<DynamicManager<SchemeDefinition>>();
+            await sut.AddAsync(definition);
             await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
 
             await sut.RemoveAsync("test");
@@ -474,7 +554,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 options.AddCookie();
             });
 
-            var store = provider.GetRequiredService<IDynamicProviderStore<ProviderDefinition>>();
+            var store = provider.GetRequiredService<IDynamicProviderStore<SchemeDefinition>>();
 
             var cookieOptions = new CookieAuthenticationOptions
             {
@@ -484,16 +564,16 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                 }
             };
 
-            var definition = new ProviderDefinition
+            var definition = new SchemeDefinition
             {
-                Id = "test",
-                HandlerTypeName = typeof(CookieAuthenticationHandler).FullName,
-                SerializedOptions = JsonConvert.SerializeObject(cookieOptions, DynamicManager<ProviderDefinition>.JsonSerializerSettings)
+                Scheme = "test",
+                HandlerType = typeof(CookieAuthenticationHandler),
+                Options = cookieOptions
             };
 
             await store.AddAsync(definition);
 
-            var sut = provider.GetRequiredService<DynamicManager<ProviderDefinition>>();
+            var sut = provider.GetRequiredService<DynamicManager<SchemeDefinition>>();
 
             sut.Load();
 
@@ -509,7 +589,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
 
         private static async Task<dynamic> VerifyAddedAsync<TOptions>(string schemeName, IServiceProvider provider) where TOptions : AuthenticationSchemeOptions
         {
-            var store = provider.GetRequiredService<IDynamicProviderStore<ProviderDefinition>>();
+            var store = provider.GetRequiredService<IDynamicProviderStore<SchemeDefinition>>();
             var definition = await store.FindBySchemeAsync(schemeName);
             Assert.NotNull(definition);
             var schemeProvider = provider.GetRequiredService<IAuthenticationSchemeProvider>();
@@ -531,7 +611,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
                         .AddDebug();
                 })
                 .AddAuthentication()
-                .AddDynamic();
+                .AddDynamic<SchemeDefinition>();
 
             AddStore(builder);
 

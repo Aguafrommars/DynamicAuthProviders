@@ -33,8 +33,11 @@ namespace Microsoft.AspNetCore.Builder
         public static IServiceProvider LoadDynamicAuthenticationConfiguration<TDefinition>(this IServiceProvider provider)
             where TDefinition : SchemeDefinitionBase, new()
         {
-            var manager = provider.GetRequiredService<DynamicManager<TDefinition>>();
-            manager.Load();
+            using (var scope = provider.CreateScope())
+            {
+                var manager = scope.ServiceProvider.GetRequiredService<PersistentDynamicManager<TDefinition>>();
+                manager.Load();
+            }
             return provider;
         }
     }

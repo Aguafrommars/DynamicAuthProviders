@@ -45,7 +45,7 @@ namespace Aguacongas.AspNetCore.Authentication
                     _notify?.Invoke(name, SchemeAction.Added);
                     configureOptions?.Invoke((TOptions)configure);
                 },
-                name => _notify(name, SchemeAction.Removed)));
+                name => _notify?.Invoke(name, SchemeAction.Removed)));
             base.AddScheme<TOptions, THandler>(authenticationScheme, displayName, configureOptions);
             return this;
         }

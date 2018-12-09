@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.npmrc = .npmrc
 		.releaserc.json = .releaserc.json
 		GitVersion.yml = GitVersion.yml
+		global.json = global.json
 		LICENSE = LICENSE
 		NuGet.Config = NuGet.Config
 		README.md = README.md
@@ -27,6 +28,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication.Sample", "sample\Aguacongas.AspNetCore.Authentication.Sample\Aguacongas.AspNetCore.Authentication.Sample.csproj", "{B5A1BB45-B621-4EE9-A409-306F4768D597}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication.EntityFramework", "src\Aguacongas.AspNetCore.Authentication.EntityFramework\Aguacongas.AspNetCore.Authentication.EntityFramework.csproj", "{8CC87457-C579-4E39-A1C4-BAADADF500DE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication.TestBase", "src\Aguacongas.AspNetCore.Authentication.TestBase\Aguacongas.AspNetCore.Authentication.TestBase.csproj", "{440D2CE9-5C8D-4E58-90A8-D03807C62043}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +53,10 @@ Global
 		{8CC87457-C579-4E39-A1C4-BAADADF500DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CC87457-C579-4E39-A1C4-BAADADF500DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CC87457-C579-4E39-A1C4-BAADADF500DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{440D2CE9-5C8D-4E58-90A8-D03807C62043}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{440D2CE9-5C8D-4E58-90A8-D03807C62043}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{440D2CE9-5C8D-4E58-90A8-D03807C62043}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{440D2CE9-5C8D-4E58-90A8-D03807C62043}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +66,7 @@ Global
 		{62FC7AE9-E522-4C65-9954-D3EC4C84B35E} = {8DE53FA4-6C58-4FE4-840C-8CD5D5370324}
 		{B5A1BB45-B621-4EE9-A409-306F4768D597} = {2925DB42-26E1-4584-952E-928CDC0473DB}
 		{8CC87457-C579-4E39-A1C4-BAADADF500DE} = {245AA4AB-ECF4-4C69-B63D-C59D4B3F918C}
+		{440D2CE9-5C8D-4E58-90A8-D03807C62043} = {245AA4AB-ECF4-4C69-B63D-C59D4B3F918C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {823D9407-93C0-443E-89EC-D9DBB006A195}

@@ -11,7 +11,12 @@ using System.Threading.Tasks;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
-    public class PersistentDynamicManager<TSchemeDefinition> : DynamicManager<TSchemeDefinition>
+    /// <summary>
+    /// Dynamic scheme manager which persist the changes.
+    /// </summary>
+    /// <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
+    /// <seealso cref="Aguacongas.AspNetCore.Authentication.NoPersistentDynamicManager{TSchemeDefinition}" />
+    public class PersistentDynamicManager<TSchemeDefinition> : NoPersistentDynamicManager<TSchemeDefinition>
         where TSchemeDefinition : SchemeDefinitionBase, new()
     {
         private readonly IDynamicProviderStore<TSchemeDefinition> _store;
@@ -21,12 +26,24 @@ namespace Aguacongas.AspNetCore.Authentication
             _store = store ?? throw new ArgumentNullException(nameof(store));
         }
 
+        /// <summary>
+        /// Adds a scheme asynchronously.
+        /// </summary>
+        /// <param name="definition">The definition.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public override async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
         {
             await base.AddAsync(definition, cancellationToken);
             await _store.AddAsync(definition, cancellationToken);
         }
 
+        /// <summary>
+        /// Removes the scheme asynchronous.
+        /// </summary>
+        /// <param name="name">The scheme.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public override async Task RemoveAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
         {
             await base.RemoveAsync(name, cancellationToken);
@@ -37,6 +54,12 @@ namespace Aguacongas.AspNetCore.Authentication
             }
         }
 
+        /// <summary>
+        /// Updates the scheme asynchronous.
+        /// </summary>
+        /// <param name="definition">The definition.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public override async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
         {
             await base.UpdateAsync(definition, cancellationToken);
@@ -81,10 +104,10 @@ namespace Aguacongas.AspNetCore.Authentication
     }
 
     /// <summary>
-    /// Dynamic scheme manager
+    /// Dynamic scheme manager which not persist the changes.
     /// </summary>
     /// <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
-    public class DynamicManager<TSchemeDefinition>
+    public class NoPersistentDynamicManager<TSchemeDefinition>
         where TSchemeDefinition: SchemeDefinitionBase, new()
     {
         private readonly IAuthenticationSchemeProvider _schemeProvider;
@@ -93,7 +116,7 @@ namespace Aguacongas.AspNetCore.Authentication
         public virtual IEnumerable<Type> ManagedHandlerType { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DynamicManager{TSchemeDefinition}"/> class.
+        /// Initializes a new instance of the <see cref="NoPersistentDynamicManager{TSchemeDefinition}"/> class.
         /// </summary>
         /// <param name="schemeProvider">The scheme provider.</param>
         /// <param name="wrapperFactory">The wrapper factory.</param>
@@ -105,7 +128,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// or
         /// store
         /// </exception>
-        public DynamicManager(IAuthenticationSchemeProvider schemeProvider,
+        public NoPersistentDynamicManager(IAuthenticationSchemeProvider schemeProvider,
             OptionsMonitorCacheWrapperFactory wrapperFactory,
             IEnumerable<Type> managedTypes)
         {

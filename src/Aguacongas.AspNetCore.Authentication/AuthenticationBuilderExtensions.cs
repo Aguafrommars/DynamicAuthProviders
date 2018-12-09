@@ -31,7 +31,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     provider.GetRequiredService<IDynamicProviderStore<TSchemeDefinition>>(),
                     dynamicBuilder.HandlerTypes
                 ))
-                .AddTransient(provider => new DynamicManager<TSchemeDefinition>
+                .AddTransient(provider => new NoPersistentDynamicManager<TSchemeDefinition>
                 (
                     provider.GetRequiredService<IAuthenticationSchemeProvider>(),
                     provider.GetRequiredService<OptionsMonitorCacheWrapperFactory>(),

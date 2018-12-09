@@ -38,12 +38,12 @@ namespace Aguacongas.AspNetCore.Authentication.Test
         [Fact]
         public async Task Assertions()
         {
-            Assert.Throws<ArgumentNullException>(() => new DynamicManager<FakeSchemeDefinition>(null, null, null));
+            Assert.Throws<ArgumentNullException>(() => new NoPersistentDynamicManager<FakeSchemeDefinition>(null, null, null));
             var schemeProviderMock = new Mock<IAuthenticationSchemeProvider>().Object;
-            Assert.Throws<ArgumentNullException>(() => new DynamicManager<FakeSchemeDefinition>(schemeProviderMock, null, null));
+            Assert.Throws<ArgumentNullException>(() => new NoPersistentDynamicManager<FakeSchemeDefinition>(schemeProviderMock, null, null));
             var serviceProviderMock = new Mock<IServiceProvider>().Object;
             var factory = new OptionsMonitorCacheWrapperFactory(serviceProviderMock);
-            Assert.Throws<ArgumentNullException>(() => new DynamicManager<FakeSchemeDefinition>(schemeProviderMock, factory, null));
+            Assert.Throws<ArgumentNullException>(() => new NoPersistentDynamicManager<FakeSchemeDefinition>(schemeProviderMock, factory, null));
             var storeMock = new Mock<IDynamicProviderStore<FakeSchemeDefinition>>().Object;
             var manager = new PersistentDynamicManager<FakeSchemeDefinition>(schemeProviderMock, factory, storeMock, new List<Type>());
             await Assert.ThrowsAsync<ArgumentNullException>(() => manager.AddAsync(null));

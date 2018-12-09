@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Aguacongas.AspNetCore.Authentication
 {
     /// <summary>
-    /// Interface for store use by <see cref="DynamicManager{TSchemeDefinition}"/>
+    /// Interface for store use by <see cref="NoPersistentDynamicManager{TSchemeDefinition}"/>
     /// </summary>
     /// <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
     public interface IDynamicProviderStore<TSchemeDefinition> 

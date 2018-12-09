@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Aguacongas.AspNetCore.Authentication.EntityFramework
 {
     /// <summary>
-    /// Implement a store for <see cref="DynamicManager{TSchemeDefinition}"/> with EntityFramework.
+    /// Implement a store for <see cref="NoPersistentDynamicManager{TSchemeDefinition}"/> with EntityFramework.
     /// </summary>
     /// <typeparam name="TSchemeDefinition">The type of the definition.</typeparam>
     /// <seealso cref="Aguacongas.AspNetCore.Authentication.IDynamicProviderStore{TSchemeDefinition}" />

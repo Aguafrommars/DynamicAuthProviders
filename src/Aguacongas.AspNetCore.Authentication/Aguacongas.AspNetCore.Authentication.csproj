@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Olivier Lefebvre</Authors>
+    <Copyright>Copyright (c) 2018 @Olivier Lefebvre</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/aguacongas/DymamicAuthProviders/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/aguacongas/DymamicAuthProviders/tree/master/src/Aguacongas.AspNetCore.Authentication</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/aguacongas/DymamicAuthProviders</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>aspnetcore authentication security</PackageTags>
+    <Description>DynamicAuhtProviders manager</Description>
   </PropertyGroup>
 
   <ItemGroup>

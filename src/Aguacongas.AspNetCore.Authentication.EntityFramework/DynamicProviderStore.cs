@@ -1,4 +1,4 @@
-﻿// Project: DymamicAuthProviders
+﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;

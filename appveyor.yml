@@ -20,7 +20,7 @@ install:
     - sh: sudo apt -y install nuget
     - sh: nuget install GitVersion.CommandLine -ExcludeVersion
     - sh: mono GitVersion.CommandLine/tools/GitVersion.exe /l console /output buildserver
-    - ps: if ($isWindows) { ./dotnet-install.ps1 -Version 2.2 }
+    - ps: if ($isWindows) { ./dotnet-install.ps1 -Version 2.2.100 }
     - cmd: gitversion /l console /output buildserver
     - cmd: nuget install ReportGenerator -ExcludeVersion
     - npm install semantic-release -g
@@ -33,6 +33,8 @@ artifacts:
     - path: artifacts/**/*.nupkg
       name: nuget    
 on_success:
+    - ps: $env:GH_TOKEN=$env:access_token
+    - ps: semantic-release -b $env:APPVEYOR_REPO_BRANCH
     - cmd: git config --global credential.helper store
     - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n" }
     - cmd: git config --global user.email "aguacongas@gmail.com"

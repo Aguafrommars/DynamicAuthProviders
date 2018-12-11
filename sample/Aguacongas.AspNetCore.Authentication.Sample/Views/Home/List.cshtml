@@ -1,0 +1,16 @@
+﻿<!--
+Project: DymamicAuthProviders
+Copyright (c) 2018 @@Olivier Lefebvre
+-->
+@{
+    ViewData["Title"] = "ListSchemes";
+}
+
+<h1>List schemes</h1>
+
+<ul class="list-unstyled">
+    @foreach (var item in Model)
+    {
+        <li><a asp-action="Update" asp-route-name="@item">@item</a></li>
+    }
+</ul>

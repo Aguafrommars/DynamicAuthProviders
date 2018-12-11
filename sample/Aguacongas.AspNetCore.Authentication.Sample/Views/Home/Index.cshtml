@@ -2,8 +2,7 @@
 Project: DymamicAuthProviders
 Copyright (c) 2018 @@Olivier Lefebvre
 -->
-
-@inject NoPersistentDynamicManager<SchemeDefinition> manager
+@model IEnumerable<string>
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -14,8 +13,8 @@ Copyright (c) 2018 @@Olivier Lefebvre
 </div>
 <h5>Manage your authentication</h5>
 <ul class="list-unstyled">
-    @foreach (var type in manager.ManagedHandlerType)
+    @foreach (var item in Model)
     {
-        <li>@type.Name</li>
+        <li><a asp-action="Create" asp-route-type="@item">Setup @item</a></li>
     }
 </ul>

@@ -20,6 +20,15 @@ namespace Aguacongas.AspNetCore.Authentication
         where TSchemeDefinition : SchemeDefinitionBase, new()
     {
         private readonly IDynamicProviderStore<TSchemeDefinition> _store;
+
+        /// <summary>
+        /// Gets the scheme definitions list.
+        /// </summary>
+        /// <value>
+        /// The scheme definitions list.
+        /// </value>
+        public virtual IEnumerable<TSchemeDefinition> SchemeDefinitions => _store.SchemeDefinitions;
+
         public PersistentDynamicManager(IAuthenticationSchemeProvider schemeProvider, OptionsMonitorCacheWrapperFactory wrapperFactory, IDynamicProviderStore<TSchemeDefinition> store, IEnumerable<Type> managedTypes)
             : base(schemeProvider, wrapperFactory, managedTypes)
         {

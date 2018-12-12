@@ -152,18 +152,21 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
 
         private void Serialize(TSchemeDefinition definition)
         {
-            definition.HandlerTypeName = definition.HandlerType.FullName;
+            var type = definition.HandlerType;
+            definition.HandlerTypeName = type.GetGenericTypeDefinition().FullName;
+            definition.OptionsTypeName = definition.Options.GetType().FullName;
             definition.SerializedOptions = _authenticationSchemeOptionsSerializer.Serialize(definition.Options, definition.HandlerType.GetAuthenticationSchemeOptionsType());
         }
 
         private void Deserialize(TSchemeDefinition definition)
         {
-            var handlerType = GetHandlerType(definition.HandlerTypeName);
-            definition.HandlerType = handlerType;
-            definition.Options = _authenticationSchemeOptionsSerializer.Deserialize(definition.SerializedOptions, handlerType.GetAuthenticationSchemeOptionsType());
+            var optionsType = GetType(definition.OptionsTypeName);
+            var handlerType = GetType(definition.HandlerTypeName);
+            definition.HandlerType = handlerType.MakeGenericType(optionsType);
+            definition.Options = _authenticationSchemeOptionsSerializer.Deserialize(definition.SerializedOptions, optionsType);
         }
 
-        private Type GetHandlerType(string handlerTypeName)
+        private Type GetType(string typeName)
         {
             var platform = Environment.OSVersion.Platform.ToString();
             var runtimeAssemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(platform);
@@ -171,7 +174,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             return runtimeAssemblyNames
                     .Select(Assembly.Load)
                     .SelectMany(a => a.ExportedTypes)
-                    .First(t => t.FullName == handlerTypeName);
+                    .First(t => t.FullName == typeName);
         }
     }
 }

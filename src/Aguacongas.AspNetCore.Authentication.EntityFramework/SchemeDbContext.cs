@@ -4,17 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aguacongas.AspNetCore.Authentication.EntityFramework
 {
-
-    /// <summary>
-    /// Scheme definition db context
-    /// </summary>
-    /// <seealso cref="Aguacongas.AspNetCore.Authentication.EntityFramework.SchemeDbContext{Aguacongas.AspNetCore.Authentication.SchemeDefinition}" />
-    public class SchemeDbContext: SchemeDbContext<SchemeDefinition>
-    {
-        public SchemeDbContext(DbContextOptions options) : base(options)
-        { }
-    }
-
     /// <summary>
     /// Scheme definition db context
     /// </summary>

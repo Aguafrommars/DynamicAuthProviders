@@ -28,7 +28,33 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
         [Route("Create/{type}")]
         public IActionResult Create(string type)
         {
-            return View(new AuthenticationViewModel());
+            return View(new AuthenticationViewModel
+            {
+                HandlerType = type
+            });
+        }
+
+        [HttpPost]
+        [Route("Create/{type}")]
+        public async Task<IActionResult> Create(AuthenticationViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                await _manager.AddAsync(new SchemeDefinition
+                {
+                    Scheme = model.Scheme,
+                    DisplayName = model.DisplayName,
+                    HandlerType = _manager.ManagedHandlerType.First(t => t.Name == model.HandlerType),
+                    Options = new OAuthOptions
+                    {
+                        ClientId = model.ClientId,
+                        ClientSecret = model.ClientSecret
+                    }
+                });
+                return Redirect("/");
+            }
+
+            return View(model);
         }
 
         [Route("Update/{scheme}")]
@@ -45,12 +71,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
                 HandlerType = definition.HandlerType.Name
             };
 
-            if (definition.Options is GoogleOptions googleOptions)
-            {
-                vm.ClientId = googleOptions.ClientId;
-                vm.ClientSecret = googleOptions.ClientSecret;
-            }
-            else if(definition.Options is OAuthOptions oAuthOptions)
+            if(definition.Options is OAuthOptions oAuthOptions) // GoogleOptions is OAuthOptions
             {
                 vm.ClientId = oAuthOptions.ClientId;
                 vm.ClientSecret = oAuthOptions.ClientSecret;

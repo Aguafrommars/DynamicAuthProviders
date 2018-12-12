@@ -100,13 +100,6 @@ namespace Aguacongas.AspNetCore.Authentication
 
             foreach (var definition in _store.SchemeDefinitions)
             {
-                var scheme = definition.Scheme;
-                var handlerType = runtimeAssemblyNames
-                    .Select(Assembly.Load)
-                    .SelectMany(a => a.ExportedTypes)
-                    .First(t => t == definition.HandlerType);
-
-
                 base.AddAsync(definition).GetAwaiter().GetResult();
             }
         }

@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Aguacongas.AspNetCore.Authentication.EntityFramework;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
@@ -49,7 +50,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                 // Facebook should appears in managed handlers list, however, if you move it after AddDynamic, it will.
                 .AddDynamic(options =>
                 {
-                    options.UseInMemoryDatabase("sample");
+                    options.UseSqlServer(Configuration.GetConnectionString("Default"));
                 })
                 .AddGoogle()
                 .AddOAuth("Github", options =>
@@ -123,7 +124,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, SchemeDbContext<SchemeDefinition> context)
         {
             if (env.IsDevelopment())
             {
@@ -135,6 +136,8 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            context.Database.EnsureCreated();
 
             app.UseHttpsRedirection()
                 .UseStaticFiles()

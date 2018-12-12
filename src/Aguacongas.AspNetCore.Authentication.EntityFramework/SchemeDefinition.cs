@@ -17,6 +17,14 @@ namespace Aguacongas.AspNetCore.Authentication
         public string HandlerTypeName { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the options type.
+        /// </summary>
+        /// <value>
+        /// The name of the options type.
+        /// </value>
+        public string OptionsTypeName { get; set; }
+
+        /// <summary>
         /// Gets or sets the serialized options.
         /// </summary>
         /// <value>

@@ -36,18 +36,6 @@ test_script:
 artifacts:
     - path: artifacts/**/*.nupkg
       name: nuget    
-on_success:
-    - cmd: git config --global credential.helper store
-    - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n" }
-    - cmd: git config --global user.email "aguacongas@gmail.com"
-    - cmd: git config --global user.name "Aguacongas"
-    - cmd: git stash
-    - cmd: git checkout gh-pages
-    - cmd: IF EXIST latest ( rmdir /S /Q latest )
-    - cmd: move coverage\docs latest
-    - cmd: git add latest
-    - cmd: git commit latest -m "Appveyor build succed %APPVEYOR_BUILD_NUMBER%"
-    - cmd: git push
 deploy:
     - provider: NuGet
       api_key:
@@ -72,6 +60,22 @@ for:
   branches:
     only:
       - master
+  on_success:
+    - cmd: git config --global credential.helper store
+    - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n" }
+    - cmd: git config --global user.email "aguacongas@gmail.com"
+    - cmd: git config --global user.name "Aguacongas"
+    - cmd: git stash
+    - cmd: git checkout gh-pages
+    - cmd: IF EXIST latest ( rmdir /S /Q latest )
+    - cmd: move coverage\docs latest
+    - cmd: git add latest
+    - cmd: git commit latest -m "Appveyor build succed %APPVEYOR_BUILD_NUMBER%"
+    - cmd: git push
+-
+  branches:
+    only:
+      - /release*/
   on_success:
       - cmd: git config --global credential.helper store
       - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n" }

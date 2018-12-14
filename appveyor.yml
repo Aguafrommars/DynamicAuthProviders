@@ -1,14 +1,19 @@
 version: 1.0.{build}
 skip_tags: true
+stack: node 9
+skip_commits:
+  message: /\[chore\]/
 branches:
-  except:
-  - gh-pages
+  only:
+  - master
+  - /preview*/ 
+  - /release*/
 image: 
 - Ubuntu
 - Visual Studio 2017
 environment:
-  access_token:
-    secure: yQcU3EbE3/jaIhwn6e+n76xzcQ+tGXXdIZAmA3Z8ssj5IEYPehthJkLYhhNEmw21
+  GH_TOKEN: 
+    secure: 0NJdORJRFjpB0dwUYv7bVNsbkldkoBhnvWik/CTOwAF/k9kP+/uTWMFnDcpEpt8E
 init:
     - cmd: git config --global core.autocrlf true
 install:
@@ -20,11 +25,10 @@ install:
     - sh: sudo apt -y install nuget
     - sh: nuget install GitVersion.CommandLine -ExcludeVersion
     - sh: mono GitVersion.CommandLine/tools/GitVersion.exe /l console /output buildserver
-    - ps: if ($isWindows) { ./dotnet-install.ps1 -Version 2.2.100 }
+    - ps: if ($isWindows) { .\dotnet-install.ps1 -Version 2.2.100 }
     - cmd: gitversion /l console /output buildserver
     - cmd: nuget install ReportGenerator -ExcludeVersion
-    - npm install semantic-release -g
-    - dotnet restore
+    - ps: ./appveyorinit.ps1
 build_script:
 - ps: ./build.ps1
 test_script:
@@ -33,10 +37,8 @@ artifacts:
     - path: artifacts/**/*.nupkg
       name: nuget    
 on_success:
-    - ps: $env:GH_TOKEN=$env:access_token
-    - ps: semantic-release -b $env:APPVEYOR_REPO_BRANCH
     - cmd: git config --global credential.helper store
-    - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n" }
+    - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n" }
     - cmd: git config --global user.email "aguacongas@gmail.com"
     - cmd: git config --global user.name "Aguacongas"
     - cmd: git stash
@@ -52,28 +54,18 @@ deploy:
         secure: 23wPDdRicGt2vZuJ8vd9TRBKmqjHkx5WjzZmKvyxd5j0fNPedjUScRTj/rT0ObJa
       on:
         branch: 
-            - master
+            - /preview*/
             - /release*/
         CI_WINDOWS: true
     - provider: GitHub
-      auth_token:
-        secure: u7qaOQsrkLqq44yS24C0eM2vRCzp1A8gZTWNmlA58TIDJGmrDXguHL9H/vww7Fg/
-      draft: true
-      prerelease: true
-      release: $(GitVersion_SemVer)
-      on:
-        branch: 
-            - /release*/
-        CI_WINDOWS: true
-    - provider: GitHub
-      auth_token:
-        secure: u7qaOQsrkLqq44yS24C0eM2vRCzp1A8gZTWNmlA58TIDJGmrDXguHL9H/vww7Fg/
+      auth_token: $(GH_TOKEN)
       draft: true
       prerelease: false
-      release: $(GitVersion_SemVer)
+      release: $(APPVEYOR_BUILD_VERSION)
       on:
-        branch:             
-            - master
+        branch: 
+            - /preview*/ 
+            - /release*/
         CI_WINDOWS: true
 for:
 -
@@ -82,15 +74,15 @@ for:
       - master
   on_success:
       - cmd: git config --global credential.helper store
-      - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n" }
+      - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n" }
       - cmd: git config --global user.email "aguacongas@gmail.com"
       - cmd: git config --global user.name "Aguacongas"
       - cmd: git checkout gh-pages
       - cmd: git stash
-      - cmd: mkdir %GITVERSION_NuGetVersion%
-      - cmd: move coverage\docs %GITVERSION_NuGetVersion%
-      - cmd: git add %GITVERSION_NuGetVersion%
-      - cmd: git commit %GITVERSION_NuGetVersion% -m "Appveyor build succed %APPVEYOR_BUILD_NUMBER%"
+      - cmd: mkdir %APPVEYOR_BUILD_VERSION%
+      - cmd: move coverage\docs %APPVEYOR_BUILD_VERSION%
+      - cmd: git add %APPVEYOR_BUILD_VERSION%
+      - cmd: git commit %APPVEYOR_BUILD_VERSION% -m "Appveyor build succed %APPVEYOR_BUILD_NUMBER%"
       - cmd: git push
 -
   branches:

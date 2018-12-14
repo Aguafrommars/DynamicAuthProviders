@@ -1,8 +1,11 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyModel;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
+using System.Reflection;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
@@ -27,15 +30,121 @@ namespace Aguacongas.AspNetCore.Authentication
             ContractResolver = new ContractResolver()
         };
 
-        public string Serialize(AuthenticationSchemeOptions options, Type optionsType)
+        /// <summary>
+        /// Serializes the specified options.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        /// <param name="optionsType">Type of the options.</param>
+        /// <returns>
+        /// The serialized result.
+        /// </returns>
+        public virtual string SerializeOptions(AuthenticationSchemeOptions options, Type optionsType)
         {
-            return JsonConvert.SerializeObject(options, optionsType, JsonSerializerSettings);
+            return Serialize(options, optionsType);
         }
 
-        public AuthenticationSchemeOptions Deserialize(string value, Type optionsType)
+        /// <summary>
+        /// Deserializes the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="optionsType">Type of the options.</param>
+        /// <returns>
+        /// An AuthenticationSchemeOptions instance.
+        /// </returns>
+        public virtual AuthenticationSchemeOptions DeserializeOptions(string value, Type optionsType)
         {
-            return JsonConvert.DeserializeObject(value, optionsType) as AuthenticationSchemeOptions;
+            return Deserialize(value, optionsType) as AuthenticationSchemeOptions;
         }
 
+        /// <summary>
+        /// Deserializes the type.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        public virtual Type DeserializeType(string value)
+        {
+            return GetType(Deserialize(value, typeof(TypeDefinition)) as TypeDefinition);
+        }
+
+        /// <summary>
+        /// Serializes the type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        public virtual string SerializeType(Type type)
+        {
+            return Serialize(CreateTypeDefinition(type), typeof(Type));
+        }
+
+        /// <summary>
+        /// Serializes the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        protected virtual string Serialize(object value, Type type)
+        {
+            return JsonConvert.SerializeObject(value, type, JsonSerializerSettings);
+        }
+
+        /// <summary>
+        /// Deserializes the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        protected virtual object Deserialize(string value, Type type)
+        {
+            return JsonConvert.DeserializeObject(value, type, JsonSerializerSettings);
+        }
+
+        private Type GetType(string typeName)
+        {
+            var platform = Environment.OSVersion.Platform.ToString();
+            var runtimeAssemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(platform);
+
+            return runtimeAssemblyNames
+                    .Select(Assembly.Load)
+                    .Select(a => a.GetType(typeName))
+                    .First(t => t != null);
+        }
+
+        private Type GetType(TypeDefinition typeDefinition)
+        {
+            if (typeDefinition.ArgsTypeDefinition != null)
+            {
+                var type = GetType(typeDefinition.Name);
+                var argsTypes = typeDefinition.ArgsTypeDefinition.Select(GetType).ToArray();
+
+                return type.MakeGenericType(argsTypes);
+            }
+            return GetType(typeDefinition.Name);
+        }
+
+        private TypeDefinition CreateTypeDefinition(Type type)
+        {
+            if (type.IsGenericType)
+            {
+                var genericType = type.GetGenericTypeDefinition();
+                return new TypeDefinition
+                {
+                    Name = genericType.FullName,
+                    ArgsTypeDefinition = type
+                       .GetGenericArguments().Select(CreateTypeDefinition).ToArray()
+                };
+            }
+
+            return new TypeDefinition
+            {
+                Name = type.FullName
+            };
+        }
+
+        class TypeDefinition
+        {
+            public string Name { get; set; }
+
+            public TypeDefinition[] ArgsTypeDefinition { get; set; }
+        }
     }
 }

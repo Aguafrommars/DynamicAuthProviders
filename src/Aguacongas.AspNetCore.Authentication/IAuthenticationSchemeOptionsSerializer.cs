@@ -11,18 +11,31 @@ namespace Aguacongas.AspNetCore.Authentication
     public interface IAuthenticationSchemeOptionsSerializer
     {
         /// <summary>
+        /// Deserializes the type.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        Type DeserializeType(string value);
+
+        /// <summary>
+        /// Serializes the type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        string SerializeType(Type type);
+        /// <summary>
         /// Deserializes the specified value.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="optionsType">Type of the options.</param>
         /// <returns>An AuthenticationSchemeOptions instance.</returns>
-        AuthenticationSchemeOptions Deserialize(string value, Type optionsType);
+        AuthenticationSchemeOptions DeserializeOptions(string value, Type optionsType);
         /// <summary>
         /// Serializes the specified options.
         /// </summary>
         /// <param name="options">The options.</param>
         /// <param name="optionsType">Type of the options.</param>
         /// <returns>The serialized result.</returns>
-        string Serialize(AuthenticationSchemeOptions options, Type optionsType);
+        string SerializeOptions(AuthenticationSchemeOptions options, Type optionsType);
     }
 }

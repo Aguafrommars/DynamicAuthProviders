@@ -1,8 +1,0 @@
-extensions: .cs
-// Project: aguacongas/DymamicAuthProviders
-// Copyright (c) 2018 @Olivier Lefebvre
-extensions:  .xml .config .xsd
-<!--
-Project: aguacongas/DymamicAuthProviders
-Copyright (c) 2018 @Olivier Lefebvre
--->

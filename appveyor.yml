@@ -30,9 +30,9 @@ install:
     - cmd: nuget install ReportGenerator -ExcludeVersion
     - ps: ./appveyorinit.ps1
 build_script:
-- ps: ./build.ps1
+    - ps: ./build.ps1
 test_script:
-- cmd: publish.cmd
+    - cmd: publish.cmd
 artifacts:
     - path: artifacts/**/*.nupkg
       name: nuget    

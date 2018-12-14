@@ -10,6 +10,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>aspnetcore authentication security</PackageTags>
     <Description>DynamicAuhtProviders manager</Description>
+    <DebugType>Full</DebugType>
   </PropertyGroup>
 
   <ItemGroup>

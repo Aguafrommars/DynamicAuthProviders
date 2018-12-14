@@ -9,6 +9,7 @@
     <RepositoryUrl>https://github.com/aguacongas/DymamicAuthProviders</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>aspnetcore authentication security test</PackageTags>
+    <DebugType>Full</DebugType>
   </PropertyGroup>
 
   <ItemGroup>

@@ -12,9 +12,16 @@ Copyright (c) 2018 @@Olivier Lefebvre
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 <h5>Manage your authentication</h5>
-<ul class="list-unstyled">
-    @foreach (var item in Model)
-    {
-        <li><a asp-action="Create" asp-route-type="@item">Setup @item</a></li>
-    }
-</ul>
+<div class="row">
+    <div class="col">
+        <ul class="list-unstyled">
+            @foreach (var item in Model)
+            {
+                <li><a asp-action="Create" asp-route-type="@item">Create configuration for @HandlerHelper.GetProviderName(item)</a></li>
+            }
+        </ul>
+    </div>
+    <div class="col">
+        <a asp-action="List">View your shemes</a>
+    </div>
+</div>

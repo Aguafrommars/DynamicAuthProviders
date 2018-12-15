@@ -10,7 +10,7 @@ Copyright (c) 2018 @@Olivier Lefebvre
 
 <h1>Create scheme</h1>
 
-<h4>@Model.HandlerType</h4>
+<h4>@HandlerHelper.GetProviderName(@Model.HandlerType)</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -45,7 +45,7 @@ Copyright (c) 2018 @@Olivier Lefebvre
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="List">Back to List</a>
 </div>
 
 @section Scripts {

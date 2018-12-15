@@ -5,12 +5,23 @@ using Microsoft.EntityFrameworkCore;
 namespace Aguacongas.AspNetCore.Authentication.EntityFramework
 {
     /// <summary>
+    /// Scheme definition db context of <see cref="SchemeDefinition"/>
+    /// </summary>
+    /// <seealso cref="SchemeDbContext{SchemeDefinition}" />
+    /// <seealso cref="SchemeDefinition" />
+    public class SchemeDbContext : SchemeDbContext<SchemeDefinition>
+    {
+        public SchemeDbContext(DbContextOptions options) : base(options)
+        {
+        }
+    }
+
+    /// <summary>
     /// Scheme definition db context
     /// </summary>
-    /// <typeparam name="TSchemeOtptions">The type of the scheme otptions.</typeparam>
-    /// <seealso cref="Aguacongas.AspNetCore.Authentication.EntityFramework.SchemeDbContext{Aguacongas.AspNetCore.Authentication.SchemeDefinition}" />
-    public class SchemeDbContext<TSchemeOtptions>: DbContext
-        where TSchemeOtptions: SchemeDefinition
+    /// <typeparam name="TSchemeDefinition">The type of the scheme otptions.</typeparam>
+    public class SchemeDbContext<TSchemeDefinition> : DbContext
+        where TSchemeDefinition : SchemeDefinition
     {
         /// <summary>
         /// Gets or sets the providers.
@@ -18,7 +29,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         /// <value>
         /// The providers.
         /// </value>
-        public DbSet<TSchemeOtptions> Providers { get; set; }
+        public DbSet<TSchemeDefinition> Providers { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SchemeDbContext{TSchemeOtptions}"/> class.
@@ -41,7 +52,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         /// </remarks>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TSchemeOtptions>()
+            modelBuilder.Entity<TSchemeDefinition>()
                 .Ignore(p => p.Options)
                 .Ignore(p => p.HandlerType)
                 .HasKey(p => p.Scheme);

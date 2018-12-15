@@ -4,7 +4,9 @@ using Aguacongas.AspNetCore.Authentication;
 using Aguacongas.AspNetCore.Authentication.EntityFramework;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
+using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -14,100 +16,42 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class DynamicAuthenticationBuilderExtensions
     {
         /// <summary>
-        /// Configures the DI for dynamic scheme management.
-        /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <param name="optionsAction">The options action.</param>
-        /// <param name="notify">The action to call on scheme added or removed.</param>
-        /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddDynamic(this AuthenticationBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null)
-        {
-            return builder.AddDynamic<SchemeDefinition>()
-                .AddEntityFrameworkStore(optionsAction);
-        }
-
-        /// <summary>
-        /// Configures the DI for dynamic scheme management.
-        /// </summary>
-        /// <typeparam name="TContext">The type of the context.</typeparam>
-        /// <param name="builder">The builder.</param>
-        /// <param name="optionsAction">The db context options builder action.</param>
-        /// <param name="notify">The action to call on scheme added or removed.</param>
-        /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddDynamic<TContext>(this AuthenticationBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null)
-            where TContext : SchemeDbContext<SchemeDefinition>
-        {
-            return builder.AddDynamic<SchemeDefinition>()
-                .AddEntityFrameworkStore<TContext>(optionsAction);
-        }
-
-        /// <summary>
-        /// Configures the DI for dynamic scheme management.
-        /// </summary>
-        /// <typeparam name="TDefinition">The type of the provider definition.</typeparam>
-        /// <param name="builder">The builder.</param>
-        /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddDynamic<TContext, TSchemeDefinition>(this AuthenticationBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null)
-            where TSchemeDefinition: SchemeDefinition, new()
-            where TContext : SchemeDbContext<TSchemeDefinition>
-        {
-            return builder.AddDynamic<TSchemeDefinition>()
-                .AddEntityFrameworkStore<TContext, TSchemeDefinition>(optionsAction);
-        }
-
-        /// <summary>
-        /// Adds the entity framework store.
-        /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <param name="optionsAction">The options action.</param>
-        /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddEntityFrameworkStore(this DynamicAuthenticationBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null)
-        {
-            return AddEntityFrameworkStore<SchemeDbContext<SchemeDefinition>>(builder, optionsAction);
-        }
-        /// <summary>
         /// Adds the entity framework store.
         /// </summary>
         /// <typeparam name="TContext">The type of the context.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <param name="optionsAction">The options action.</param>
         /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddEntityFrameworkStore<TContext>(this DynamicAuthenticationBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null)
-            where TContext : SchemeDbContext<SchemeDefinition>
+        public static DynamicAuthenticationBuilder AddEntityFrameworkStore<TContext>(this DynamicAuthenticationBuilder builder)
+            where TContext : DbContext
         {
-            return AddEntityFrameworkStore<TContext, SchemeDefinition>(builder, optionsAction);
-        }
-        /// <summary>
-        /// Adds the entity framework store.
-        /// </summary>
-        /// <typeparam name="TContext">The type of the context.</typeparam>
-        /// <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
-        /// <param name="builder">The builder.</param>
-        /// <param name="optionsAction">The options action.</param>
-        /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddEntityFrameworkStore<TContext, TSchemeDefinition>(this DynamicAuthenticationBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null)
-            where TContext : SchemeDbContext<TSchemeDefinition>
-            where TSchemeDefinition: SchemeDefinition, new()
-        {
-            builder.Services.AddDynamicAuthenticationEntityFrameworkStore<TContext, TSchemeDefinition>(optionsAction);
+            AddStore(builder.Services, builder.DefinitionType, typeof(TContext));
             return builder;
         }
 
-        /// <summary>
-        /// Adds the dynamic authentication entity framework store.
-        /// </summary>
-        /// <typeparam name="TContext">The type of the context.</typeparam>
-        /// <typeparam name="TProviderDefinition">The type of the scheme definition.</typeparam>
-        /// <param name="serviceCollection">The service collection.</param>
-        /// <param name="optionsAction">The options action.</param>
-        /// <returns></returns>
-        public static IServiceCollection AddDynamicAuthenticationEntityFrameworkStore<TContext, TSchemeDefinition>(this IServiceCollection serviceCollection, Action<DbContextOptionsBuilder> optionsAction = null)
-                    where TContext : SchemeDbContext<TSchemeDefinition>
-                    where TSchemeDefinition : SchemeDefinition, new()
+        private static void AddStore(IServiceCollection service, Type definitionType, Type contextType)
         {
-            return serviceCollection.AddDbContext<TContext>(optionsAction)
-                .AddTransient<IAuthenticationSchemeOptionsSerializer, AuthenticationSchemeOptionsSerializer>()
-                .AddTransient<IDynamicProviderStore<TSchemeDefinition>, DynamicProviderStore<TSchemeDefinition>>();
+            var storeType = typeof(DynamicProviderStore<,>).MakeGenericType(definitionType, contextType);
+
+            service.TryAddTransient(typeof(IDynamicProviderStore<>).MakeGenericType(definitionType), storeType);
+            service.AddTransient<IAuthenticationSchemeOptionsSerializer, AuthenticationSchemeOptionsSerializer>();
+
+        }
+
+        private static TypeInfo FindGenericBaseType(Type currentType, Type genericBaseType)
+        {
+            var type = currentType;
+            while (type != null)
+            {
+                var typeInfo = type.GetTypeInfo();
+                var genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
+                if (genericType != null && genericType == genericBaseType)
+                {
+                    return typeInfo;
+                }
+                type = type.BaseType;
+            }
+            return null;
         }
     }
 }

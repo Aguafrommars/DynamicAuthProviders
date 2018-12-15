@@ -24,13 +24,15 @@ namespace Aguacongas.AspNetCore.Authentication
         /// </value>
         public IEnumerable<Type> HandlerTypes { get; }
 
+        public Type DefinitionType { get; }
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicAuthenticationBuilder"/> class.
         /// </summary>
         /// <param name="services">The services.</param>
-        public DynamicAuthenticationBuilder(IServiceCollection services): base(services)
+        public DynamicAuthenticationBuilder(IServiceCollection services, Type definitionType): base(services)
         {
             HandlerTypes = _handlerTypes;
+            DefinitionType = definitionType;
         }
 
         /// <summary>

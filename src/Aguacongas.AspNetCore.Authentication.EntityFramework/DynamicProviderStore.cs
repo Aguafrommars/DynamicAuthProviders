@@ -1,5 +1,6 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -14,20 +15,40 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
     /// <summary>
     /// Implement a store for <see cref="NoPersistentDynamicManager{TSchemeDefinition}"/> with EntityFramework.
     /// </summary>
+    /// <seealso cref="Aguacongas.AspNetCore.Authentication.IDynamicProviderStore{TSchemeDefinition}" />
+    public class DynamicProviderStore : DynamicProviderStore<SchemeDefinition>
+    {
+        public DynamicProviderStore(SchemeDbContext context, IAuthenticationSchemeOptionsSerializer authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore> logger) : base(context, authenticationSchemeOptionsSerializer, logger)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Implement a store for <see cref="NoPersistentDynamicManager{TSchemeDefinition}"/> with EntityFramework.
+    /// </summary>
     /// <typeparam name="TSchemeDefinition">The type of the definition.</typeparam>
     /// <seealso cref="Aguacongas.AspNetCore.Authentication.IDynamicProviderStore{TSchemeDefinition}" />
-    public class DynamicProviderStore<TSchemeDefinition> : IDynamicProviderStore<TSchemeDefinition>
+    public class DynamicProviderStore<TSchemeDefinition> : DynamicProviderStore<TSchemeDefinition, SchemeDbContext<TSchemeDefinition>>
+        where TSchemeDefinition : SchemeDefinition, new()
+    {
+        public DynamicProviderStore(SchemeDbContext<TSchemeDefinition> context, IAuthenticationSchemeOptionsSerializer authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore<TSchemeDefinition>> logger) : base(context, authenticationSchemeOptionsSerializer, logger)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Implement a store for <see cref="NoPersistentDynamicManager{TSchemeDefinition}"/> with EntityFramework.
+    /// </summary>
+    /// <typeparam name="TSchemeDefinition">The type of the definition.</typeparam>
+    /// <typeparam name="TContext">The type of the context.</typeparam>
+    /// <seealso cref="Aguacongas.AspNetCore.Authentication.IDynamicProviderStore{TSchemeDefinition}" />
+    public class DynamicProviderStore<TSchemeDefinition, TContext> : IDynamicProviderStore<TSchemeDefinition>
+        where TContext: DbContext
         where TSchemeDefinition: SchemeDefinition, new()
     {
-        private static JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            Formatting = Formatting.None
-        };
-
-        private readonly SchemeDbContext<TSchemeDefinition> _context;
+        private readonly DbContext _context;
         private readonly IAuthenticationSchemeOptionsSerializer _authenticationSchemeOptionsSerializer;
-        private readonly ILogger<DynamicProviderStore<TSchemeDefinition>> _logger;
+        private readonly ILogger<DynamicProviderStore<TSchemeDefinition, TContext>> _logger;
 
         /// <summary>
         /// Gets the scheme definitions list.
@@ -35,17 +56,12 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         /// <value>
         /// The scheme definitions list.
         /// </value>
-        public virtual IQueryable<TSchemeDefinition> SchemeDefinitions => _context.Providers
-            .ToList()
-            .Select(definition =>
-            {
-                Deserialize(definition);
-                return definition;
-            })
+        public virtual IQueryable<TSchemeDefinition> SchemeDefinitions => _context.Set<TSchemeDefinition>()
+            .Select(Deserialize)
             .AsQueryable();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DynamicProviderStore{TSchemeDefinition}"/> class.
+        /// Initializes a new instance of the <see cref="DynamicProviderStore{TSchemeDefinition, TContext}"/> class.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="authenticationSchemeOptionsSerializer">The authentication scheme options serializer.</param>
@@ -57,7 +73,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         /// or
         /// logger
         /// </exception>
-        public DynamicProviderStore(SchemeDbContext<TSchemeDefinition> context, IAuthenticationSchemeOptionsSerializer authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore<TSchemeDefinition>> logger)
+        public DynamicProviderStore(TContext context, IAuthenticationSchemeOptionsSerializer authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore<TSchemeDefinition, TContext>> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _authenticationSchemeOptionsSerializer = authenticationSchemeOptionsSerializer ?? throw new ArgumentNullException(nameof(authenticationSchemeOptionsSerializer));
@@ -162,10 +178,11 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             definition.SerializedOptions = _authenticationSchemeOptionsSerializer.SerializeOptions(definition.Options, definition.HandlerType.GetAuthenticationSchemeOptionsType());
         }
 
-        private void Deserialize(TSchemeDefinition definition)
+        private TSchemeDefinition Deserialize(TSchemeDefinition definition)
         {
             definition.HandlerType = _authenticationSchemeOptionsSerializer.DeserializeType(definition.SerializedHandlerType);
             definition.Options = _authenticationSchemeOptionsSerializer.DeserializeOptions(definition.SerializedOptions, definition.HandlerType.GetAuthenticationSchemeOptionsType());
+            return definition;
         }
     }
 }

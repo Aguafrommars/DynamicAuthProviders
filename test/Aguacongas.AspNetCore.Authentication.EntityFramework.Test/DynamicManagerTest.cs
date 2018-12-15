@@ -16,10 +16,11 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework.Test
 
         protected override DynamicAuthenticationBuilder AddStore(DynamicAuthenticationBuilder builder)
         {
-            return builder.AddEntityFrameworkStore(options =>
+            builder.Services.AddDbContext<SchemeDbContext>(options =>
             {
                 options.UseInMemoryDatabase(Guid.NewGuid().ToString());
             });
+            return builder.AddEntityFrameworkStore<SchemeDbContext>();
         }
     }
 }

@@ -135,11 +135,34 @@
             The handler types.
             </value>
         </member>
+        <member name="P:Aguacongas.AspNetCore.Authentication.DynamicAuthenticationBuilder.DefinitionType">
+            <summary>
+            Gets the type of the definition.
+            </summary>
+            <value>
+            The type of the definition.
+            </value>
+        </member>
         <member name="M:Aguacongas.AspNetCore.Authentication.DynamicAuthenticationBuilder.#ctor(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type)">
             <summary>
-            Initializes a new instance of the <see cref="T:Aguacongas.AspNetCore.Authentication.DynamicAuthenticationBuilder"/> class.
+            Initializes a new instance of the <see cref="T:Aguacongas.AspNetCore.Authentication.DynamicAuthenticationBuilder" /> class.
             </summary>
             <param name="services">The services.</param>
+            <param name="definitionType">Type of the definition.</param>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.DynamicAuthenticationBuilder.AddRemoteScheme``2(System.String,System.String,System.Action{``0})">
+            <summary>
+            Adds a <see cref="T:Microsoft.AspNetCore.Authentication.RemoteAuthenticationHandler`1" /> based <see cref="T:Microsoft.AspNetCore.Authentication.AuthenticationScheme" /> that supports remote authentication
+            which can be used by <see cref="T:Microsoft.AspNetCore.Authentication.IAuthenticationService" />.
+            </summary>
+            <typeparam name="TOptions">The <see cref="T:Microsoft.AspNetCore.Authentication.RemoteAuthenticationOptions" /> type to configure the handler."/&gt;.</typeparam>
+            <typeparam name="THandler">The <see cref="T:Microsoft.AspNetCore.Authentication.RemoteAuthenticationHandler`1" /> used to handle this scheme.</typeparam>
+            <param name="authenticationScheme">The name of this scheme.</param>
+            <param name="displayName">The display name of this scheme.</param>
+            <param name="configureOptions">Used to configure the scheme options.</param>
+            <returns>
+            The builder.
+            </returns>
         </member>
         <member name="M:Aguacongas.AspNetCore.Authentication.DynamicAuthenticationBuilder.AddScheme``2(System.String,System.String,System.Action{``0})">
             <summary>
@@ -168,6 +191,16 @@
             <value>
             The scheme definitions list.
             </value>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.PersistentDynamicManager`1.#ctor(Microsoft.AspNetCore.Authentication.IAuthenticationSchemeProvider,Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapperFactory,Aguacongas.AspNetCore.Authentication.IDynamicProviderStore{`0},System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Aguacongas.AspNetCore.Authentication.PersistentDynamicManager`1"/> class.
+            </summary>
+            <param name="schemeProvider">The scheme provider.</param>
+            <param name="wrapperFactory">The wrapper factory.</param>
+            <param name="store">The store.</param>
+            <param name="managedTypes">The managed types.</param>
+            <exception cref="T:System.ArgumentNullException">store</exception>
         </member>
         <member name="M:Aguacongas.AspNetCore.Authentication.PersistentDynamicManager`1.AddAsync(`0,System.Threading.CancellationToken)">
             <summary>
@@ -212,13 +245,21 @@
             </summary>
             <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
         </member>
+        <member name="P:Aguacongas.AspNetCore.Authentication.NoPersistentDynamicManager`1.ManagedHandlerType">
+            <summary>
+            Gets the type of the managed handler.
+            </summary>
+            <value>
+            The type of the managed handler.
+            </value>
+        </member>
         <member name="M:Aguacongas.AspNetCore.Authentication.NoPersistentDynamicManager`1.#ctor(Microsoft.AspNetCore.Authentication.IAuthenticationSchemeProvider,Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapperFactory,System.Collections.Generic.IEnumerable{System.Type})">
             <summary>
             Initializes a new instance of the <see cref="T:Aguacongas.AspNetCore.Authentication.NoPersistentDynamicManager`1"/> class.
             </summary>
             <param name="schemeProvider">The scheme provider.</param>
             <param name="wrapperFactory">The wrapper factory.</param>
-            <param name="store">The store.</param>
+            <param name="managedTypes">The list of managed handlers types.</param>
             <exception cref="T:System.ArgumentNullException">
             schemeProvider
             or
@@ -342,15 +383,22 @@
             </summary>
             <remarks>For internal use, you should not use this class</remarks>
             <typeparam name="TOptions">The type of the options.</typeparam>
-            <seealso cref="!:Microsoft.Extensions.Options.IOptionsMonitorCache&lt;Microsoft.AspNetCore.Authentication.AuthenticationOptions&gt;" />
+            <seealso cref="T:Microsoft.Extensions.Options.IOptionsMonitorCache`1" />
         </member>
         <member name="M:Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapper`1.#ctor(Microsoft.Extensions.Options.IOptionsMonitorCache{`0},System.Collections.Generic.IEnumerable{Microsoft.Extensions.Options.IPostConfigureOptions{`0}},System.Action{System.String,Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions})">
             <summary>
             Initializes a new instance of the <see cref="T:Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapper`1"/> class.
             </summary>
             <param name="parent">The parent.</param>
-            <param name="onAdded">The on added.</param>
-            <param name="onRemoved">The on removed.</param>
+            <param name="postConfigures">The post configures actions list.</param>
+            <param name="onAdded">The on added action.</param>
+            <exception cref="T:System.ArgumentNullException">
+            parent
+            or
+            postConfigures
+            or
+            onAdded
+            </exception>
             <remarks>For internal user, you should not use this class</remarks>
         </member>
         <member name="M:Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapper`1.Clear">
@@ -452,6 +500,13 @@
             Type extensions
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:System.TypeExtensions.GetAuthenticationSchemeOptionsType(System.Type)" -->
+        <member name="M:System.TypeExtensions.GetAuthenticationSchemeOptionsType(System.Type)">
+            <summary>
+            Gets the type of the authentication scheme options.
+            </summary>
+            <param name="handlerType">Type of the handler.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentException">Parameter handlerType should be a <see cref="T:Microsoft.AspNetCore.Authentication.AuthenticationHandler`1"/>}</exception>
+        </member>
     </members>
 </doc>

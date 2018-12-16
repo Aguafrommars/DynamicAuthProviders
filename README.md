@@ -43,7 +43,9 @@ var authBuilder = services
         options.AppSecret = Configuration["facebook:appsecret"] ?? "not set";
     }); // this handler cannot be managed dynamically
 
-// Add the context to store schemes configuration
+// Add the context to store schemes configurations.
+// The context can be any kind of DbContext having a DbSet<TSchemeDefinition>
+// where TSchemeDefinition is of type SchemeDefinition or derived.
 services.AddDbContext<SchemeDbContext>(options =>
 {
     options.UseSqlServer(Configuration.GetConnectionString("Default"));
@@ -58,7 +60,7 @@ var dynamicBuilder = authBuilder
 dynamicBuilder.AddGoogle()
     .AddOAuth("Github", "Github", options =>
     {
-        // You can defined default configuration for managed handlers.
+        // You can define default configuration for managed handlers.
         options.AuthorizationEndpoint = "https://github.com/login/oauth/authorize";
         options.TokenEndpoint = "https://github.com/login/oauth/access_token";
         options.UserInformationEndpoint = "https://api.github.com/user";

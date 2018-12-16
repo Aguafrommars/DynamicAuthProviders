@@ -45,6 +45,15 @@ deploy:
             - /preview\/*/
             - /release\/*/
         CI_WINDOWS: true
+    - provider: GitHub
+      auth_token: $(GH_TOKEN)
+      draft: true
+      prerelease: true
+      release: $(APPVEYOR_BUILD_VERSION)
+      on:
+        branch: 
+            - /preview*/ 
+        CI_WINDOWS: true
 for:
 -
   branches:

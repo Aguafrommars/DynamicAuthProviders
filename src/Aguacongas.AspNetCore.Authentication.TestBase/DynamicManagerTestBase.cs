@@ -1,4 +1,4 @@
-// Project: DymamicAuthProviders
+// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -83,10 +84,6 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, provider);
 
-            var storedOptions = JsonConvert.DeserializeObject<CookieAuthenticationOptions>(state.definition.SerializedOptions);
-            _output.WriteLine(state.definition.SerializedOptions);
-
-            Assert.Equal(cookieOptions.Cookie.Domain, storedOptions.Cookie.Domain);
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnSignedIn(new CookieSignedInContext(
                 httpContext,
@@ -135,10 +132,6 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<FacebookOptions>("test", provider);
 
-            var storedOptions = JsonConvert.DeserializeObject<FacebookOptions>(state.definition.SerializedOptions);
-            _output.WriteLine(state.definition.SerializedOptions);
-
-            Assert.Equal(facebookOptions.AppId, storedOptions.AppId);
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnCreatingTicket(new OAuthCreatingTicketContext(
                 new ClaimsPrincipal(),
@@ -189,10 +182,6 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<GoogleOptions>("test", provider);
 
-            var storedOptions = JsonConvert.DeserializeObject<GoogleOptions>(state.definition.SerializedOptions);
-            _output.WriteLine(state.definition.SerializedOptions);
-
-            Assert.Equal(googleOptions.ClientId, storedOptions.ClientId);
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnCreatingTicket(new OAuthCreatingTicketContext(
                 new ClaimsPrincipal(),
@@ -227,7 +216,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
 
             var jwtBearerOptions = new JwtBearerOptions
             {
-                Authority = "test"
+                Authority = "test",
+                RequireHttpsMetadata = false
             };
 
             var definition = new TSchemeDefinition
@@ -244,10 +234,6 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<JwtBearerOptions>("test", provider);
 
-            var storedOptions = JsonConvert.DeserializeObject<JwtBearerOptions>(state.definition.SerializedOptions);
-            _output.WriteLine(state.definition.SerializedOptions);
-
-            Assert.Equal(jwtBearerOptions.Authority, storedOptions.Authority);
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnMessageReceived(new Microsoft.AspNetCore.Authentication.JwtBearer.MessageReceivedContext(
                 httpContext,
@@ -295,10 +281,6 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<MicrosoftAccountOptions>("test", provider);
 
-            var storedOptions = JsonConvert.DeserializeObject<MicrosoftAccountOptions>(state.definition.SerializedOptions);
-            _output.WriteLine(state.definition.SerializedOptions);
-
-            Assert.Equal(msAccountOptions.ClientId, storedOptions.ClientId);
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnCreatingTicket(new OAuthCreatingTicketContext(
                 new ClaimsPrincipal(),
@@ -350,10 +332,6 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<OpenIdConnectOptions>("test", provider);
 
-            var storedOptions = JsonConvert.DeserializeObject<OpenIdConnectOptions>(state.definition.SerializedOptions);
-            _output.WriteLine(state.definition.SerializedOptions);
-
-            Assert.Equal(oidcptions.ClientId, storedOptions.ClientId);
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnTicketReceived(new TicketReceivedContext(
                 httpContext,
@@ -402,10 +380,6 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<TwitterOptions>("test", provider);
 
-            var storedOptions = JsonConvert.DeserializeObject<TwitterOptions>(state.definition.SerializedOptions);
-            _output.WriteLine(state.definition.SerializedOptions);
-
-            Assert.Equal(twittertOptions.ConsumerKey, storedOptions.ConsumerKey);
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnTicketReceived(new TicketReceivedContext(
                 httpContext,
@@ -414,6 +388,39 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 new AuthenticationTicket(new ClaimsPrincipal(), "test")));
 
             Assert.True(eventCalled);
+        }
+
+        [Fact]
+        public async Task AddAsync_should_ensure_uniq_callback_path()
+        {
+            var provider = CreateServiceProvider(options =>
+            {
+                options.AddTwitter();
+            });
+
+            var twittertOptions = new TwitterOptions
+            {
+                ConsumerKey = "test",
+                ConsumerSecret = "test"
+            };
+
+            var definition = new TSchemeDefinition
+            {
+                Scheme = "test",
+                DisplayName = "test",
+                HandlerType = typeof(TwitterHandler),
+                Options = twittertOptions
+            };
+
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
+            Assert.Contains(typeof(TwitterHandler), sut.ManagedHandlerType);
+
+            await sut.AddAsync(definition);
+            var state = await VerifyAddedAsync<TwitterOptions>("test", provider);
+
+            definition.Scheme = "test2";
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() => sut.AddAsync(definition));
         }
 
         [Fact]
@@ -456,10 +463,6 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<WsFederationOptions>("test", provider);
 
-            var storedOptions = JsonConvert.DeserializeObject<WsFederationOptions>(state.definition.SerializedOptions);
-            _output.WriteLine(state.definition.SerializedOptions);
-
-            Assert.Equal(wsFederationOptions.Configuration.Issuer, storedOptions.Configuration.Issuer);
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnTicketReceived(new TicketReceivedContext(
                 httpContext,
@@ -469,6 +472,55 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
 
             Assert.True(eventCalled);
         }
+        
+        [Fact]
+        public async Task AddAsync_should_add_generic_handler()
+        {
+            var eventCalled = false;
+            Task onTicketReceived(TicketReceivedContext context)
+            {
+                eventCalled = true;
+                return Task.CompletedTask;
+            }
+
+            var provider = CreateServiceProvider(options =>
+            {
+                options.AddScheme<OAuthOptions, FakeGenericHandler<string, OAuthOptions>>("test", configure =>
+                {
+                    configure.Events.OnTicketReceived = onTicketReceived;
+                });
+            });
+
+            var oAuthOptions = new OAuthOptions
+            {
+                ClientId = "test"                
+            };
+
+            var definition = new TSchemeDefinition
+            {
+                Scheme = "test",
+                DisplayName = "test",
+                HandlerType = typeof(FakeGenericHandler<string, OAuthOptions>),
+                Options = oAuthOptions
+            };
+
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
+            Assert.Contains(typeof(FakeGenericHandler<string, OAuthOptions>), sut.ManagedHandlerType);
+
+            await sut.AddAsync(definition);
+            var state = await VerifyAddedAsync<OAuthOptions>("test", provider);
+
+            var httpContext = new Mock<HttpContext>().Object;
+            state.options.Events.OnTicketReceived(new TicketReceivedContext(
+                httpContext,
+                state.scheme as AuthenticationScheme,
+                state.options as OAuthOptions,
+                new AuthenticationTicket(new ClaimsPrincipal(), "test")));
+
+            Assert.True(eventCalled);
+        }
+
+
         [Fact]
         public async Task UpdateAsync_should_update_handler()
         {
@@ -528,10 +580,6 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await sut.UpdateAsync(definition);
             var state = await VerifyAddedAsync<WsFederationOptions>("test", provider);
 
-            var storedOptions = JsonConvert.DeserializeObject<WsFederationOptions>(state.definition.SerializedOptions);
-            _output.WriteLine(state.definition.SerializedOptions);
-
-            Assert.Equal(wsFederationOptions.Configuration.Issuer, storedOptions.Configuration.Issuer);
             Assert.Equal(state.scheme.DisplayName, definition.DisplayName);
 
             var httpContext = new Mock<HttpContext>().Object;
@@ -575,7 +623,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
 
             await sut.RemoveAsync("test");
-            await Assert.ThrowsAsync<NullReferenceException>(() => VerifyAddedAsync<WsFederationOptions>("test", provider));
+            await Assert.ThrowsAsync<NotNullException>(() => VerifyAddedAsync<WsFederationOptions>("test", provider));
         }
 
         [Fact]
@@ -611,6 +659,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
 
             await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
         }
+
         protected abstract DynamicAuthenticationBuilder AddStore(DynamicAuthenticationBuilder builder);
 
         private async Task<dynamic> VerifyAddedAsync<TOptions>(string schemeName, IServiceProvider provider) where TOptions : AuthenticationSchemeOptions
@@ -645,6 +694,26 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             addHandlers?.Invoke(builder);
 
             return services.BuildServiceProvider();
+        }
+
+        class FakeGenericHandler<TFakeOptions, TOptions> : AuthenticationHandler<TOptions>
+            where TOptions : AuthenticationSchemeOptions, new()
+        {
+            public FakeGenericHandler(IOptionsMonitor<TOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+            {
+            }
+
+            protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+            {
+                return Task.FromResult(new FakeAuthenticateResult() as AuthenticateResult);
+            }
+
+            public class FakeAuthenticateResult: AuthenticateResult
+            {
+                public FakeAuthenticateResult() : base()
+                {
+                }
+            }
         }
     }
 }

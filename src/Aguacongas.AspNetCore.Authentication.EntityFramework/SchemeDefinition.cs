@@ -1,4 +1,4 @@
-﻿// Project: DymamicAuthProviders
+﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
 namespace Aguacongas.AspNetCore.Authentication
 {
@@ -9,12 +9,12 @@ namespace Aguacongas.AspNetCore.Authentication
     public class SchemeDefinition: SchemeDefinitionBase
     {
         /// <summary>
-        /// Gets or sets the name of the handler type.
+        /// Gets or sets the serialized handler type.
         /// </summary>
         /// <value>
-        /// The name of the handler type.
+        /// The name of the serialized handler type.
         /// </value>
-        public string HandlerTypeName { get; set; }
+        public string SerializedHandlerType { get; set; }
 
         /// <summary>
         /// Gets or sets the serialized options.

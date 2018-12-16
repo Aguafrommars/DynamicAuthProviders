@@ -10,7 +10,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>aspnetcore authentication security entityframeworkcore</PackageTags>
     <Description>Provider for DinamicAuthProviders that uses Entity Framework Core.
-
+    <DebugType>Full</DebugType>
 </Description>
   </PropertyGroup>
 

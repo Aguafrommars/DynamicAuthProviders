@@ -1,8 +1,8 @@
-extensions: designer.cs generated.cs
-extensions: .cs .cpp .h
-// Project: DymamicAuthProviders
+extensions: .cs
+// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
-extensions: .aspx .ascx
-<%-- 
-Copyright (c) 2018 Olivier Lefebvre
---%>
+extensions:  .xml .config .xsd
+<!--
+Project: aguacongas/DymamicAuthProviders
+Copyright (c) 2018 @Olivier Lefebvre
+-->

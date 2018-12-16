@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28315.86
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{245AA4AB-ECF4-4C69-B63D-C59D4B3F918C}"
 EndProject
@@ -14,10 +14,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.commitlintrc.json = .commitlintrc.json
 		.npmrc = .npmrc
 		.releaserc.json = .releaserc.json
-		GitVersion.yml = GitVersion.yml
+		appveyor.yml = appveyor.yml
+		build.cmd = build.cmd
+		build.ps1 = build.ps1
+		dotnet-install.ps1 = dotnet-install.ps1
 		global.json = global.json
 		LICENSE = LICENSE
 		NuGet.Config = NuGet.Config
+		publish.cmd = publish.cmd
+		publish.ps1 = publish.ps1
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -31,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication.TestBase", "src\Aguacongas.AspNetCore.Authentication.TestBase\Aguacongas.AspNetCore.Authentication.TestBase.csproj", "{440D2CE9-5C8D-4E58-90A8-D03807C62043}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aguacongas.AspNetCore.Authentication.EntityFramework.Test", "test\Aguacongas.AspNetCore.Authentication.EntityFramework.Test\Aguacongas.AspNetCore.Authentication.EntityFramework.Test.csproj", "{01E5055D-BF6A-435C-8858-F63A8FAC6D86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication.EntityFramework.Test", "test\Aguacongas.AspNetCore.Authentication.EntityFramework.Test\Aguacongas.AspNetCore.Authentication.EntityFramework.Test.csproj", "{01E5055D-BF6A-435C-8858-F63A8FAC6D86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

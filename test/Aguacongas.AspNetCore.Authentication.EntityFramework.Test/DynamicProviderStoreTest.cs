@@ -1,4 +1,6 @@
-﻿using JetBrains.Annotations;
+﻿// Project: aguacongas/DymamicAuthProviders
+// Copyright (c) 2018 @Olivier Lefebvre
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Logging;

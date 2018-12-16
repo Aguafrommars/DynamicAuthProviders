@@ -1,7 +1,9 @@
-﻿// Project: DymamicAuthProviders
+﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -24,13 +26,21 @@ namespace Aguacongas.AspNetCore.Authentication
         /// </value>
         public IEnumerable<Type> HandlerTypes { get; }
 
+        public Type DefinitionType { get; }
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicAuthenticationBuilder"/> class.
         /// </summary>
         /// <param name="services">The services.</param>
-        public DynamicAuthenticationBuilder(IServiceCollection services): base(services)
+        public DynamicAuthenticationBuilder(IServiceCollection services, Type definitionType): base(services)
         {
             HandlerTypes = _handlerTypes;
+            DefinitionType = definitionType;
+        }
+
+        public override AuthenticationBuilder AddRemoteScheme<TOptions, THandler>(string authenticationScheme, string displayName, Action<TOptions> configureOptions)
+        {
+            Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<TOptions>, EnsureUniqCallbackPath<TOptions, THandler>>());
+            return base.AddRemoteScheme<TOptions, THandler>(authenticationScheme, displayName, configureOptions);
         }
 
         /// <summary>
@@ -51,14 +61,41 @@ namespace Aguacongas.AspNetCore.Authentication
                 new OptionsMonitorCacheWrapper<TOptions>
                 (
                     provider.GetRequiredService<IOptionsMonitorCache<TOptions>>(),
+                    provider.GetRequiredService<IEnumerable<IPostConfigureOptions<TOptions>>>(),
                     (name, configure) =>
                     {
                         configureOptions?.Invoke((TOptions)configure);
                     }
                 )
             );
-            base.AddScheme<TOptions, THandler>(authenticationScheme, displayName, configureOptions);
             return this;
+        }
+
+        private class EnsureUniqCallbackPath<TOptions, THandler> : IPostConfigureOptions<TOptions> where TOptions : RemoteAuthenticationOptions
+        {
+            private readonly AuthenticationOptions _authOptions;
+            private readonly IAuthenticationSchemeProvider _schemeProvider;
+            private readonly IOptionsMonitorCache<AuthenticationSchemeOptions> _monitorCache;
+
+            public EnsureUniqCallbackPath(IOptions<AuthenticationOptions> authOptions, IAuthenticationSchemeProvider schemeProvider, IOptionsMonitorCache<AuthenticationSchemeOptions> monitorCache)
+            {
+                _authOptions = authOptions.Value;
+                _schemeProvider = schemeProvider;
+                _monitorCache = monitorCache;
+            }
+
+            public void PostConfigure(string name, TOptions options)
+            {
+                var schemes = _schemeProvider.GetAllSchemesAsync().GetAwaiter().GetResult();
+                foreach(var scheme in schemes)
+                {
+                    var other = _monitorCache.GetOrAdd(scheme.Name, () => options);
+                    if (other != options && other is RemoteAuthenticationOptions otherRemote && otherRemote.CallbackPath == options.CallbackPath)
+                    {
+                        throw new InvalidOperationException($"Callbacks paths for schemes {name} and {scheme.Name} are equals: {options.CallbackPath}");
+                    }
+                }
+            }
         }
     }
 }

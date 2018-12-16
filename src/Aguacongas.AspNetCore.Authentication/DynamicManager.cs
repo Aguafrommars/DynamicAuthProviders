@@ -1,4 +1,4 @@
-﻿// Project: DymamicAuthProviders
+﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyModel;
@@ -20,6 +20,15 @@ namespace Aguacongas.AspNetCore.Authentication
         where TSchemeDefinition : SchemeDefinitionBase, new()
     {
         private readonly IDynamicProviderStore<TSchemeDefinition> _store;
+
+        /// <summary>
+        /// Gets the scheme definitions list.
+        /// </summary>
+        /// <value>
+        /// The scheme definitions list.
+        /// </value>
+        public virtual IEnumerable<TSchemeDefinition> SchemeDefinitions => _store.SchemeDefinitions;
+
         public PersistentDynamicManager(IAuthenticationSchemeProvider schemeProvider, OptionsMonitorCacheWrapperFactory wrapperFactory, IDynamicProviderStore<TSchemeDefinition> store, IEnumerable<Type> managedTypes)
             : base(schemeProvider, wrapperFactory, managedTypes)
         {
@@ -91,13 +100,6 @@ namespace Aguacongas.AspNetCore.Authentication
 
             foreach (var definition in _store.SchemeDefinitions)
             {
-                var scheme = definition.Scheme;
-                var handlerType = runtimeAssemblyNames
-                    .Select(Assembly.Load)
-                    .SelectMany(a => a.ExportedTypes)
-                    .First(t => t == definition.HandlerType);
-
-
                 base.AddAsync(definition).GetAwaiter().GetResult();
             }
         }
@@ -163,6 +165,8 @@ namespace Aguacongas.AspNetCore.Authentication
 
             _schemeProvider.AddScheme(new AuthenticationScheme(scheme, definition.DisplayName, handlerType));
             optionsMonitorCache.TryAdd(scheme, definition.Options);
+
+
         }
 
         /// <summary>

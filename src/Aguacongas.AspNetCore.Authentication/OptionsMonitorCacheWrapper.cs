@@ -1,9 +1,10 @@
-﻿// Project: DymamicAuthProviders
+﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
@@ -12,11 +13,12 @@ namespace Aguacongas.AspNetCore.Authentication
     /// </summary>
     /// <remarks>For internal use, you should not use this class</remarks>
     /// <typeparam name="TOptions">The type of the options.</typeparam>
-    /// <seealso cref="Microsoft.Extensions.Options.IOptionsMonitorCache{Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions}" />
+    /// <seealso cref="Microsoft.Extensions.Options.IOptionsMonitorCache{Microsoft.AspNetCore.Authentication.AuthenticationOptions}" />
     public class OptionsMonitorCacheWrapper<TOptions> : IOptionsMonitorCache<AuthenticationSchemeOptions>
         where TOptions: AuthenticationSchemeOptions, new()
     {
         private readonly Type _type;
+        private readonly IEnumerable<IPostConfigureOptions<TOptions>> _postConfigures;
         private readonly IOptionsMonitorCache<TOptions> _parent;
         private readonly Action<string, AuthenticationSchemeOptions> _onAdded;
 
@@ -27,10 +29,11 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <param name="onAdded">The on added.</param>
         /// <param name="onRemoved">The on removed.</param>
         /// <remarks>For internal user, you should not use this class</remarks>
-        public OptionsMonitorCacheWrapper(IOptionsMonitorCache<TOptions> parent, Action<string, AuthenticationSchemeOptions> onAdded)
+        public OptionsMonitorCacheWrapper(IOptionsMonitorCache<TOptions> parent, IEnumerable<IPostConfigureOptions<TOptions>> postConfigures, Action<string, AuthenticationSchemeOptions> onAdded)
         {
             _parent = parent ?? throw new ArgumentNullException(nameof(parent));
             _type = parent.GetType();
+            _postConfigures = postConfigures ?? throw new ArgumentNullException(nameof(postConfigures));
             _onAdded = onAdded ?? throw new ArgumentNullException(nameof(onAdded)); ;
         }
 
@@ -54,7 +57,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <remarks>This method is not implemented.</remarks>
         public AuthenticationSchemeOptions GetOrAdd(string name, Func<AuthenticationSchemeOptions> createOptions)
         {
-            throw new NotImplementedException();
+            return _parent.GetOrAdd(name, () => createOptions?.Invoke() as TOptions);
         }
 
         /// <summary>
@@ -69,6 +72,10 @@ namespace Aguacongas.AspNetCore.Authentication
         {
             var result = _parent.TryAdd(name, (TOptions)options);
             _onAdded.Invoke(name, options);
+            foreach(var postConfigure in _postConfigures)
+            {
+                postConfigure.PostConfigure(name, options as TOptions);
+            }
             return result;
         }
 

@@ -13,7 +13,7 @@ namespace Aguacongas.AspNetCore.Authentication
     /// </summary>
     /// <remarks>For internal use, you should not use this class</remarks>
     /// <typeparam name="TOptions">The type of the options.</typeparam>
-    /// <seealso cref="Microsoft.Extensions.Options.IOptionsMonitorCache{Microsoft.AspNetCore.Authentication.AuthenticationOptions}" />
+    /// <seealso cref="IOptionsMonitorCache{AuthenticationOptions}" />
     public class OptionsMonitorCacheWrapper<TOptions> : IOptionsMonitorCache<AuthenticationSchemeOptions>
         where TOptions: AuthenticationSchemeOptions, new()
     {
@@ -26,8 +26,15 @@ namespace Aguacongas.AspNetCore.Authentication
         /// Initializes a new instance of the <see cref="OptionsMonitorCacheWrapper{TOptions}"/> class.
         /// </summary>
         /// <param name="parent">The parent.</param>
-        /// <param name="onAdded">The on added.</param>
-        /// <param name="onRemoved">The on removed.</param>
+        /// <param name="postConfigures">The post configures actions list.</param>
+        /// <param name="onAdded">The on added action.</param>
+        /// <exception cref="ArgumentNullException">
+        /// parent
+        /// or
+        /// postConfigures
+        /// or
+        /// onAdded
+        /// </exception>
         /// <remarks>For internal user, you should not use this class</remarks>
         public OptionsMonitorCacheWrapper(IOptionsMonitorCache<TOptions> parent, IEnumerable<IPostConfigureOptions<TOptions>> postConfigures, Action<string, AuthenticationSchemeOptions> onAdded)
         {

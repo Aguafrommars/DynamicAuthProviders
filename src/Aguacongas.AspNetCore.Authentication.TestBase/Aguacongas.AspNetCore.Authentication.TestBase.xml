@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Aguacongas.AspNetCore.Authentication.TestBase</name>
+    </assembly>
+    <members>
+        <member name="T:Aguacongas.AspNetCore.Authentication.TestBase.DynamicManagerTestBase`1">
+            <summary>
+            Base test suite to verify if the store implementation work as expecter
+            </summary>
+            <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.TestBase.DynamicManagerTestBase`1.#ctor(Xunit.Abstractions.ITestOutputHelper)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Aguacongas.AspNetCore.Authentication.TestBase.DynamicManagerTestBase`1"/> class.
+            </summary>
+            <param name="output">The output.</param>
+        </member>
+    </members>
+</doc>

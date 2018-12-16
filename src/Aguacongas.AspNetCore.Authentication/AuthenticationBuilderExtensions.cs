@@ -16,7 +16,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="TSchemeDefinition">The type of the definition.</typeparam>
         /// <param name="builder">The builder.</param>
-        /// <param name="notify">The action to call on scheme added or removed.</param>
         /// <returns></returns>
         public static DynamicAuthenticationBuilder AddDynamic<TSchemeDefinition>(this AuthenticationBuilder builder)
             where TSchemeDefinition: SchemeDefinitionBase, new()

@@ -26,17 +26,36 @@ namespace Aguacongas.AspNetCore.Authentication
         /// </value>
         public IEnumerable<Type> HandlerTypes { get; }
 
+        /// <summary>
+        /// Gets the type of the definition.
+        /// </summary>
+        /// <value>
+        /// The type of the definition.
+        /// </value>
         public Type DefinitionType { get; }
         /// <summary>
-        /// Initializes a new instance of the <see cref="DynamicAuthenticationBuilder"/> class.
+        /// Initializes a new instance of the <see cref="DynamicAuthenticationBuilder" /> class.
         /// </summary>
         /// <param name="services">The services.</param>
+        /// <param name="definitionType">Type of the definition.</param>
         public DynamicAuthenticationBuilder(IServiceCollection services, Type definitionType): base(services)
         {
             HandlerTypes = _handlerTypes;
             DefinitionType = definitionType;
         }
 
+        /// <summary>
+        /// Adds a <see cref="T:Microsoft.AspNetCore.Authentication.RemoteAuthenticationHandler`1" /> based <see cref="T:Microsoft.AspNetCore.Authentication.AuthenticationScheme" /> that supports remote authentication
+        /// which can be used by <see cref="T:Microsoft.AspNetCore.Authentication.IAuthenticationService" />.
+        /// </summary>
+        /// <typeparam name="TOptions">The <see cref="T:Microsoft.AspNetCore.Authentication.RemoteAuthenticationOptions" /> type to configure the handler."/&gt;.</typeparam>
+        /// <typeparam name="THandler">The <see cref="T:Microsoft.AspNetCore.Authentication.RemoteAuthenticationHandler`1" /> used to handle this scheme.</typeparam>
+        /// <param name="authenticationScheme">The name of this scheme.</param>
+        /// <param name="displayName">The display name of this scheme.</param>
+        /// <param name="configureOptions">Used to configure the scheme options.</param>
+        /// <returns>
+        /// The builder.
+        /// </returns>
         public override AuthenticationBuilder AddRemoteScheme<TOptions, THandler>(string authenticationScheme, string displayName, Action<TOptions> configureOptions)
         {
             Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<TOptions>, EnsureUniqCallbackPath<TOptions, THandler>>());

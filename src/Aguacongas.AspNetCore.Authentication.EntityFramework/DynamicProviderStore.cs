@@ -18,6 +18,12 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
     /// <seealso cref="Aguacongas.AspNetCore.Authentication.IDynamicProviderStore{TSchemeDefinition}" />
     public class DynamicProviderStore : DynamicProviderStore<SchemeDefinition>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DynamicProviderStore"/> class.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="authenticationSchemeOptionsSerializer">The authentication scheme options serializer.</param>
+        /// <param name="logger">The logger.</param>
         public DynamicProviderStore(SchemeDbContext context, IAuthenticationSchemeOptionsSerializer authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore> logger) : base(context, authenticationSchemeOptionsSerializer, logger)
         {
         }
@@ -31,6 +37,12 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
     public class DynamicProviderStore<TSchemeDefinition> : DynamicProviderStore<TSchemeDefinition, SchemeDbContext<TSchemeDefinition>>
         where TSchemeDefinition : SchemeDefinition, new()
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DynamicProviderStore{TSchemeDefinition}"/> class.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="authenticationSchemeOptionsSerializer">The authentication scheme options serializer.</param>
+        /// <param name="logger">The logger.</param>
         public DynamicProviderStore(SchemeDbContext<TSchemeDefinition> context, IAuthenticationSchemeOptionsSerializer authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore<TSchemeDefinition>> logger) : base(context, authenticationSchemeOptionsSerializer, logger)
         {
         }

@@ -45,6 +45,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             _output = output;
         }
 
+        /// <summary>
+        /// AddAsync method should add cookie handler.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task AddAsync_should_add_cookie_handler()
         {
@@ -95,6 +99,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.True(eventCalled);
         }
 
+        /// <summary>
+        /// AddAsync method should add facebook handler.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task AddAsync_should_add_facebook_handler()
         {
@@ -145,6 +153,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.True(eventCalled);
         }
 
+        /// <summary>
+        /// AddAsync method should add google handler.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task AddAsync_should_add_google_handler()
         {
@@ -195,6 +207,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.True(eventCalled);
         }
 
+        /// <summary>
+        /// AddAsync method should add jwtbearer handler.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task AddAsync_should_add_jwtbearer_handler()
         {
@@ -243,6 +259,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.True(eventCalled);
         }
 
+        /// <summary>
+        /// AddAsync method should add ms account handler.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task AddAsync_should_add_ms_account_handler()
         {
@@ -294,6 +314,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.True(eventCalled);
         }
 
+        /// <summary>
+        /// AddAsync method should add oidc handler.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task AddAsync_should_add_oidc_handler()
         {
@@ -342,6 +366,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.True(eventCalled);
         }
 
+        /// <summary>
+        /// AddAsync method should add twitter handler.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task AddAsync_should_add_twitter_handler()
         {
@@ -390,6 +418,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.True(eventCalled);
         }
 
+        /// <summary>
+        /// AddAsync method should ensure uniq callback path.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task AddAsync_should_ensure_uniq_callback_path()
         {
@@ -423,6 +455,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await Assert.ThrowsAsync<InvalidOperationException>(() => sut.AddAsync(definition));
         }
 
+        /// <summary>
+        /// AddAsync method should add ws federation handler.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task AddAsync_should_add_ws_federation_handler()
         {
@@ -472,7 +508,11 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
 
             Assert.True(eventCalled);
         }
-        
+
+        /// <summary>
+        /// AddAsync method should add generic handler.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task AddAsync_should_add_generic_handler()
         {
@@ -521,6 +561,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
         }
 
 
+        /// <summary>
+        /// UpdateAsync method should update handler.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task UpdateAsync_should_update_handler()
         {
@@ -592,6 +636,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.True(eventCalled);
         }
 
+        /// <summary>
+        /// RemoveAsync method should remove handler.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task RemoveAsync_should_remove_handler()
         {
@@ -626,6 +674,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await Assert.ThrowsAsync<NotNullException>(() => VerifyAddedAsync<WsFederationOptions>("test", provider));
         }
 
+        /// <summary>
+        /// Loads the should load configuration.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task Load_should_load_configuration()
         {
@@ -660,6 +712,11 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
         }
 
+        /// <summary>
+        /// Adds the store.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <returns></returns>
         protected abstract DynamicAuthenticationBuilder AddStore(DynamicAuthenticationBuilder builder);
 
         private async Task<dynamic> VerifyAddedAsync<TOptions>(string schemeName, IServiceProvider provider) where TOptions : AuthenticationSchemeOptions

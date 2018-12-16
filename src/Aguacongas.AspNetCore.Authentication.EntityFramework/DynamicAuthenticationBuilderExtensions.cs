@@ -20,8 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="TContext">The type of the context.</typeparam>
         /// <param name="builder">The builder.</param>
-        /// <param name="optionsAction">The options action.</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="DynamicAuthenticationBuilder"/></returns>
         public static DynamicAuthenticationBuilder AddEntityFrameworkStore<TContext>(this DynamicAuthenticationBuilder builder)
             where TContext : DbContext
         {

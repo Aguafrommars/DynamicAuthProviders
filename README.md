@@ -9,9 +9,8 @@ Nuget packages
 --------------
 |Aguacongas.AspNetCore.Authentication|Aguacongas.AspNetCore.Authentication.EntityFramework|Aguacongas.AspNetCore.Authentication.TestBase|
 |:------:|:------:|:------:|
-|[![][Aguacongas.AspNetCore.Authentication-badge]][Aguacongas.AspNetCore.Authentication-nuget]|[![][Aguacongas.AspNetCore.Authentication.EntityFramework-badge]][Aguacongas.AspNetCore.Authentication.EntityFramework-nuget]|
-|[![][Aguacongas.AspNetCore.Authentication.TestBase-downloadbadge]][Aguacongas.AspNetCore.Authentication.TestBase-nuget]|
-
+|[![][Aguacongas.AspNetCore.Authentication-badge]][Aguacongas.AspNetCore.Authentication-nuget]|[![][Aguacongas.AspNetCore.Authentication.EntityFramework-badge]][Aguacongas.AspNetCore.Authentication.EntityFramework-nuget]|[![][Aguacongas.AspNetCore.Authentication.TestBase-badge]][Aguacongas.AspNetCore.Authentication.TestBase-nuget]|
+|[![][Aguacongas.AspNetCore.Authentication-downloadbadge]][Aguacongas.AspNetCore.Authentication-nuget]|[![][Aguacongas.AspNetCore.Authentication.EntityFramework-downloadbadge]][Aguacongas.AspNetCore.Authentication.EntityFramework-nuget]|[![][Aguacongas.AspNetCore.Authentication.TestBase-downloadbadge]][Aguacongas.AspNetCore.Authentication.TestBase-nuget]|
 [Aguacongas.AspNetCore.Authentication-badge]: https://img.shields.io/nuget/v/Aguacongas.AspNetCore.Authentication.svg
 [Aguacongas.AspNetCore.Authentication-downloadbadge]: https://img.shields.io/nuget/dt/Aguacongas.AspNetCore.Authentication.svg
 [Aguacongas.AspNetCore.Authentication-nuget]: https://www.nuget.org/packages/Aguacongas.AspNetCore.Authentication/

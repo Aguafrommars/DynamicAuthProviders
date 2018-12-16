@@ -6,8 +6,8 @@ skip_commits:
 branches:
   only:
   - master
-  - /preview*/ 
-  - /release*/
+  - /preview\/*/ 
+  - /release\/*/
 image: 
 - Ubuntu
 - Visual Studio 2017
@@ -42,18 +42,8 @@ deploy:
         secure: 23wPDdRicGt2vZuJ8vd9TRBKmqjHkx5WjzZmKvyxd5j0fNPedjUScRTj/rT0ObJa
       on:
         branch: 
-            - /preview*/
-            - /release*/
-        CI_WINDOWS: true
-    - provider: GitHub
-      auth_token: $(GH_TOKEN)
-      draft: true
-      prerelease: false
-      release: $(APPVEYOR_BUILD_VERSION)
-      on:
-        branch: 
-            - /preview*/ 
-            - /release*/
+            - /preview\/*/
+            - /release\/*/
         CI_WINDOWS: true
 for:
 -
@@ -75,8 +65,9 @@ for:
 -
   branches:
     only:
-      - /release*/
+      - /release>\/*/
   on_success:
+      - cmd: semantic-release -b %APPVEYOR_REPO_BRANCH%
       - cmd: git config --global credential.helper store
       - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n" }
       - cmd: git config --global user.email "aguacongas@gmail.com"

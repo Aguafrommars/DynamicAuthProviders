@@ -11,6 +11,6 @@ branches:
     regex: preview?[/-] 
     tag: 'preview'
     is-mainline: true
-    source-branches: ['main']
+    source-branches: ['master']
 ignore:
   sha: []

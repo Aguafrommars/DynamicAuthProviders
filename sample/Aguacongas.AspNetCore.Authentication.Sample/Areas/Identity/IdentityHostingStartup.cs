@@ -17,7 +17,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Areas.Identity
             builder.ConfigureServices((context, services) => {
                 services.AddDbContext<IdentityDataContext>(options =>
                     options.UseSqlServer(
-                        context.Configuration.GetConnectionString("IdentityDataContextConnection")));
+                        context.Configuration.GetConnectionString("Default")));
 
                 services.AddDefaultIdentity<IdentityUser>()
                     .AddEntityFrameworkStores<IdentityDataContext>();

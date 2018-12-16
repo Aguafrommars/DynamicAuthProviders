@@ -4,6 +4,7 @@ using Aguacongas.AspNetCore.Authentication.Sample.Helpers;
 using Aguacongas.AspNetCore.Authentication.Sample.Models;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Diagnostics;
@@ -15,10 +16,12 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
     public class HomeController : Controller
     {
         private readonly PersistentDynamicManager<SchemeDefinition> _manager;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
-        public HomeController(PersistentDynamicManager<SchemeDefinition> manager)
+        public HomeController(PersistentDynamicManager<SchemeDefinition> manager, SignInManager<IdentityUser> signInManager)
         {
             _manager = manager ?? throw new ArgumentNullException(nameof(manager));
+            _signInManager = signInManager;
         }
 
         public IActionResult Index()
@@ -53,6 +56,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
 
                 oAuthOptions.ClientId = model.ClientId;
                 oAuthOptions.ClientSecret = model.ClientSecret;
+                oAuthOptions.CallbackPath = "/signin-" + model.Scheme;
 
                 await _manager.AddAsync(new SchemeDefinition
                 {
@@ -70,30 +74,44 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
         [Route("Update/{scheme}")]
         public async Task<IActionResult> Update(string scheme)
         {
+            AuthenticationViewModel model;
             var definition = await _manager.FindBySchemeAsync(scheme);
             if (definition == null)
             {
-                return NotFound();
-            }
-
-            var vm = new AuthenticationViewModel
-            {
-                Scheme = definition.Scheme,
-                DisplayName = definition.DisplayName,
-                HandlerType = definition.HandlerType.Name
-            };
-
-            if(definition.Options is OAuthOptions oAuthOptions) // GoogleOptions is OAuthOptions
-            {
-                vm.ClientId = oAuthOptions.ClientId;
-                vm.ClientSecret = oAuthOptions.ClientSecret;
+                var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
+                var authenticationScheme = schemes.FirstOrDefault(s => s.Name == scheme);
+                if (authenticationScheme == null)
+                {
+                    return NotFound();
+                }
+                model = new AuthenticationViewModel
+                {
+                    Scheme = authenticationScheme.Name,
+                    DisplayName = authenticationScheme.DisplayName,
+                    HandlerType = authenticationScheme.HandlerType.Name
+                };
             }
             else
             {
-                return Error();
+                model = new AuthenticationViewModel
+                {
+                    Scheme = definition.Scheme,
+                    DisplayName = definition.DisplayName,
+                    HandlerType = definition.HandlerType.Name
+                };
+
+                if (definition.Options is OAuthOptions oAuthOptions) // GoogleOptions is OAuthOptions
+                {
+                    model.ClientId = oAuthOptions.ClientId;
+                    model.ClientSecret = oAuthOptions.ClientSecret;
+                }
+                else
+                {
+                    return Error();
+                }
             }
 
-            return View(vm);
+            return View(model);
         }
 
         [HttpPost]
@@ -105,9 +123,11 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
                 var definition = await _manager.FindBySchemeAsync(model.Scheme);
                 if (definition == null)
                 {
-                    return NotFound();
+                    await Create(model);
+
+                    return View(model);
                 }
-                
+
                 if (definition.Options is OAuthOptions oAuthOptions) // GoogleOptions is OAuthOptions
                 {
                     oAuthOptions.ClientId = model.ClientId;
@@ -123,9 +143,12 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
         }
 
         [Route("List")]
-        public IActionResult List()
+        public async Task<IActionResult> List()
         {
-            return View(_manager.SchemeDefinitions.Select(s => s.Scheme));
+            var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
+               
+            return View(schemes.Where(s => _manager.ManagedHandlerType.Any(h => s.HandlerType == h))
+                .Select(s => s.Name));
         }
 
         [Route("Delete/{scheme}")]

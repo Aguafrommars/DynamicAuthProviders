@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -43,17 +45,36 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services
+
+            /** add dynamic management **/
+
+            // add authentication
+            var authBuilder = services
                 .AddAuthentication()
-                .AddFacebook()
-                // The order is important, 1st add dynamic, then store, then providers you want to manage dynamically.
-                // Facebook should appears in managed handlers list, however, if you move it after AddDynamic, it will.
-                .AddDynamic(options =>
+                // You must first create an app with Facebook and add its ID and Secret to your user-secrets.
+                // https://developers.facebook.com/apps/
+                // https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow#login
+                .AddFacebook(options =>
                 {
-                    options.UseSqlServer(Configuration.GetConnectionString("Default"));
-                })
-                .AddGoogle()
-                .AddOAuth("Github", options =>
+                    options.AppId = Configuration["facebook:appid"];
+                    options.AppSecret = Configuration["facebook:appsecret"];
+                }); // this handler cannot be managed dynamically
+
+            // add the context to store schemes configuration
+
+            services.AddDbContext<SchemeDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("Default"));
+            }); 
+
+            // add magic
+            var dynamicBuilder = authBuilder
+                .AddDynamic<SchemeDefinition>()
+                .AddEntityFrameworkStore<SchemeDbContext>();
+
+            // add providers managed dynamically
+            dynamicBuilder.AddGoogle()
+                .AddOAuth("Github", "Github", options =>
                 {
                     // You can defined default configuration for managed handlers.
 
@@ -62,6 +83,8 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                     options.TokenEndpoint = "https://github.com/login/oauth/access_token";
                     options.UserInformationEndpoint = "https://api.github.com/user";
                     options.ClaimsIssuer = "OAuth2-Github";
+
+
                     // Retrieving user information is unique to each provider.
                     options.Events = new OAuthEvents
                     {
@@ -124,7 +147,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, SchemeDbContext<SchemeDefinition> context)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -137,11 +160,10 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                 app.UseHsts();
             }
 
-            context.Database.EnsureCreated();
-
             app.UseHttpsRedirection()
                 .UseStaticFiles()
                 .UseCookiePolicy()
+                .UseAuthentication()
                 .UseMvc(routes =>
                 {
                     routes.MapRoute(

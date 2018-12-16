@@ -167,7 +167,10 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             cancellationToken.ThrowIfCancellationRequested();
             var definition = await _context.FindAsync<TSchemeDefinition>(new[] { scheme }, cancellationToken);
 
-            Deserialize(definition);
+            if (definition != null)
+            {
+                Deserialize(definition);
+            };
 
             return definition;
         }

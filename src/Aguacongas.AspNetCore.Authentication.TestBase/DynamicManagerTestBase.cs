@@ -216,7 +216,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
 
             var jwtBearerOptions = new JwtBearerOptions
             {
-                Authority = "test"
+                Authority = "test",
+                RequireHttpsMetadata = false
             };
 
             var definition = new TSchemeDefinition
@@ -387,6 +388,39 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 new AuthenticationTicket(new ClaimsPrincipal(), "test")));
 
             Assert.True(eventCalled);
+        }
+
+        [Fact]
+        public async Task AddAsync_should_ensure_uniq_callback_path()
+        {
+            var provider = CreateServiceProvider(options =>
+            {
+                options.AddTwitter();
+            });
+
+            var twittertOptions = new TwitterOptions
+            {
+                ConsumerKey = "test",
+                ConsumerSecret = "test"
+            };
+
+            var definition = new TSchemeDefinition
+            {
+                Scheme = "test",
+                DisplayName = "test",
+                HandlerType = typeof(TwitterHandler),
+                Options = twittertOptions
+            };
+
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
+            Assert.Contains(typeof(TwitterHandler), sut.ManagedHandlerType);
+
+            await sut.AddAsync(definition);
+            var state = await VerifyAddedAsync<TwitterOptions>("test", provider);
+
+            definition.Scheme = "test2";
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() => sut.AddAsync(definition));
         }
 
         [Fact]
@@ -589,7 +623,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
 
             await sut.RemoveAsync("test");
-            await Assert.ThrowsAsync<NullReferenceException>(() => VerifyAddedAsync<WsFederationOptions>("test", provider));
+            await Assert.ThrowsAsync<NotNullException>(() => VerifyAddedAsync<WsFederationOptions>("test", provider));
         }
 
         [Fact]

@@ -11,6 +11,10 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
     /// <seealso cref="SchemeDefinition" />
     public class SchemeDbContext : SchemeDbContext<SchemeDefinition>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SchemeDbContext"/> class.
+        /// </summary>
+        /// <param name="options">The options for this context.</param>
         public SchemeDbContext(DbContextOptions options) : base(options)
         {
         }

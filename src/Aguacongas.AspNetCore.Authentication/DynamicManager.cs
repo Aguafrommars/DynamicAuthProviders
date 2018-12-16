@@ -29,6 +29,14 @@ namespace Aguacongas.AspNetCore.Authentication
         /// </value>
         public virtual IEnumerable<TSchemeDefinition> SchemeDefinitions => _store.SchemeDefinitions;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PersistentDynamicManager{TSchemeDefinition}"/> class.
+        /// </summary>
+        /// <param name="schemeProvider">The scheme provider.</param>
+        /// <param name="wrapperFactory">The wrapper factory.</param>
+        /// <param name="store">The store.</param>
+        /// <param name="managedTypes">The managed types.</param>
+        /// <exception cref="ArgumentNullException">store</exception>
         public PersistentDynamicManager(IAuthenticationSchemeProvider schemeProvider, OptionsMonitorCacheWrapperFactory wrapperFactory, IDynamicProviderStore<TSchemeDefinition> store, IEnumerable<Type> managedTypes)
             : base(schemeProvider, wrapperFactory, managedTypes)
         {
@@ -115,6 +123,12 @@ namespace Aguacongas.AspNetCore.Authentication
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly OptionsMonitorCacheWrapperFactory _wrapperFactory;
 
+        /// <summary>
+        /// Gets the type of the managed handler.
+        /// </summary>
+        /// <value>
+        /// The type of the managed handler.
+        /// </value>
         public virtual IEnumerable<Type> ManagedHandlerType { get; }
 
         /// <summary>
@@ -122,7 +136,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// </summary>
         /// <param name="schemeProvider">The scheme provider.</param>
         /// <param name="wrapperFactory">The wrapper factory.</param>
-        /// <param name="store">The store.</param>
+        /// <param name="managedTypes">The list of managed handlers types.</param>
         /// <exception cref="ArgumentNullException">
         /// schemeProvider
         /// or

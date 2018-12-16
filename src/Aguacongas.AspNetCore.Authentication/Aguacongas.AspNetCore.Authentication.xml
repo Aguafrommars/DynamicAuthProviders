@@ -1,0 +1,457 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Aguacongas.AspNetCore.Authentication</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.AspNetCore.Builder.ApplicationBuilderExtensions">
+            <summary>
+            IApplicationBuilder extensions to load configuration
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Builder.ApplicationBuilderExtensions.LoadDynamicAuthenticationConfiguration``1(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Loads the dynamic authentication configuration.
+            </summary>
+            <typeparam name="TDefinition">The type of the definition.</typeparam>
+            <param name="builder">The builder.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Builder.ApplicationBuilderExtensions.LoadDynamicAuthenticationConfiguration``1(System.IServiceProvider)">
+            <summary>
+            Loads the dynamic authentication configuration.
+            </summary>
+            <typeparam name="TDefinition">The type of the definition.</typeparam>
+            <param name="provider">The provider.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.AuthenticationBuilderExtensions">
+            <summary>
+            AuthenticationBuilder extensions
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.AuthenticationBuilderExtensions.AddDynamic``1(Microsoft.AspNetCore.Authentication.AuthenticationBuilder)">
+            <summary>
+            Configures the DI for dynamic scheme management.
+            </summary>
+            <typeparam name="TSchemeDefinition">The type of the definition.</typeparam>
+            <param name="builder">The builder.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Aguacongas.AspNetCore.Authentication.AuthenticationSchemeOptionsSerializer">
+            <summary>
+            Manage <see cref="T:Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions"/> serialization.
+            </summary>
+            <seealso cref="T:Aguacongas.AspNetCore.Authentication.IAuthenticationSchemeOptionsSerializer" />
+        </member>
+        <member name="P:Aguacongas.AspNetCore.Authentication.AuthenticationSchemeOptionsSerializer.JsonSerializerSettings">
+            <summary>
+            Gets or sets the json serializer settings.
+            </summary>
+            <value>
+            The json serializer settings.
+            </value>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.AuthenticationSchemeOptionsSerializer.SerializeOptions(Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions,System.Type)">
+            <summary>
+            Serializes the specified options.
+            </summary>
+            <param name="options">The options.</param>
+            <param name="optionsType">Type of the options.</param>
+            <returns>
+            The serialized result.
+            </returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.AuthenticationSchemeOptionsSerializer.DeserializeOptions(System.String,System.Type)">
+            <summary>
+            Deserializes the specified value.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="optionsType">Type of the options.</param>
+            <returns>
+            An AuthenticationSchemeOptions instance.
+            </returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.AuthenticationSchemeOptionsSerializer.DeserializeType(System.String)">
+            <summary>
+            Deserializes the type.
+            </summary>
+            <param name="value">The value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.AuthenticationSchemeOptionsSerializer.SerializeType(System.Type)">
+            <summary>
+            Serializes the type.
+            </summary>
+            <param name="type">The type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.AuthenticationSchemeOptionsSerializer.Serialize(System.Object,System.Type)">
+            <summary>
+            Serializes the specified value.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="type">The type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.AuthenticationSchemeOptionsSerializer.Deserialize(System.String,System.Type)">
+            <summary>
+            Deserializes the specified value.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="type">The type.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Aguacongas.AspNetCore.Authentication.ContractResolver">
+            <summary>
+            Ignore delegate, interface and read-only property ContractResolver
+            </summary>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.ContractResolver.CreateProperty(System.Reflection.MemberInfo,Newtonsoft.Json.MemberSerialization)">
+            <summary>
+            Creates a <see cref="T:Newtonsoft.Json.Serialization.JsonProperty"/> for the given <see cref="T:System.Reflection.MemberInfo"/>.
+            </summary>
+            <param name="member">
+            The member to create a <see cref="T:Newtonsoft.Json.Serialization.JsonProperty"/> for.
+            </param>
+            <param name="memberSerialization">
+            The member's parent <see cref="T:Newtonsoft.Json.MemberSerialization"/>.
+            </param>
+            <returns>
+            A created <see cref="T:Newtonsoft.Json.Serialization.JsonProperty"/> for the given <see cref="T:System.Reflection.MemberInfo"/>.
+            </returns>
+        </member>
+        <member name="T:Aguacongas.AspNetCore.Authentication.DynamicAuthenticationBuilder">
+            <summary>
+            Configure the DI for dynamic scheme management.
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Authentication.AuthenticationBuilder" />
+        </member>
+        <member name="P:Aguacongas.AspNetCore.Authentication.DynamicAuthenticationBuilder.HandlerTypes">
+            <summary>
+            Gets the handler types managed by this instance.
+            </summary>
+            <value>
+            The handler types.
+            </value>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.DynamicAuthenticationBuilder.#ctor(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Aguacongas.AspNetCore.Authentication.DynamicAuthenticationBuilder"/> class.
+            </summary>
+            <param name="services">The services.</param>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.DynamicAuthenticationBuilder.AddScheme``2(System.String,System.String,System.Action{``0})">
+            <summary>
+            Adds a <see cref="T:Microsoft.AspNetCore.Authentication.AuthenticationScheme" /> which can be used by <see cref="T:Microsoft.AspNetCore.Authentication.IAuthenticationService" />.
+            </summary>
+            <typeparam name="TOptions">The <see cref="T:Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions" /> type to configure the handler."/&gt;.</typeparam>
+            <typeparam name="THandler">The <see cref="T:Microsoft.AspNetCore.Authentication.AuthenticationHandler`1" /> used to handle this scheme.</typeparam>
+            <param name="authenticationScheme">The name of this scheme.</param>
+            <param name="displayName">The display name of this scheme.</param>
+            <param name="configureOptions">Used to configure the scheme options.</param>
+            <returns>
+            The builder.
+            </returns>
+        </member>
+        <member name="T:Aguacongas.AspNetCore.Authentication.PersistentDynamicManager`1">
+            <summary>
+            Dynamic scheme manager which persist the changes.
+            </summary>
+            <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
+            <seealso cref="T:Aguacongas.AspNetCore.Authentication.NoPersistentDynamicManager`1" />
+        </member>
+        <member name="P:Aguacongas.AspNetCore.Authentication.PersistentDynamicManager`1.SchemeDefinitions">
+            <summary>
+            Gets the scheme definitions list.
+            </summary>
+            <value>
+            The scheme definitions list.
+            </value>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.PersistentDynamicManager`1.AddAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Adds a scheme asynchronously.
+            </summary>
+            <param name="definition">The definition.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.PersistentDynamicManager`1.RemoveAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Removes the scheme asynchronous.
+            </summary>
+            <param name="name">The scheme.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.PersistentDynamicManager`1.UpdateAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Updates the scheme asynchronous.
+            </summary>
+            <param name="definition">The definition.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.PersistentDynamicManager`1.FindBySchemeAsync(System.String)">
+            <summary>
+            Finds the definition by scheme asynchronous.
+            </summary>
+            <param name="scheme">The scheme.</param>
+            <returns>The scheme definition or null.</returns>
+            <exception cref="T:System.ArgumentException">scheme cannot be null or white space.</exception>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.PersistentDynamicManager`1.Load">
+            <summary>
+            Loads the configuration.
+            </summary>
+        </member>
+        <member name="T:Aguacongas.AspNetCore.Authentication.NoPersistentDynamicManager`1">
+            <summary>
+            Dynamic scheme manager which not persist the changes.
+            </summary>
+            <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.NoPersistentDynamicManager`1.#ctor(Microsoft.AspNetCore.Authentication.IAuthenticationSchemeProvider,Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapperFactory,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Aguacongas.AspNetCore.Authentication.NoPersistentDynamicManager`1"/> class.
+            </summary>
+            <param name="schemeProvider">The scheme provider.</param>
+            <param name="wrapperFactory">The wrapper factory.</param>
+            <param name="store">The store.</param>
+            <exception cref="T:System.ArgumentNullException">
+            schemeProvider
+            or
+            wrapperFactory
+            or
+            store
+            </exception>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.NoPersistentDynamicManager`1.AddAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Adds a scheme asynchronously.
+            </summary>
+            <param name="definition">The definition.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">definition</exception>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.NoPersistentDynamicManager`1.UpdateAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Updates the scheme asynchronous.
+            </summary>
+            <param name="definition">The definition.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">definition</exception>
+            <exception cref="T:System.InvalidOperationException">The scheme does not exist.</exception>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.NoPersistentDynamicManager`1.RemoveAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Removes the scheme asynchronous.
+            </summary>
+            <param name="name">The scheme.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentException">scheme cannot be null or white space.</exception>
+        </member>
+        <member name="T:Aguacongas.AspNetCore.Authentication.IAuthenticationSchemeOptionsSerializer">
+            <summary>
+            <see cref="T:Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions"/> serializer interface
+            </summary>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.IAuthenticationSchemeOptionsSerializer.DeserializeType(System.String)">
+            <summary>
+            Deserializes the type.
+            </summary>
+            <param name="value">The value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.IAuthenticationSchemeOptionsSerializer.SerializeType(System.Type)">
+            <summary>
+            Serializes the type.
+            </summary>
+            <param name="type">The type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.IAuthenticationSchemeOptionsSerializer.DeserializeOptions(System.String,System.Type)">
+            <summary>
+            Deserializes the specified value.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="optionsType">Type of the options.</param>
+            <returns>An AuthenticationSchemeOptions instance.</returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.IAuthenticationSchemeOptionsSerializer.SerializeOptions(Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions,System.Type)">
+            <summary>
+            Serializes the specified options.
+            </summary>
+            <param name="options">The options.</param>
+            <param name="optionsType">Type of the options.</param>
+            <returns>The serialized result.</returns>
+        </member>
+        <member name="T:Aguacongas.AspNetCore.Authentication.IDynamicProviderStore`1">
+            <summary>
+            Interface for store use by <see cref="T:Aguacongas.AspNetCore.Authentication.NoPersistentDynamicManager`1"/>
+            </summary>
+            <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
+        </member>
+        <member name="P:Aguacongas.AspNetCore.Authentication.IDynamicProviderStore`1.SchemeDefinitions">
+            <summary>
+            Gets the scheme definitions list.
+            </summary>
+            <value>
+            The scheme definitions list.
+            </value>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.IDynamicProviderStore`1.AddAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Adds a defnition asynchronously.
+            </summary>
+            <param name="definition">The definition.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.IDynamicProviderStore`1.FindBySchemeAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Finds scheme definition by scheme asynchronous.
+            </summary>
+            <param name="scheme">The scheme.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>An instance of TSchemeDefinition or null.</returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.IDynamicProviderStore`1.RemoveAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Removes a scheme definition asynchronous.
+            </summary>
+            <param name="definition">The definition.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.IDynamicProviderStore`1.UpdateAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Updates a scheme definition asynchronous.
+            </summary>
+            <param name="definition">The definition.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapper`1">
+            <summary>
+            Wrapper for <see cref="T:Microsoft.Extensions.Options.IOptionsMonitorCache`1"/>
+            </summary>
+            <remarks>For internal use, you should not use this class</remarks>
+            <typeparam name="TOptions">The type of the options.</typeparam>
+            <seealso cref="!:Microsoft.Extensions.Options.IOptionsMonitorCache&lt;Microsoft.AspNetCore.Authentication.AuthenticationOptions&gt;" />
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapper`1.#ctor(Microsoft.Extensions.Options.IOptionsMonitorCache{`0},System.Collections.Generic.IEnumerable{Microsoft.Extensions.Options.IPostConfigureOptions{`0}},System.Action{System.String,Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapper`1"/> class.
+            </summary>
+            <param name="parent">The parent.</param>
+            <param name="onAdded">The on added.</param>
+            <param name="onRemoved">The on removed.</param>
+            <remarks>For internal user, you should not use this class</remarks>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapper`1.Clear">
+            <summary>
+            Clears all options instances from the cache.
+            </summary>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapper`1.GetOrAdd(System.String,System.Func{Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions})">
+            <summary>
+            Gets a named options instance, or adds a new instance created with createOptions.
+            </summary>
+            <param name="name">The name of the options instance.</param>
+            <param name="createOptions">The func used to create the new instance.</param>
+            <returns>
+            The options instance.
+            </returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+            <remarks>This method is not implemented.</remarks>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapper`1.TryAdd(System.String,Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions)">
+            <summary>
+            Tries to adds a new option to the cache, will return false if the name already exists.
+            </summary>
+            <param name="name">The name of the options instance.</param>
+            <param name="options">The options instance.</param>
+            <returns>
+            Whether anything was added.
+            </returns>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapper`1.TryRemove(System.String)">
+            <summary>
+            Try to remove an options instance.
+            </summary>
+            <param name="name">The name of the options instance.</param>
+            <returns>
+            Whether anything was removed.
+            </returns>
+        </member>
+        <member name="T:Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapperFactory">
+            <summary>
+            Factory to create wrapper for <see cref="T:Microsoft.Extensions.Options.IOptionsMonitorCache`1"/>
+            </summary>
+            <remarks>For internal user, you should not use this class</remarks>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapperFactory.#ctor(System.IServiceProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapperFactory"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <remarks>For internal user, you should not use this class</remarks>
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.OptionsMonitorCacheWrapperFactory.Get(System.Type)">
+            <summary>
+            Gets the <see cref="T:Microsoft.Extensions.Options.IOptionsMonitorCache`1"/> wrapper for the option type
+            </summary>
+            <param name="optionsType">Type of the options.</param>
+            <returns></returns>
+            <remarks>For internal user, you should not use this class</remarks>
+        </member>
+        <member name="T:Aguacongas.AspNetCore.Authentication.SchemeDefinitionBase">
+            <summary>
+            Base class for scheme definition
+            </summary>
+        </member>
+        <member name="P:Aguacongas.AspNetCore.Authentication.SchemeDefinitionBase.Scheme">
+            <summary>
+            Gets or sets the scheme.
+            </summary>
+            <value>
+            The scheme.
+            </value>
+        </member>
+        <member name="P:Aguacongas.AspNetCore.Authentication.SchemeDefinitionBase.DisplayName">
+            <summary>
+            Gets or sets the display name.
+            </summary>
+            <value>
+            The display name.
+            </value>
+        </member>
+        <member name="P:Aguacongas.AspNetCore.Authentication.SchemeDefinitionBase.HandlerType">
+            <summary>
+            Gets or sets the type of the handler.
+            </summary>
+            <value>
+            The type of the handler.
+            </value>
+        </member>
+        <member name="P:Aguacongas.AspNetCore.Authentication.SchemeDefinitionBase.Options">
+            <summary>
+            Gets or sets the options.
+            </summary>
+            <value>
+            The options.
+            </value>
+        </member>
+        <member name="T:System.TypeExtensions">
+            <summary>
+            Type extensions
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:System.TypeExtensions.GetAuthenticationSchemeOptionsType(System.Type)" -->
+    </members>
+</doc>

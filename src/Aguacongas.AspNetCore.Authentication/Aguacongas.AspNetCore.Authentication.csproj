@@ -4,13 +4,21 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Olivier Lefebvre</Authors>
     <Copyright>Copyright (c) 2018 @Olivier Lefebvre</Copyright>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/aguacongas/DymamicAuthProviders/master/LICENSE</PackageLicenseUrl>
+    <PackageLicense>https://raw.githubusercontent.com/aguacongas/DymamicAuthProviders/master/LICENSE</PackageLicense>
     <PackageProjectUrl>https://github.com/aguacongas/DymamicAuthProviders/tree/master/src/Aguacongas.AspNetCore.Authentication</PackageProjectUrl>
     <RepositoryUrl>https://github.com/aguacongas/DymamicAuthProviders</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>aspnetcore authentication security</PackageTags>
-    <Description>DynamicAuhtProviders manager</Description>
+    <PackageTags>aspnetcore;authentication;security</PackageTags>
+    <Description>DynamicAuhtProvider manager</Description>
     <DebugType>Full</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Projects\Perso\DymamicAuthProviders\src\Aguacongas.AspNetCore.Authentication\Aguacongas.AspNetCore.Authentication.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Projects\Perso\DymamicAuthProviders\src\Aguacongas.AspNetCore.Authentication\Aguacongas.AspNetCore.Authentication.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,6 +1,7 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Aguacongas.AspNetCore.Authentication.Sample.Models
 {
@@ -19,5 +20,6 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Models
         public string ClientSecret { get; set; }
 
         public string HandlerType { get; set; }
+        public PathString CallbackPath { get; internal set; }
     }
 }

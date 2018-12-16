@@ -1,28 +1,18 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Aguacongas.AspNetCore.Authentication.EntityFramework;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Claims;
 
 namespace Aguacongas.AspNetCore.Authentication.Sample
 {
@@ -56,8 +46,8 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                 // https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow#login
                 .AddFacebook(options =>
                 {
-                    options.AppId = Configuration["facebook:appid"];
-                    options.AppSecret = Configuration["facebook:appsecret"];
+                    options.AppId = Configuration["facebook:appid"] ?? "not set";
+                    options.AppSecret = Configuration["facebook:appsecret"] ?? "not set";
                 }); // this handler cannot be managed dynamically
 
             // add the context to store schemes configuration
@@ -77,13 +67,10 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                 .AddOAuth("Github", "Github", options =>
                 {
                     // You can defined default configuration for managed handlers.
-
-                    options.CallbackPath = new PathString("/signin-github");
                     options.AuthorizationEndpoint = "https://github.com/login/oauth/authorize";
                     options.TokenEndpoint = "https://github.com/login/oauth/access_token";
                     options.UserInformationEndpoint = "https://api.github.com/user";
                     options.ClaimsIssuer = "OAuth2-Github";
-
 
                     // Retrieving user information is unique to each provider.
                     options.Events = new OAuthEvents

@@ -2,6 +2,7 @@
 // Copyright (c) 2018 @Olivier Lefebvre
 using Aguacongas.AspNetCore.Authentication.Sample.Helpers;
 using Aguacongas.AspNetCore.Authentication.Sample.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;
@@ -146,9 +147,17 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
         public async Task<IActionResult> List()
         {
             var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
-               
-            return View(schemes.Where(s => _manager.ManagedHandlerType.Any(h => s.HandlerType == h))
-                .Select(s => s.Name));
+
+            var managedSchemes = schemes.Where(s => _manager.ManagedHandlerType.Any(h => s.HandlerType == h))
+                .Select(s => s.Name);
+
+            var definitions = managedSchemes.Select(name => _manager.FindBySchemeAsync(name).GetAwaiter().GetResult());
+            return View(definitions.Select(definition => new AuthenticationViewModel
+            {
+                Scheme = definition.Scheme,
+                DisplayName = definition.DisplayName,
+                CallbackPath = definition.Options is RemoteAuthenticationOptions remote ? remote.CallbackPath : null
+            }));
         }
 
         [Route("Delete/{scheme}")]

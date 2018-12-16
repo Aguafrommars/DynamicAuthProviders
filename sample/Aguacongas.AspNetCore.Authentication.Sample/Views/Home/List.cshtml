@@ -2,18 +2,24 @@
 Project: DymamicAuthProviders
 Copyright (c) 2018 @@Olivier Lefebvre
 -->
+@model IEnumerable<AuthenticationViewModel>
 @{
-    ViewData["Title"] = "ListSchemes";
+    ViewData["Title"] = "List";
 }
 
 <h1>List schemes</h1>
 
-<ul class="list-unstyled">
-    @foreach (var item in Model)
-    {
-        <li><a asp-action="Update" asp-route-scheme="@item">@item</a></li>
-    }
-</ul>
+@foreach (var item in Model)
+{
+    <div class="row">
+        <div class="col-2">
+            <a asp-action="Update" asp-route-scheme="@item.Scheme">@item.DisplayName</a>
+        </div>
+        <div class="col">
+            <small>callback: <b>@item.CallbackPath</b></small>
+        </div>
+    </div>
+}
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

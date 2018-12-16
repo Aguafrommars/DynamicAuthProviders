@@ -27,8 +27,7 @@
             </summary>
             <typeparam name="TContext">The type of the context.</typeparam>
             <param name="builder">The builder.</param>
-            <param name="optionsAction">The options action.</param>
-            <returns></returns>
+            <returns>The <see cref="T:Aguacongas.AspNetCore.Authentication.DynamicAuthenticationBuilder"/></returns>
         </member>
         <member name="T:Aguacongas.AspNetCore.Authentication.EntityFramework.DynamicProviderStore">
             <summary>
@@ -36,12 +35,28 @@
             </summary>
             <seealso cref="T:Aguacongas.AspNetCore.Authentication.IDynamicProviderStore`1" />
         </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.EntityFramework.DynamicProviderStore.#ctor(Aguacongas.AspNetCore.Authentication.EntityFramework.SchemeDbContext,Aguacongas.AspNetCore.Authentication.IAuthenticationSchemeOptionsSerializer,Microsoft.Extensions.Logging.ILogger{Aguacongas.AspNetCore.Authentication.EntityFramework.DynamicProviderStore})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Aguacongas.AspNetCore.Authentication.EntityFramework.DynamicProviderStore"/> class.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="authenticationSchemeOptionsSerializer">The authentication scheme options serializer.</param>
+            <param name="logger">The logger.</param>
+        </member>
         <member name="T:Aguacongas.AspNetCore.Authentication.EntityFramework.DynamicProviderStore`1">
             <summary>
             Implement a store for <see cref="T:Aguacongas.AspNetCore.Authentication.NoPersistentDynamicManager`1"/> with EntityFramework.
             </summary>
             <typeparam name="TSchemeDefinition">The type of the definition.</typeparam>
             <seealso cref="T:Aguacongas.AspNetCore.Authentication.IDynamicProviderStore`1" />
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.EntityFramework.DynamicProviderStore`1.#ctor(Aguacongas.AspNetCore.Authentication.EntityFramework.SchemeDbContext{`0},Aguacongas.AspNetCore.Authentication.IAuthenticationSchemeOptionsSerializer,Microsoft.Extensions.Logging.ILogger{Aguacongas.AspNetCore.Authentication.EntityFramework.DynamicProviderStore{`0}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Aguacongas.AspNetCore.Authentication.EntityFramework.DynamicProviderStore`1"/> class.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="authenticationSchemeOptionsSerializer">The authentication scheme options serializer.</param>
+            <param name="logger">The logger.</param>
         </member>
         <member name="T:Aguacongas.AspNetCore.Authentication.EntityFramework.DynamicProviderStore`2">
             <summary>
@@ -118,6 +133,12 @@
             </summary>
             <seealso cref="T:Aguacongas.AspNetCore.Authentication.EntityFramework.SchemeDbContext`1" />
             <seealso cref="T:Aguacongas.AspNetCore.Authentication.SchemeDefinition" />
+        </member>
+        <member name="M:Aguacongas.AspNetCore.Authentication.EntityFramework.SchemeDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Aguacongas.AspNetCore.Authentication.EntityFramework.SchemeDbContext"/> class.
+            </summary>
+            <param name="options">The options for this context.</param>
         </member>
         <member name="T:Aguacongas.AspNetCore.Authentication.EntityFramework.SchemeDbContext`1">
             <summary>

@@ -54,7 +54,10 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
             // Add the context to store schemes configuration
             services.AddDbContext<SchemeDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("Default"));
+                options.UseSqlServer(Configuration.GetConnectionString("Default"), configure =>
+                {
+                    configure.MigrationsAssembly(GetType().Assembly.FullName);
+                });
             }); 
 
             // Add the magic

@@ -1,6 +1,7 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
 using Aguacongas.AspNetCore.Authentication.EntityFramework;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,9 +37,9 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
             });
 
 
-            /** add dynamic management **/
+            /** Add dynamic management **/
 
-            // add authentication
+            // Add authentication
             var authBuilder = services
                 .AddAuthentication()
                 // You must first create an app with Facebook and add its ID and Secret to your user-secrets.
@@ -50,19 +51,18 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                     options.AppSecret = Configuration["facebook:appsecret"] ?? "not set";
                 }); // this handler cannot be managed dynamically
 
-            // add the context to store schemes configuration
-
+            // Add the context to store schemes configuration
             services.AddDbContext<SchemeDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Default"));
             }); 
 
-            // add magic
+            // Add the magic
             var dynamicBuilder = authBuilder
                 .AddDynamic<SchemeDefinition>()
                 .AddEntityFrameworkStore<SchemeDbContext>();
 
-            // add providers managed dynamically
+            // Add providers managed dynamically
             dynamicBuilder.AddGoogle()
                 .AddOAuth("Github", "Github", options =>
                 {
@@ -71,8 +71,12 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                     options.TokenEndpoint = "https://github.com/login/oauth/access_token";
                     options.UserInformationEndpoint = "https://api.github.com/user";
                     options.ClaimsIssuer = "OAuth2-Github";
-
                     // Retrieving user information is unique to each provider.
+                    options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
+                    options.ClaimActions.MapJsonKey(ClaimTypes.Name, "login");
+                    options.ClaimActions.MapJsonKey("urn:github:name", "name");
+                    options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email", ClaimValueTypes.Email);
+                    options.ClaimActions.MapJsonKey("urn:github:url", "url");
                     options.Events = new OAuthEvents
                     {
                         OnCreatingTicket = async context =>
@@ -81,51 +85,16 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                             var request = new HttpRequestMessage(HttpMethod.Get, context.Options.UserInformationEndpoint);
                             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", context.AccessToken);
                             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                            // A user-agent header is required by GitHub. See (https://developer.github.com/v3/#user-agent-required)
+                            request.Headers.UserAgent.Add(new ProductInfoHeaderValue("DynamicAuthProviders-sample", "1.0.0"));
 
                             var response = await context.Backchannel.SendAsync(request, context.HttpContext.RequestAborted);
+                            var content = await response.Content.ReadAsStringAsync();
                             response.EnsureSuccessStatusCode();
 
-                            var user = JObject.Parse(await response.Content.ReadAsStringAsync());
+                            var user = JObject.Parse(content);
 
-                            var identifier = user.Value<string>("id");
-                            if (!string.IsNullOrEmpty(identifier))
-                            {
-                                context.Identity.AddClaim(new Claim(
-                                    ClaimTypes.NameIdentifier, identifier,
-                                    ClaimValueTypes.String, context.Options.ClaimsIssuer));
-                            }
-
-                            var userName = user.Value<string>("login");
-                            if (!string.IsNullOrEmpty(userName))
-                            {
-                                context.Identity.AddClaim(new Claim(
-                                    ClaimsIdentity.DefaultNameClaimType, userName,
-                                    ClaimValueTypes.String, context.Options.ClaimsIssuer));
-                            }
-
-                            var name = user.Value<string>("name");
-                            if (!string.IsNullOrEmpty(name))
-                            {
-                                context.Identity.AddClaim(new Claim(
-                                    "urn:github:name", name,
-                                    ClaimValueTypes.String, context.Options.ClaimsIssuer));
-                            }
-
-                            var email = user.Value<string>("email");
-                            if (!string.IsNullOrEmpty(email))
-                            {
-                                context.Identity.AddClaim(new Claim(
-                                    ClaimTypes.Email, email,
-                                    ClaimValueTypes.Email, context.Options.ClaimsIssuer));
-                            }
-
-                            var link = user.Value<string>("url");
-                            if (!string.IsNullOrEmpty(link))
-                            {
-                                context.Identity.AddClaim(new Claim(
-                                    "urn:github:url", link,
-                                    ClaimValueTypes.String, context.Options.ClaimsIssuer));
-                            }
+                            context.RunClaimActions(user);
                         }
                     };
                 }); 

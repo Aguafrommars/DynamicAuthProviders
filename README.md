@@ -114,25 +114,4 @@ And in the `Configure` method load the configuration with `LoadDynamicAuthentica
 
 ```
 
-## Extends
-
-You can implement your own store by implementing `IDynamicProviderStore<TSchemeDefinition>` interface.  
-To verify your implementation you can override `DynamicManagerTestBase<TSchemeDefinition>` of `Aguacongas.AspNetCore.Authentication.TestBase`.
-
-``` csharp
-public class DynamicManagerTest: DynamicManagerTestBase<SchemeDefinition>
-{
-    public DynamicManagerTest(ITestOutputHelper output): base(output)
-    {
-    }
-
-    protected override DynamicAuthenticationBuilder AddStore(DynamicAuthenticationBuilder builder)
-    {
-        builder.Services.AddDbContext<SchemeDbContext>(options =>
-        {
-            options.UseInMemoryDatabase(Guid.NewGuid().ToString());
-        });
-        return builder.AddEntityFrameworkStore<SchemeDbContext>();
-    }
-}
-```
+Read the [wiki](wiki) for more information.

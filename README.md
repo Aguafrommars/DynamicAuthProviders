@@ -114,4 +114,4 @@ And in the `Configure` method load the configuration with `LoadDynamicAuthentica
 
 ```
 
-Read the [wiki](wiki) for more information.
+Read the [wiki](../../wiki) for more information.

@@ -27,10 +27,10 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
             switch(change.Kind)
             {
                 case SchemeChangeKind.Added:
-                    await (definition != null ? _manager.AddAsync(definition) : _manager.RemoveAsync(change.Scheme));
+                    await _manager.AddAsync(definition);
                     break;
                 case SchemeChangeKind.Updated:
-                    await (definition != null ? _manager.UpdateAsync(definition) : _manager.RemoveAsync(change.Scheme));
+                    await _manager.UpdateAsync(definition);
                     break;
                 case SchemeChangeKind.Deleted:
                     await _manager.RemoveAsync(change.Scheme);

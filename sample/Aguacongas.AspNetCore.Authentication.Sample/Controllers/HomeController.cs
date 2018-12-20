@@ -30,6 +30,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
             return View(_manager.ManagedHandlerType.Select(t => t.Name));
         }
 
+        // Returns an empty details view to create a scheme for a type of handler
         [Route("Create/{type}")]
         public IActionResult Create(string type)
         {
@@ -39,6 +40,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
             });
         }
 
+        // Creates a new scheme
         [HttpPost]
         [Route("Create/{type}")]
         public async Task<IActionResult> Create(AuthenticationViewModel model)
@@ -72,6 +74,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
             return View(model);
         }
 
+        // Returns a scheme details view to update id
         [Route("Update/{scheme}")]
         public async Task<IActionResult> Update(string scheme)
         {
@@ -98,6 +101,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
             return View(model);
         }
 
+        // Updates a scheme
         [HttpPost]
         [Route("Update/{scheme}")]
         public async Task<IActionResult> Update(AuthenticationViewModel model)
@@ -113,7 +117,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
                 if (definition.Options is OAuthOptions oAuthOptions) // GoogleOptions is OAuthOptions
                 {
                     oAuthOptions.ClientId = model.ClientId;
-                    oAuthOptions.ClientSecret = model.ClientSecret;                    
+                    oAuthOptions.ClientSecret = model.ClientSecret;
                 }
 
                 definition.DisplayName = model.DisplayName;
@@ -124,6 +128,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
             return View(model);
         }
 
+        // Lists all schemes we can manage
         [Route("List")]
         public async Task<IActionResult> List()
         {
@@ -141,6 +146,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
             }));
         }
 
+        // Deletes a scheme
         [Route("Delete/{scheme}")]
         public async Task<IActionResult> Delete(string scheme)
         {

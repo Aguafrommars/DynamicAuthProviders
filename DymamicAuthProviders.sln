@@ -38,6 +38,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication.TestBase", "src\Aguacongas.AspNetCore.Authentication.TestBase\Aguacongas.AspNetCore.Authentication.TestBase.csproj", "{B3DEE02F-9CD3-4009-AFEE-00F0B09811EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aguacongas.AspNetCore.Authentication.Redis", "src\Aguacongas.AspNetCore.Authentication.Redis\Aguacongas.AspNetCore.Authentication.Redis.csproj", "{CE9FE264-6139-47BF-970C-D1BBFCD7EFEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{B3DEE02F-9CD3-4009-AFEE-00F0B09811EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3DEE02F-9CD3-4009-AFEE-00F0B09811EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3DEE02F-9CD3-4009-AFEE-00F0B09811EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE9FE264-6139-47BF-970C-D1BBFCD7EFEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE9FE264-6139-47BF-970C-D1BBFCD7EFEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE9FE264-6139-47BF-970C-D1BBFCD7EFEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE9FE264-6139-47BF-970C-D1BBFCD7EFEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +85,7 @@ Global
 		{8CC87457-C579-4E39-A1C4-BAADADF500DE} = {245AA4AB-ECF4-4C69-B63D-C59D4B3F918C}
 		{01E5055D-BF6A-435C-8858-F63A8FAC6D86} = {8DE53FA4-6C58-4FE4-840C-8CD5D5370324}
 		{B3DEE02F-9CD3-4009-AFEE-00F0B09811EC} = {245AA4AB-ECF4-4C69-B63D-C59D4B3F918C}
+		{CE9FE264-6139-47BF-970C-D1BBFCD7EFEA} = {245AA4AB-ECF4-4C69-B63D-C59D4B3F918C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {823D9407-93C0-443E-89EC-D9DBB006A195}

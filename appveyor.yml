@@ -1,6 +1,6 @@
 version: 1.0.{build}
 skip_tags: true
-stack: node 9
+stack: node 9, redis
 skip_commits:
   message: /\[chore\]/
 branches:
@@ -26,6 +26,9 @@ install:
     - sh: nuget install GitVersion.CommandLine -ExcludeVersion
     - sh: mono GitVersion.CommandLine/tools/GitVersion.exe /l console /output buildserver
     - ps: if ($isWindows) { .\dotnet-install.ps1 -Version 2.2.100 }
+    - cmd: nuget install redis-64 -excludeversion
+    - cmd: redis-64\tools\redis-server.exe --service-install
+    - cmd: redis-64\tools\redis-server.exe --service-start
     - cmd: gitversion /l console /output buildserver
     - cmd: nuget install ReportGenerator -ExcludeVersion
     - ps: ./appveyorinit.ps1

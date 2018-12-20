@@ -5,7 +5,6 @@ using Aguacongas.AspNetCore.Authentication.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
-using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

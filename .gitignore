@@ -333,3 +333,5 @@ ASALocalRun/
 /ReportGenerator
 /coverage/docs
 coverage.*
+
+*.xml

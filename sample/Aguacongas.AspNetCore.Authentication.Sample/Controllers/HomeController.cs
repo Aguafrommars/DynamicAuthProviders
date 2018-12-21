@@ -30,6 +30,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
             return View(_manager.ManagedHandlerType.Select(t => t.Name));
         }
 
+        // Returns an empty details view to create a scheme for a type of handler
         [Route("Create/{type}")]
         public IActionResult Create(string type)
         {
@@ -39,6 +40,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
             });
         }
 
+        // Creates a new scheme
         [HttpPost]
         [Route("Create/{type}")]
         public async Task<IActionResult> Create(AuthenticationViewModel model)
@@ -72,6 +74,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
             return View(model);
         }
 
+        // Returns a scheme details view to update id
         [Route("Update/{scheme}")]
         public async Task<IActionResult> Update(string scheme)
         {
@@ -79,18 +82,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
             var definition = await _manager.FindBySchemeAsync(scheme);
             if (definition == null)
             {
-                var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
-                var authenticationScheme = schemes.FirstOrDefault(s => s.Name == scheme);
-                if (authenticationScheme == null)
-                {
-                    return NotFound();
-                }
-                model = new AuthenticationViewModel
-                {
-                    Scheme = authenticationScheme.Name,
-                    DisplayName = authenticationScheme.DisplayName,
-                    HandlerType = authenticationScheme.HandlerType.Name
-                };
+                return NotFound();
             }
             else
             {
@@ -101,20 +93,15 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
                     HandlerType = definition.HandlerType.Name
                 };
 
-                if (definition.Options is OAuthOptions oAuthOptions) // GoogleOptions is OAuthOptions
-                {
-                    model.ClientId = oAuthOptions.ClientId;
-                    model.ClientSecret = oAuthOptions.ClientSecret;
-                }
-                else
-                {
-                    return Error();
-                }
+                var oAuthOptions = definition.Options as OAuthOptions; // GoogleOptions is OAuthOptions
+                model.ClientId = oAuthOptions.ClientId;
+                model.ClientSecret = oAuthOptions.ClientSecret;
             }
 
             return View(model);
         }
 
+        // Updates a scheme
         [HttpPost]
         [Route("Update/{scheme}")]
         public async Task<IActionResult> Update(AuthenticationViewModel model)
@@ -124,15 +111,13 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
                 var definition = await _manager.FindBySchemeAsync(model.Scheme);
                 if (definition == null)
                 {
-                    await Create(model);
-
-                    return View(model);
+                    return NotFound();
                 }
 
                 if (definition.Options is OAuthOptions oAuthOptions) // GoogleOptions is OAuthOptions
                 {
                     oAuthOptions.ClientId = model.ClientId;
-                    oAuthOptions.ClientSecret = model.ClientSecret;                    
+                    oAuthOptions.ClientSecret = model.ClientSecret;
                 }
 
                 definition.DisplayName = model.DisplayName;
@@ -143,6 +128,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
             return View(model);
         }
 
+        // Lists all schemes we can manage
         [Route("List")]
         public async Task<IActionResult> List()
         {
@@ -160,9 +146,16 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
             }));
         }
 
+        // Deletes a scheme
         [Route("Delete/{scheme}")]
         public async Task<IActionResult> Delete(string scheme)
         {
+            var definition = await _manager.FindBySchemeAsync(scheme);
+            if (definition == null)
+            {
+                return NotFound();
+            }
+
             await _manager.RemoveAsync(scheme);
             return RedirectToAction("List");
         }

@@ -2,11 +2,9 @@
 // Copyright (c) 2018 @Olivier Lefebvre
 using Aguacongas.AspNetCore.Authentication;
 using Aguacongas.AspNetCore.Authentication.EntityFramework;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
-using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -35,22 +33,6 @@ namespace Microsoft.Extensions.DependencyInjection
             service.TryAddTransient(typeof(IDynamicProviderStore<>).MakeGenericType(definitionType), storeType);
             service.AddTransient<IAuthenticationSchemeOptionsSerializer, AuthenticationSchemeOptionsSerializer>();
 
-        }
-
-        private static TypeInfo FindGenericBaseType(Type currentType, Type genericBaseType)
-        {
-            var type = currentType;
-            while (type != null)
-            {
-                var typeInfo = type.GetTypeInfo();
-                var genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-                if (genericType != null && genericType == genericBaseType)
-                {
-                    return typeInfo;
-                }
-                type = type.BaseType;
-            }
-            return null;
         }
     }
 }

@@ -466,44 +466,6 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
         }
 
         /// <summary>
-        /// AddAsync method should ensure uniq callback path.
-        /// </summary>
-        /// <returns></returns>
-        [Fact]
-        public async Task AddAsync_should_ensure_uniq_callback_path()
-        {
-            var provider = CreateServiceProvider(options =>
-            {
-                options.AddTwitter();
-            });
-
-            var twittertOptions = new TwitterOptions
-            {
-                ConsumerKey = "test",
-                ConsumerSecret = "test"
-            };
-
-            var scheme = Guid.NewGuid().ToString();
-            var definition = new TSchemeDefinition
-            {
-                Scheme = scheme,
-                DisplayName = "test",
-                HandlerType = typeof(TwitterHandler),
-                Options = twittertOptions
-            };
-
-            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
-            Assert.Contains(typeof(TwitterHandler), sut.ManagedHandlerType);
-
-            await sut.AddAsync(definition);
-            var state = await VerifyAddedAsync<TwitterOptions>(scheme, provider);
-
-            definition.Scheme = Guid.NewGuid().ToString();
-
-            await Assert.ThrowsAsync<InvalidOperationException>(() => sut.AddAsync(definition));
-        }
-
-        /// <summary>
         /// AddAsync method should add ws federation handler.
         /// </summary>
         /// <returns></returns>

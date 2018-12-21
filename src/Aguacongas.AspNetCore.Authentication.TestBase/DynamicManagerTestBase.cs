@@ -16,7 +16,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.WsFederation;
 using Moq;
-using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Security.Claims;

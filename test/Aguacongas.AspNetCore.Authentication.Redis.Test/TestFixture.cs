@@ -1,4 +1,5 @@
 ﻿using StackExchange.Redis;
+using Xunit;
 
 namespace Aguacongas.AspNetCore.Authentication.Redis.Test
 {
@@ -17,5 +18,10 @@ namespace Aguacongas.AspNetCore.Authentication.Redis.Test
             var server = multiplexer.GetServer("localhost:6379");
             server.FlushDatabase();
         }
+    }
+
+    [CollectionDefinition("Redis")]
+    public class CollectionFixture: ICollectionFixture<TestFixture>
+    {
     }
 }

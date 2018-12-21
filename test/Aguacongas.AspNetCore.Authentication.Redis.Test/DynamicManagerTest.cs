@@ -7,7 +7,8 @@ using Xunit.Abstractions;
 
 namespace Aguacongas.AspNetCore.Authentication.Redis.Test
 {
-    public class DynamicManagerTest: DynamicManagerTestBase<SchemeDefinition>, IClassFixture<TestFixture>
+    [Collection("Redis")]
+    public class DynamicManagerTest: DynamicManagerTestBase<SchemeDefinition>
     {
         private readonly TestFixture _fixture;
         public DynamicManagerTest(ITestOutputHelper output, TestFixture fixture): base(output)

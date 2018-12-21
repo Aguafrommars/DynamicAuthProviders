@@ -1,6 +1,5 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -8,11 +7,22 @@ using StackExchange.Redis;
 using System;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Aguacongas.AspNetCore.Authentication.Redis.Test
 {
+    [Collection("Redis")]
     public class DynamicProviderStoreTest
     {
+        private readonly ITestOutputHelper _output;
+        private readonly TestFixture _fixture;
+
+        public DynamicProviderStoreTest(ITestOutputHelper output, TestFixture fixture)
+        {
+            _output = output;
+            _fixture = fixture;
+        }
+
         [Fact]
         public async Task Assertions()
         {
@@ -59,8 +69,7 @@ namespace Aguacongas.AspNetCore.Authentication.Redis.Test
         }
         public IDatabase CreateDabase()
         {
-            var m = ConnectionMultiplexer.Connect("localhost:6379");
-            return m.GetDatabase(-1);
+            return _fixture.Database;
         }
     }
 }

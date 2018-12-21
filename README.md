@@ -7,10 +7,10 @@ Store and manage Microsoft.AspNetCore.Authentication providers.
 
 Nuget packages
 --------------
-|Aguacongas.AspNetCore.Authentication|Aguacongas.AspNetCore.Authentication.EntityFramework|Aguacongas.AspNetCore.Authentication.TestBase|
-|:------:|:------:|:------:|
-|[![][Aguacongas.AspNetCore.Authentication-badge]][Aguacongas.AspNetCore.Authentication-nuget]|[![][Aguacongas.AspNetCore.Authentication.EntityFramework-badge]][Aguacongas.AspNetCore.Authentication.EntityFramework-nuget]|[![][Aguacongas.AspNetCore.Authentication.TestBase-badge]][Aguacongas.AspNetCore.Authentication.TestBase-nuget]|  
-|[![][Aguacongas.AspNetCore.Authentication-downloadbadge]][Aguacongas.AspNetCore.Authentication-nuget]|[![][Aguacongas.AspNetCore.Authentication.EntityFramework-downloadbadge]][Aguacongas.AspNetCore.Authentication.EntityFramework-nuget]|[![][Aguacongas.AspNetCore.Authentication.TestBase-downloadbadge]][Aguacongas.AspNetCore.Authentication.TestBase-nuget]|  
+|Dynamic Provider|EntityFramework Store|Redis Store|Tests Suite|
+|:------:|:------:|:------:|:------:|
+|[![][Aguacongas.AspNetCore.Authentication-badge]][Aguacongas.AspNetCore.Authentication-nuget]|[![][Aguacongas.AspNetCore.Authentication.EntityFramework-badge]][Aguacongas.AspNetCore.Authentication.EntityFramework-nuget]|[![][Aguacongas.AspNetCore.Authentication.Redis-badge]][Aguacongas.AspNetCore.Authentication.Redis-nuget]|[![][Aguacongas.AspNetCore.Authentication.TestBase-badge]][Aguacongas.AspNetCore.Authentication.TestBase-nuget]|
+|[![][Aguacongas.AspNetCore.Authentication-downloadbadge]][Aguacongas.AspNetCore.Authentication-nuget]|[![][Aguacongas.AspNetCore.Authentication.EntityFramework-downloadbadge]][Aguacongas.AspNetCore.Authentication.EntityFramework-nuget]|[![][Aguacongas.AspNetCore.Authentication.Redis-downloadbadge]][Aguacongas.AspNetCore.Authentication.Redis-nuget]|[![][Aguacongas.AspNetCore.Authentication.TestBase-downloadbadge]][Aguacongas.AspNetCore.Authentication.TestBase-nuget]|  
 
 [Aguacongas.AspNetCore.Authentication-badge]: https://img.shields.io/nuget/v/Aguacongas.AspNetCore.Authentication.svg
 [Aguacongas.AspNetCore.Authentication-downloadbadge]: https://img.shields.io/nuget/dt/Aguacongas.AspNetCore.Authentication.svg
@@ -19,6 +19,10 @@ Nuget packages
 [Aguacongas.AspNetCore.Authentication.EntityFramework-badge]: https://img.shields.io/nuget/v/Aguacongas.AspNetCore.Authentication.EntityFramework.svg
 [Aguacongas.AspNetCore.Authentication.EntityFramework-downloadbadge]: https://img.shields.io/nuget/dt/Aguacongas.AspNetCore.Authentication.EntityFramework.svg
 [Aguacongas.AspNetCore.Authentication.EntityFramework-nuget]: https://www.nuget.org/packages/Aguacongas.AspNetCore.Authentication.EntityFramework/
+
+[Aguacongas.AspNetCore.Authentication.Redis-badge]: https://img.shields.io/nuget/v/Aguacongas.AspNetCore.Authentication.Redis.svg
+[Aguacongas.AspNetCore.Authentication.Redis-downloadbadge]: https://img.shields.io/nuget/dt/Aguacongas.AspNetCore.Authentication.Redis.svg
+[Aguacongas.AspNetCore.Authentication.Redis-nuget]: https://www.nuget.org/packages/Aguacongas.AspNetCore.Authentication.Redis/
 
 [Aguacongas.AspNetCore.Authentication.TestBase-badge]: https://img.shields.io/nuget/v/Aguacongas.AspNetCore.Authentication.TestBase.svg
 [Aguacongas.AspNetCore.Authentication.TestBase-downloadbadge]: https://img.shields.io/nuget/dt/Aguacongas.AspNetCore.Authentication.TestBase.svg

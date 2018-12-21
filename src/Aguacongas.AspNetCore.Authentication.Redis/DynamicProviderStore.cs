@@ -35,13 +35,17 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
     public class DynamicProviderStore<TSchemeDefinition> : IDynamicProviderStore<TSchemeDefinition>
         where TSchemeDefinition : SchemeDefinition, new()
     {
-        private const string StoreKey = "schemes";
+        public const string StoreKey = "schemes";
+        public const string ConcurencyKey = "schemes-concurency";
+
         private readonly IDatabase _db;
         private readonly IRedisAuthenticationSchemeOptionsSerializer<TSchemeDefinition> _authenticationSchemeOptionsSerializer;
         private readonly ILogger<DynamicProviderStore<TSchemeDefinition>> _logger;
 
 
-        public IQueryable<TSchemeDefinition> SchemeDefinitions => throw new NotImplementedException();
+        public IQueryable<TSchemeDefinition> SchemeDefinitions => _db.HashGetAll(StoreKey)
+            .Select(entry => _authenticationSchemeOptionsSerializer.Deserialize(entry.Value))
+            .AsQueryable();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicProviderStore{TSchemeDefinition, TContext}"/> class.
@@ -77,11 +81,22 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
                 throw new ArgumentNullException(nameof(definition));
             }
 
-            await _db.HashSetAsync(StoreKey, 
+            var tran = _db.CreateTransaction();
+            var notExistsCondition = tran.AddCondition(Condition.HashNotExists(StoreKey, definition.Scheme));
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            tran.HashSetAsync(StoreKey, 
                 definition.Scheme, 
-                _authenticationSchemeOptionsSerializer.Serialize(definition), 
-                When.NotExists)
-                .ConfigureAwait(false);
+                _authenticationSchemeOptionsSerializer.Serialize(definition));
+            tran.HashSetAsync(ConcurencyKey, definition.Scheme, 0);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
+            var result = await tran.ExecuteAsync();
+            if (!result)
+            {
+                throw new InvalidOperationException($"The scheme {definition.Scheme} already exists");
+            }
+
+            _logger.LogInformation("Scheme {scheme} added for {handlerType} with options: {options}", definition.Scheme, definition.HandlerType, definition.SerializedOptions);
         }
 
         /// <summary>
@@ -103,7 +118,9 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
             var value = await _db.HashGetAsync(StoreKey, scheme).ConfigureAwait(false);
             if (value.HasValue)
             {
-                return _authenticationSchemeOptionsSerializer.Deserialize(value);
+                var definition = _authenticationSchemeOptionsSerializer.Deserialize(value);
+                definition.ConcurrencyStamp = (long)await _db.HashGetAsync(ConcurencyKey, scheme);
+                return definition;
             }
 
             return default(TSchemeDefinition);
@@ -123,7 +140,20 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
                 throw new ArgumentNullException(nameof(definition));
             }
 
-            await _db.HashDecrementAsync(StoreKey, definition.Scheme).ConfigureAwait(false);
+            var tran = _db.CreateTransaction();
+            var concurrencyCondition = tran.AddCondition(Condition.HashEqual(ConcurencyKey, definition.Scheme, definition.ConcurrencyStamp));
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            tran.HashDeleteAsync(StoreKey, definition.Scheme);
+            tran.HashDeleteAsync(ConcurencyKey, definition.Scheme);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
+            var result = await tran.ExecuteAsync();
+            if (!result)
+            {
+                throw new InvalidOperationException($"ConcurrencyStamp not match for scheme {definition.Scheme}");
+            }
+
+            _logger.LogInformation("Scheme {scheme} removed", definition.Scheme);
         }
 
         /// <summary>
@@ -140,7 +170,24 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
                 throw new ArgumentNullException(nameof(definition));
             }
 
-            await _db.HashSetAsync(StoreKey, definition.Scheme, _authenticationSchemeOptionsSerializer.Serialize(definition), When.Exists);
+            definition.ConcurrencyStamp = 0;
+
+            var tran = _db.CreateTransaction();
+            var concurrencyCondition = tran.AddCondition(Condition.HashEqual(ConcurencyKey, definition.Scheme, definition.ConcurrencyStamp));
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            tran.HashSetAsync(StoreKey, definition.Scheme, _authenticationSchemeOptionsSerializer.Serialize(definition));
+            var concurency = tran.HashIncrementAsync(ConcurencyKey, definition.Scheme);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
+            var result = await tran.ExecuteAsync();
+            if (!result)
+            {
+                throw new InvalidOperationException($"ConcurrencyStamp not match for scheme {definition.Scheme}");
+            }
+
+            definition.ConcurrencyStamp = concurency.Result;
+
+            _logger.LogInformation("Scheme {scheme} updated for {handlerType} with options: {options}", definition.Scheme, definition.HandlerType, definition.SerializedOptions);
         }
     }
 }

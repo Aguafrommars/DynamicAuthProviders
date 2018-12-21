@@ -3,6 +3,11 @@ skip_tags: true
 stack: node 9, redis
 skip_commits:
   message: /^chore(release)/
+branches:
+  only:
+  - master
+  - /preview\/*/ 
+  - /release\/*/
 image: 
 - Ubuntu
 - Visual Studio 2017
@@ -10,64 +15,53 @@ environment:
   GH_TOKEN: 
     secure: 0NJdORJRFjpB0dwUYv7bVNsbkldkoBhnvWik/CTOwAF/k9kP+/uTWMFnDcpEpt8E
 init:
-    - cmd: git config --global core.autocrlf true
+  - cmd: git config --global core.autocrlf true
+install:
+  - sh: wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
+  - sh: sudo dpkg -i packages-microsoft-prod.deb
+  - sh: sudo apt-get -y install apt-transport-https
+  - sh: sudo apt-get update
+  - sh: sudo apt-get -y install dotnet-sdk-2.2
+  - sh: sudo apt -y install nuget
+  - sh: nuget install GitVersion.CommandLine -ExcludeVersion
+  - sh: mono GitVersion.CommandLine/tools/GitVersion.exe /l console /output buildserver
+  - ps: if ($isWindows) { .\dotnet-install.ps1 -Version 2.2.100 }
+  - cmd: nuget install redis-64 -excludeversion
+  - cmd: redis-64\tools\redis-server.exe --service-install
+  - cmd: redis-64\tools\redis-server.exe --service-start
+  - cmd: gitversion /l console /output buildserver
+  - cmd: nuget install ReportGenerator -ExcludeVersion
+  - ps: ./appveyorinit.ps1
+build_script:
+  - ps: ./build.ps1
+test_script:
+  - cmd: publish.cmd
+artifacts:
+  - path: artifacts/**/*.nupkg
+    name: nuget    
+deploy:
+  - provider: NuGet
+    api_key:
+      secure: 23wPDdRicGt2vZuJ8vd9TRBKmqjHkx5WjzZmKvyxd5j0fNPedjUScRTj/rT0ObJa
+    on:
+      branch: 
+      - /preview\/*/
+      - /release\/*/
+      CI_WINDOWS: true
+  - provider: GitHub
+    auth_token: $(GH_TOKEN)
+    draft: true
+    prerelease: true
+    release: $(Version)
+    on:
+      branch: 
+      - /preview*/ 
+      CI_WINDOWS: true
 for:
 -
   branches:
     only:
     - master
-    - /preview\/*/ 
-    - /release\/*/
-  install:
-      - sh: wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
-      - sh: sudo dpkg -i packages-microsoft-prod.deb
-      - sh: sudo apt-get -y install apt-transport-https
-      - sh: sudo apt-get update
-      - sh: sudo apt-get -y install dotnet-sdk-2.2
-      - sh: sudo apt -y install nuget
-      - sh: nuget install GitVersion.CommandLine -ExcludeVersion
-      - sh: mono GitVersion.CommandLine/tools/GitVersion.exe /l console /output buildserver
-      - ps: if ($isWindows) { .\dotnet-install.ps1 -Version 2.2.100 }
-      - cmd: nuget install redis-64 -excludeversion
-      - cmd: redis-64\tools\redis-server.exe --service-install
-      - cmd: redis-64\tools\redis-server.exe --service-start
-      - cmd: gitversion /l console /output buildserver
-      - cmd: nuget install ReportGenerator -ExcludeVersion
-      - ps: ./appveyorinit.ps1
-  build_script:
-      - ps: ./build.ps1
-  test_script:
-      - cmd: publish.cmd
-  artifacts:
-      - path: artifacts/**/*.nupkg
-        name: nuget    
--
-  branches: 
-    only:
-      - /preview\/*/
-      - /release\/*/
-  deploy:
-    - provider: NuGet
-      api_key:
-        secure: 23wPDdRicGt2vZuJ8vd9TRBKmqjHkx5WjzZmKvyxd5j0fNPedjUScRTj/rT0ObJa
-      on:
-        CI_WINDOWS: true
--
-  branches: 
-    only:
-      - /preview\/*/
-  deploy:
-    - provider: GitHub
-      auth_token: $(GH_TOKEN)
-      draft: true
-      prerelease: true
-      release: $(Version)
-      on:
-        CI_WINDOWS: true
--
-  branches:
-    only:
-      - master
   on_success:
     - cmd: git config --global credential.helper store
     - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n" }
@@ -83,17 +77,17 @@ for:
 -
   branches:
     only:
-      - /release>\/*/
+    - /release>\/*/
   on_success:
-      - cmd: semantic-release -b %APPVEYOR_REPO_BRANCH%
-      - cmd: git config --global credential.helper store
-      - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n" }
-      - cmd: git config --global user.email "aguacongas@gmail.com"
-      - cmd: git config --global user.name "Aguacongas"
-      - cmd: git checkout gh-pages
-      - cmd: git stash
-      - cmd: mkdir %Version%
-      - cmd: move coverage\docs %Version%
-      - cmd: git add %Version%
-      - cmd: git commit %Version% -m "Appveyor build succed %APPVEYOR_BUILD_NUMBER%"
-      - cmd: git push
+    - cmd: semantic-release -b %APPVEYOR_REPO_BRANCH%
+    - cmd: git config --global credential.helper store
+    - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n" }
+    - cmd: git config --global user.email "aguacongas@gmail.com"
+    - cmd: git config --global user.name "Aguacongas"
+    - cmd: git checkout gh-pages
+    - cmd: git stash
+    - cmd: mkdir %Version%
+    - cmd: move coverage\docs %Version%
+    - cmd: git add %Version%
+    - cmd: git commit %Version% -m "Appveyor build succed %APPVEYOR_BUILD_NUMBER%"
+    - cmd: git push

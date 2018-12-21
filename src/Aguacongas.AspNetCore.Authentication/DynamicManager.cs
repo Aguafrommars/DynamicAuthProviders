@@ -108,7 +108,10 @@ namespace Aguacongas.AspNetCore.Authentication
 
             foreach (var definition in _store.SchemeDefinitions)
             {
-                base.AddAsync(definition).GetAwaiter().GetResult();
+                if (ManagedHandlerType.Contains(definition.HandlerType))
+                {
+                    base.AddAsync(definition).GetAwaiter().GetResult();
+                }                
             }
         }
     }

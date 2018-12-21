@@ -46,6 +46,46 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
         }
 
         /// <summary>
+        /// AddAsync should fail on suplicate scheme
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task AddAsync_should_fail_on_duplicate_scheme()
+        {
+            var provider = CreateServiceProvider(options =>
+            {
+                options.AddCookie();
+            });
+
+            var cookieOptions = new CookieAuthenticationOptions
+            {
+                Cookie = new CookieBuilder
+                {
+                    Domain = "test"
+                }
+            };
+
+            var scheme = Guid.NewGuid().ToString();
+            var definition = new TSchemeDefinition
+            {
+                Scheme = scheme,
+                DisplayName = "test",
+                HandlerType = typeof(CookieAuthenticationHandler),
+                Options = cookieOptions
+            };
+
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
+
+            await sut.AddAsync(definition);
+            try
+            {
+                await sut.AddAsync(definition);
+                throw new InvalidOperationException("AddAsync should fail on ducplicate scheme");
+            }
+            catch { }
+        }
+
+        /// <summary>
         /// AddAsync method should add cookie handler.
         /// </summary>
         /// <returns></returns>
@@ -78,15 +118,16 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 }
             };
 
+            var scheme = Guid.NewGuid().ToString();
             var definition = new TSchemeDefinition
             {
-                Scheme = CookieAuthenticationDefaults.AuthenticationScheme,
+                Scheme = scheme,
                 DisplayName = "test",
                 HandlerType = typeof(CookieAuthenticationHandler),
                 Options = cookieOptions
             };
             await sut.AddAsync(definition);
-            var state = await VerifyAddedAsync<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, provider);
+            var state = await VerifyAddedAsync<CookieAuthenticationOptions>(scheme, provider);
 
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnSignedIn(new CookieSignedInContext(
@@ -129,16 +170,18 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 AppId = "test",
                 AppSecret = "test"
             };
+
+            var scheme = Guid.NewGuid().ToString();
             var definition = new TSchemeDefinition
             {
-                Scheme = "test",
+                Scheme = scheme,
                 DisplayName = "test",
                 HandlerType = typeof(FacebookHandler),
                 Options = facebookOptions
             };
 
             await sut.AddAsync(definition);
-            var state = await VerifyAddedAsync<FacebookOptions>("test", provider);
+            var state = await VerifyAddedAsync<FacebookOptions>(scheme, provider);
 
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnCreatingTicket(new OAuthCreatingTicketContext(
@@ -184,15 +227,16 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 ClientSecret = "test"
             };
 
+            var scheme = Guid.NewGuid().ToString();
             var definition = new TSchemeDefinition
             {
-                Scheme = "test",
+                Scheme = scheme,
                 DisplayName = "test",
                 HandlerType = typeof(GoogleHandler),
                 Options = googleOptions
             };
             await sut.AddAsync(definition);
-            var state = await VerifyAddedAsync<GoogleOptions>("test", provider);
+            var state = await VerifyAddedAsync<GoogleOptions>(scheme, provider);
 
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnCreatingTicket(new OAuthCreatingTicketContext(
@@ -236,9 +280,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 RequireHttpsMetadata = false
             };
 
+            var scheme = Guid.NewGuid().ToString();
             var definition = new TSchemeDefinition
             {
-                Scheme = "test",
+                Scheme = scheme,
                 DisplayName = "test",
                 HandlerType = typeof(JwtBearerHandler),
                 Options = jwtBearerOptions
@@ -248,7 +293,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.Contains(typeof(JwtBearerHandler), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
-            var state = await VerifyAddedAsync<JwtBearerOptions>("test", provider);
+            var state = await VerifyAddedAsync<JwtBearerOptions>(scheme, provider);
 
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnMessageReceived(new Microsoft.AspNetCore.Authentication.JwtBearer.MessageReceivedContext(
@@ -287,9 +332,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 ClientSecret = "test"
             };
 
+            var scheme = Guid.NewGuid().ToString();
             var definition = new TSchemeDefinition
             {
-                Scheme = "test",
+                Scheme = scheme,
                 DisplayName = "test",
                 HandlerType = typeof(MicrosoftAccountHandler),
                 Options = msAccountOptions
@@ -299,7 +345,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.Contains(typeof(MicrosoftAccountHandler), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
-            var state = await VerifyAddedAsync<MicrosoftAccountOptions>("test", provider);
+            var state = await VerifyAddedAsync<MicrosoftAccountOptions>(scheme, provider);
 
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnCreatingTicket(new OAuthCreatingTicketContext(
@@ -342,9 +388,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 ClientSecret = "test"
             };
 
+            var scheme = Guid.NewGuid().ToString();
             var definition = new TSchemeDefinition
             {
-                Scheme = "test",
+                Scheme = scheme,
                 DisplayName = "test",
                 HandlerType = typeof(OpenIdConnectHandler),
                 Options = oidcptions
@@ -354,7 +401,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.Contains(typeof(OpenIdConnectHandler), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
-            var state = await VerifyAddedAsync<OpenIdConnectOptions>("test", provider);
+            var state = await VerifyAddedAsync<OpenIdConnectOptions>(scheme, provider);
 
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnTicketReceived(new TicketReceivedContext(
@@ -394,9 +441,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 ConsumerSecret = "test"
             };
 
+            var scheme = Guid.NewGuid().ToString();
             var definition = new TSchemeDefinition
             {
-                Scheme = "test",
+                Scheme = scheme,
                 DisplayName = "test",
                 HandlerType = typeof(TwitterHandler),
                 Options = twittertOptions
@@ -406,7 +454,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.Contains(typeof(TwitterHandler), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
-            var state = await VerifyAddedAsync<TwitterOptions>("test", provider);
+            var state = await VerifyAddedAsync<TwitterOptions>(scheme, provider);
 
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnTicketReceived(new TicketReceivedContext(
@@ -436,9 +484,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 ConsumerSecret = "test"
             };
 
+            var scheme = Guid.NewGuid().ToString();
             var definition = new TSchemeDefinition
             {
-                Scheme = "test",
+                Scheme = scheme,
                 DisplayName = "test",
                 HandlerType = typeof(TwitterHandler),
                 Options = twittertOptions
@@ -448,9 +497,9 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.Contains(typeof(TwitterHandler), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
-            var state = await VerifyAddedAsync<TwitterOptions>("test", provider);
+            var state = await VerifyAddedAsync<TwitterOptions>(scheme, provider);
 
-            definition.Scheme = "test2";
+            definition.Scheme = Guid.NewGuid().ToString();
 
             await Assert.ThrowsAsync<InvalidOperationException>(() => sut.AddAsync(definition));
         }
@@ -485,9 +534,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 }
             };
 
+            var scheme = Guid.NewGuid().ToString();
             var definition = new TSchemeDefinition
             {
-                Scheme = "test",
+                Scheme = scheme,
                 DisplayName = "test",
                 HandlerType = typeof(WsFederationHandler),
                 Options = wsFederationOptions
@@ -497,14 +547,14 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.Contains(typeof(WsFederationHandler), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
-            var state = await VerifyAddedAsync<WsFederationOptions>("test", provider);
+            var state = await VerifyAddedAsync<WsFederationOptions>(scheme, provider);
 
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnTicketReceived(new TicketReceivedContext(
                 httpContext,
                 state.scheme as AuthenticationScheme,
                 state.options as WsFederationOptions,
-                new AuthenticationTicket(new ClaimsPrincipal(), "test")));
+                new AuthenticationTicket(new ClaimsPrincipal(), scheme)));
 
             Assert.True(eventCalled);
         }
@@ -536,9 +586,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 ClientId = "test"                
             };
 
+            var scheme = Guid.NewGuid().ToString();
             var definition = new TSchemeDefinition
             {
-                Scheme = "test",
+                Scheme = scheme,
                 DisplayName = "test",
                 HandlerType = typeof(FakeGenericHandler<string, OAuthOptions>),
                 Options = oAuthOptions
@@ -548,14 +599,14 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.Contains(typeof(FakeGenericHandler<string, OAuthOptions>), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
-            var state = await VerifyAddedAsync<OAuthOptions>("test", provider);
+            var state = await VerifyAddedAsync<OAuthOptions>(scheme, provider);
 
             var httpContext = new Mock<HttpContext>().Object;
             state.options.Events.OnTicketReceived(new TicketReceivedContext(
                 httpContext,
                 state.scheme as AuthenticationScheme,
                 state.options as OAuthOptions,
-                new AuthenticationTicket(new ClaimsPrincipal(), "test")));
+                new AuthenticationTicket(new ClaimsPrincipal(), scheme)));
 
             Assert.True(eventCalled);
         }
@@ -592,9 +643,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 }
             };
 
+            var scheme = Guid.NewGuid().ToString();
             var definition = new TSchemeDefinition
             {
-                Scheme = "test",
+                Scheme = scheme,
                 DisplayName = "test",
                 HandlerType = typeof(CookieAuthenticationHandler),
                 Options = cookieOptions
@@ -607,7 +659,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             await Assert.ThrowsAsync<InvalidOperationException>(() => sut.UpdateAsync(definition));
 
             await sut.AddAsync(definition);
-            await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
+            await VerifyAddedAsync<CookieAuthenticationOptions>(scheme, provider);
 
             var wsFederationOptions = new WsFederationOptions
             {
@@ -622,7 +674,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             definition.HandlerType = typeof(WsFederationHandler);
 
             await sut.UpdateAsync(definition);
-            var state = await VerifyAddedAsync<WsFederationOptions>("test", provider);
+            var state = await VerifyAddedAsync<WsFederationOptions>(scheme, provider);
 
             Assert.Equal(state.scheme.DisplayName, definition.DisplayName);
 
@@ -631,7 +683,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 httpContext,
                 state.scheme as AuthenticationScheme,
                 state.options as WsFederationOptions,
-                new AuthenticationTicket(new ClaimsPrincipal(), "test")));
+                new AuthenticationTicket(new ClaimsPrincipal(), scheme)));
 
             Assert.True(eventCalled);
         }
@@ -656,9 +708,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 }
             };
 
+            var scheme = Guid.NewGuid().ToString();
             var definition = new TSchemeDefinition
             {
-                Scheme = "test",
+                Scheme = scheme,
                 DisplayName = "test",
                 HandlerType = typeof(CookieAuthenticationHandler),
                 Options = cookieOptions
@@ -668,10 +721,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.Contains(typeof(CookieAuthenticationHandler), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
-            await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
+            await VerifyAddedAsync<CookieAuthenticationOptions>(scheme, provider);
 
-            await sut.RemoveAsync("test");
-            await Assert.ThrowsAsync<NotNullException>(() => VerifyAddedAsync<WsFederationOptions>("test", provider));
+            await sut.RemoveAsync(scheme);
+            await Assert.ThrowsAsync<NotNullException>(() => VerifyAddedAsync<WsFederationOptions>(scheme, provider));
         }
 
         /// <summary>
@@ -696,9 +749,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 }
             };
 
+            var scheme = Guid.NewGuid().ToString();
             var definition = new TSchemeDefinition
             {
-                Scheme = "test",
+                Scheme = scheme,
                 HandlerType = typeof(CookieAuthenticationHandler),
                 Options = cookieOptions
             };
@@ -709,7 +763,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
 
             sut.Load();
 
-            await VerifyAddedAsync<CookieAuthenticationOptions>("test", provider);
+            await VerifyAddedAsync<CookieAuthenticationOptions>(scheme, provider);
         }
 
         /// <summary>
@@ -735,7 +789,12 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             return new { definition, scheme, options };
         }
 
-        private IServiceProvider CreateServiceProvider(Action<AuthenticationBuilder> addHandlers = null)
+        /// <summary>
+        /// Creates the service providers
+        /// </summary>
+        /// <param name="addHandlers">A function to invoke before returning the provider</param>
+        /// <returns></returns>
+        protected virtual IServiceProvider CreateServiceProvider(Action<AuthenticationBuilder> addHandlers = null)
         {
             var services = new ServiceCollection();
             var builder = services.AddLogging(configure =>

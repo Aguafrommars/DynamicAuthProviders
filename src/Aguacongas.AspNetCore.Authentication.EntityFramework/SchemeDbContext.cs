@@ -56,10 +56,14 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         /// </remarks>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TSchemeDefinition>()
-                .Ignore(p => p.Options)
-                .Ignore(p => p.HandlerType)
-                .HasKey(p => p.Scheme);
+            modelBuilder.Entity<TSchemeDefinition>(b =>
+            {
+                b.Ignore(p => p.Options)
+                  .Ignore(p => p.HandlerType)
+                  .HasKey(p => p.Scheme);
+                b.Property(p => p.ConcurrencyStamp).IsConcurrencyToken();
+            });
+                
         }
     }
 }

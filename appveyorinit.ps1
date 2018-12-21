@@ -14,14 +14,14 @@ else
 }
 
 appveyor SetVariable -Name SemVer -Value $nextversion
+appveyor AddMessage "SemVer = $nextversion"
 
 if (![string]::IsNullOrEmpty($env:GitVersion_PreReleaseLabel))
 {
     $nextversion = "$nextversion-$env:GitVersion_PreReleaseLabel$env:GitVersion_CommitsSinceVersionSourcePadded"
 }
-
+appveyor SetVariable -Name Version -Value $nextversion
 appveyor UpdateBuild -Version $nextversion
-$builnumbersuffix = Get-Date -Format "mmddyyyy-HHmm"
-$builnumber = "$builnumber-$builnumbersuffix"
+appveyor AddMessage "Version = $nextversion"
 
 dotnet restore

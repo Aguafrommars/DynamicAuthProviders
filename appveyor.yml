@@ -2,7 +2,7 @@ version: 1.0.{build}
 skip_tags: true
 stack: node 9, redis
 skip_commits:
-  message: /\[chore\]/
+  message: /^chore(release)/
 branches:
   only:
   - master
@@ -52,7 +52,7 @@ deploy:
       auth_token: $(GH_TOKEN)
       draft: true
       prerelease: true
-      release: $(APPVEYOR_BUILD_VERSION)
+      release: $(Version)
       on:
         branch: 
             - /preview*/ 
@@ -86,10 +86,10 @@ for:
       - cmd: git config --global user.name "Aguacongas"
       - cmd: git checkout gh-pages
       - cmd: git stash
-      - cmd: mkdir %APPVEYOR_BUILD_VERSION%
-      - cmd: move coverage\docs %APPVEYOR_BUILD_VERSION%
-      - cmd: git add %APPVEYOR_BUILD_VERSION%
-      - cmd: git commit %APPVEYOR_BUILD_VERSION% -m "Appveyor build succed %APPVEYOR_BUILD_NUMBER%"
+      - cmd: mkdir %Version%
+      - cmd: move coverage\docs %Version%
+      - cmd: git add %Version%
+      - cmd: git commit %Version% -m "Appveyor build succed %APPVEYOR_BUILD_NUMBER%"
       - cmd: git push
 -
   branches:

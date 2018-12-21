@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.npmrc = .npmrc
 		.releaserc.json = .releaserc.json
 		appveyor.yml = appveyor.yml
+		appveyorinit.ps1 = appveyorinit.ps1
 		build.cmd = build.cmd
 		build.ps1 = build.ps1
 		dotnet-install.ps1 = dotnet-install.ps1
@@ -38,9 +39,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication.TestBase", "src\Aguacongas.AspNetCore.Authentication.TestBase\Aguacongas.AspNetCore.Authentication.TestBase.csproj", "{B3DEE02F-9CD3-4009-AFEE-00F0B09811EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aguacongas.AspNetCore.Authentication.Redis", "src\Aguacongas.AspNetCore.Authentication.Redis\Aguacongas.AspNetCore.Authentication.Redis.csproj", "{CE9FE264-6139-47BF-970C-D1BBFCD7EFEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication.Redis", "src\Aguacongas.AspNetCore.Authentication.Redis\Aguacongas.AspNetCore.Authentication.Redis.csproj", "{CE9FE264-6139-47BF-970C-D1BBFCD7EFEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aguacongas.AspNetCore.Authentication.Redis.Test", "test\Aguacongas.AspNetCore.Authentication.Redis.Test\Aguacongas.AspNetCore.Authentication.Redis.Test.csproj", "{87CFA3EF-2A15-4861-A6DC-C74E9CA3EBCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication.Redis.Test", "test\Aguacongas.AspNetCore.Authentication.Redis.Test\Aguacongas.AspNetCore.Authentication.Redis.Test.csproj", "{87CFA3EF-2A15-4861-A6DC-C74E9CA3EBCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

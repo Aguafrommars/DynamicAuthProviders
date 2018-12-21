@@ -10,6 +10,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework.Test
 {
     public class DynamicManagerTest: DynamicManagerTestBase<SchemeDefinition>
     {
+        private readonly string dbName = Guid.NewGuid().ToString();
         public DynamicManagerTest(ITestOutputHelper output): base(output)
         {
         }
@@ -18,7 +19,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework.Test
         {
             builder.Services.AddDbContext<SchemeDbContext>(options =>
             {
-                options.UseInMemoryDatabase(Guid.NewGuid().ToString());
+                options.UseInMemoryDatabase(dbName);
             });
             return builder.AddEntityFrameworkStore<SchemeDbContext>();
         }

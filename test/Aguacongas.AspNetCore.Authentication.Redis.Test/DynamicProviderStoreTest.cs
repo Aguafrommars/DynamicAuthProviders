@@ -1,5 +1,7 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Logging;
 using Moq;
 using StackExchange.Redis;
@@ -26,6 +28,39 @@ namespace Aguacongas.AspNetCore.Authentication.Redis.Test
             await Assert.ThrowsAsync<ArgumentException>(() => store.FindBySchemeAsync(null));
             await Assert.ThrowsAsync<ArgumentException>(() => store.FindBySchemeAsync(""));
             await Assert.ThrowsAsync<ArgumentException>(() => store.FindBySchemeAsync("  "));
+        }
+
+        [Fact]
+        public async Task Concurrent_updates_should_fail()
+        {
+            var db = CreateDabase();
+            var store = CreateStore(db);
+
+            var scheme = Guid.NewGuid().ToString();
+            await store.AddAsync(new SchemeDefinition
+            {
+                Scheme = scheme,
+                DisplayName = "test",
+                HandlerType = typeof(CookieAuthenticationHandler),
+                Options = new CookieAuthenticationOptions()
+            });
+
+            var definition = await store.FindBySchemeAsync(scheme);
+            var definition2 = await store.FindBySchemeAsync(scheme);
+
+            await store.UpdateAsync(definition);
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() => store.UpdateAsync(definition2));
+        }
+
+        public DynamicProviderStore CreateStore(IDatabase database)
+        {
+            return new DynamicProviderStore(database, new RedisAuthenticationSchemeOptionsSerializer<SchemeDefinition>(), new Mock<ILogger<DynamicProviderStore>>().Object);
+        }
+        public IDatabase CreateDabase()
+        {
+            var m = ConnectionMultiplexer.Connect("localhost:6379");
+            return m.GetDatabase(-1);
         }
     }
 }

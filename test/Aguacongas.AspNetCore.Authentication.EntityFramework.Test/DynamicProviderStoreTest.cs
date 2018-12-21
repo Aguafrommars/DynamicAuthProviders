@@ -1,8 +1,11 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
@@ -33,7 +36,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework.Test
         }
     }
 
-    public class FakeDbContextOptions : DbContextOptions
+    class FakeDbContextOptions : DbContextOptions
     {
         public FakeDbContextOptions() : base(new Mock<IReadOnlyDictionary<Type, IDbContextOptionsExtension>>().Object)
         {

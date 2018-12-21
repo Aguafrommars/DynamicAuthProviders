@@ -1,7 +1,6 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -92,13 +91,11 @@ namespace Aguacongas.AspNetCore.Authentication
 
         private class EnsureUniqCallbackPath<TOptions, THandler> : IPostConfigureOptions<TOptions> where TOptions : RemoteAuthenticationOptions
         {
-            private readonly AuthenticationOptions _authOptions;
             private readonly IAuthenticationSchemeProvider _schemeProvider;
             private readonly IOptionsMonitorCache<AuthenticationSchemeOptions> _monitorCache;
 
-            public EnsureUniqCallbackPath(IOptions<AuthenticationOptions> authOptions, IAuthenticationSchemeProvider schemeProvider, IOptionsMonitorCache<AuthenticationSchemeOptions> monitorCache)
+            public EnsureUniqCallbackPath(IAuthenticationSchemeProvider schemeProvider, IOptionsMonitorCache<AuthenticationSchemeOptions> monitorCache)
             {
-                _authOptions = authOptions.Value;
                 _schemeProvider = schemeProvider;
                 _monitorCache = monitorCache;
             }
@@ -108,8 +105,12 @@ namespace Aguacongas.AspNetCore.Authentication
                 var schemes = _schemeProvider.GetAllSchemesAsync().GetAwaiter().GetResult();
                 foreach(var scheme in schemes)
                 {
+                    if (name == scheme.Name)
+                    {
+                        continue;
+                    }
                     var other = _monitorCache.GetOrAdd(scheme.Name, () => options);
-                    if (other != options && other is RemoteAuthenticationOptions otherRemote && otherRemote.CallbackPath == options.CallbackPath)
+                    if (other is RemoteAuthenticationOptions otherRemote && otherRemote.CallbackPath == options.CallbackPath)
                     {
                         throw new InvalidOperationException($"Callbacks paths for schemes {name} and {scheme.Name} are equals: {options.CallbackPath}");
                     }

@@ -9,8 +9,8 @@ Nuget packages
 --------------
 |Aguacongas.AspNetCore.Authentication|Aguacongas.AspNetCore.Authentication.EntityFramework|Aguacongas.AspNetCore.Authentication.TestBase|
 |:------:|:------:|:------:|
-|[![][Aguacongas.AspNetCore.Authentication-badge]][Aguacongas.AspNetCore.Authentication-nuget]|[![][Aguacongas.AspNetCore.Authentication.EntityFramework-badge]][Aguacongas.AspNetCore.Authentication.EntityFramework-nuget]|
-|[![][Aguacongas.AspNetCore.Authentication.TestBase-downloadbadge]][Aguacongas.AspNetCore.Authentication.TestBase-nuget]|
+|[![][Aguacongas.AspNetCore.Authentication-badge]][Aguacongas.AspNetCore.Authentication-nuget]|[![][Aguacongas.AspNetCore.Authentication.EntityFramework-badge]][Aguacongas.AspNetCore.Authentication.EntityFramework-nuget]|[![][Aguacongas.AspNetCore.Authentication.TestBase-badge]][Aguacongas.AspNetCore.Authentication.TestBase-nuget]|  
+|[![][Aguacongas.AspNetCore.Authentication-downloadbadge]][Aguacongas.AspNetCore.Authentication-nuget]|[![][Aguacongas.AspNetCore.Authentication.EntityFramework-downloadbadge]][Aguacongas.AspNetCore.Authentication.EntityFramework-nuget]|[![][Aguacongas.AspNetCore.Authentication.TestBase-downloadbadge]][Aguacongas.AspNetCore.Authentication.TestBase-nuget]|  
 
 [Aguacongas.AspNetCore.Authentication-badge]: https://img.shields.io/nuget/v/Aguacongas.AspNetCore.Authentication.svg
 [Aguacongas.AspNetCore.Authentication-downloadbadge]: https://img.shields.io/nuget/dt/Aguacongas.AspNetCore.Authentication.svg
@@ -114,25 +114,4 @@ And in the `Configure` method load the configuration with `LoadDynamicAuthentica
 
 ```
 
-## Extends
-
-You can implement your own store by implementing `IDynamicProviderStore<TSchemeDefinition>` interface.  
-To verify your implementation you can override `DynamicManagerTestBase<TSchemeDefinition>` of `Aguacongas.AspNetCore.Authentication.TestBase`.
-
-``` csharp
-public class DynamicManagerTest: DynamicManagerTestBase<SchemeDefinition>
-{
-    public DynamicManagerTest(ITestOutputHelper output): base(output)
-    {
-    }
-
-    protected override DynamicAuthenticationBuilder AddStore(DynamicAuthenticationBuilder builder)
-    {
-        builder.Services.AddDbContext<SchemeDbContext>(options =>
-        {
-            options.UseInMemoryDatabase(Guid.NewGuid().ToString());
-        });
-        return builder.AddEntityFrameworkStore<SchemeDbContext>();
-    }
-}
-```
+Read the [wiki](../../wiki) for more information.

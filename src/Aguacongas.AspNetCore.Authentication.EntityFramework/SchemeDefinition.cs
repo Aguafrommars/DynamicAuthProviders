@@ -1,6 +1,6 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
-namespace Aguacongas.AspNetCore.Authentication
+namespace Aguacongas.AspNetCore.Authentication.EntityFramework
 {
     /// <summary>
     /// Scheme definition for entity framework store

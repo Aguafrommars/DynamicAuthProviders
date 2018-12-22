@@ -1,7 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Olivier Lefebvre</Authors>
+    <Copyright>Copyright (c) 2018 @Olivier Lefebvre</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/aguacongas/DymamicAuthProviders/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/aguacongas/DymamicAuthProviders/tree/master/sample/Aguacongas.AspNetCore.Redis</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/aguacongas/DymamicAuthProviders</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>aspnetcore;authentication;security;redis</PackageTags>
+    <Description>Provider for DinamicAuthProviders that uses Redis.</Description>
   </PropertyGroup>
 
   <ItemGroup>

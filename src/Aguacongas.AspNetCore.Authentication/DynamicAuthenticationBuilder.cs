@@ -44,24 +44,6 @@ namespace Aguacongas.AspNetCore.Authentication
         }
 
         /// <summary>
-        /// Adds a <see cref="T:Microsoft.AspNetCore.Authentication.RemoteAuthenticationHandler`1" /> based <see cref="T:Microsoft.AspNetCore.Authentication.AuthenticationScheme" /> that supports remote authentication
-        /// which can be used by <see cref="T:Microsoft.AspNetCore.Authentication.IAuthenticationService" />.
-        /// </summary>
-        /// <typeparam name="TOptions">The <see cref="T:Microsoft.AspNetCore.Authentication.RemoteAuthenticationOptions" /> type to configure the handler."/&gt;.</typeparam>
-        /// <typeparam name="THandler">The <see cref="T:Microsoft.AspNetCore.Authentication.RemoteAuthenticationHandler`1" /> used to handle this scheme.</typeparam>
-        /// <param name="authenticationScheme">The name of this scheme.</param>
-        /// <param name="displayName">The display name of this scheme.</param>
-        /// <param name="configureOptions">Used to configure the scheme options.</param>
-        /// <returns>
-        /// The builder.
-        /// </returns>
-        public override AuthenticationBuilder AddRemoteScheme<TOptions, THandler>(string authenticationScheme, string displayName, Action<TOptions> configureOptions)
-        {
-            Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<TOptions>, EnsureUniqCallbackPath<TOptions, THandler>>());
-            return base.AddRemoteScheme<TOptions, THandler>(authenticationScheme, displayName, configureOptions);
-        }
-
-        /// <summary>
         /// Adds a <see cref="T:Microsoft.AspNetCore.Authentication.AuthenticationScheme" /> which can be used by <see cref="T:Microsoft.AspNetCore.Authentication.IAuthenticationService" />.
         /// </summary>
         /// <typeparam name="TOptions">The <see cref="T:Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions" /> type to configure the handler."/&gt;.</typeparam>
@@ -87,35 +69,6 @@ namespace Aguacongas.AspNetCore.Authentication
                 )
             );
             return this;
-        }
-
-        private class EnsureUniqCallbackPath<TOptions, THandler> : IPostConfigureOptions<TOptions> where TOptions : RemoteAuthenticationOptions
-        {
-            private readonly IAuthenticationSchemeProvider _schemeProvider;
-            private readonly IOptionsMonitorCache<AuthenticationSchemeOptions> _monitorCache;
-
-            public EnsureUniqCallbackPath(IAuthenticationSchemeProvider schemeProvider, IOptionsMonitorCache<AuthenticationSchemeOptions> monitorCache)
-            {
-                _schemeProvider = schemeProvider;
-                _monitorCache = monitorCache;
-            }
-
-            public void PostConfigure(string name, TOptions options)
-            {
-                var schemes = _schemeProvider.GetAllSchemesAsync().GetAwaiter().GetResult();
-                foreach(var scheme in schemes)
-                {
-                    if (name == scheme.Name)
-                    {
-                        continue;
-                    }
-                    var other = _monitorCache.GetOrAdd(scheme.Name, () => options);
-                    if (other is RemoteAuthenticationOptions otherRemote && otherRemote.CallbackPath == options.CallbackPath)
-                    {
-                        throw new InvalidOperationException($"Callbacks paths for schemes {name} and {scheme.Name} are equals: {options.CallbackPath}");
-                    }
-                }
-            }
         }
     }
 }

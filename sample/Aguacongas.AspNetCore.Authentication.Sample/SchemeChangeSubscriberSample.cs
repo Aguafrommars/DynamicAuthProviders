@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Aguacongas.AspNetCore.Authentication.EntityFramework;
+using System.Threading.Tasks;
 
 namespace Aguacongas.AspNetCore.Authentication.Sample
 {

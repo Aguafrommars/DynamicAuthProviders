@@ -9,9 +9,8 @@
     <RepositoryUrl>https://github.com/aguacongas/DymamicAuthProviders</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>aspnetcore;authentication;security;entityframeworkcore</PackageTags>
-    <Description>Provider for DinamicAuthProviders that uses Entity Framework Core.
+    <Description>Provider for DinamicAuthProviders that uses Entity Framework Core.</Description>
     <DebugType>Full</DebugType>
-</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

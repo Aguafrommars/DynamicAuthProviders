@@ -103,9 +103,6 @@ namespace Aguacongas.AspNetCore.Authentication
         /// </summary>
         public virtual void Load()
         {
-            var platform = Environment.OSVersion.Platform.ToString();
-            var runtimeAssemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(platform);
-
             foreach (var definition in _store.SchemeDefinitions)
             {
                 if (ManagedHandlerType.Contains(definition.HandlerType))

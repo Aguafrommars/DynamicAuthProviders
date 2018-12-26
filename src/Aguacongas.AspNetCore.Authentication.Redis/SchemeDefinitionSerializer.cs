@@ -3,12 +3,12 @@
 namespace Aguacongas.AspNetCore.Authentication.Redis
 {
     /// <summary>
-    /// 
+    /// <see cref="SchemeDefinition"/> serializer.
     /// </summary>
     /// <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
     /// <seealso cref="Aguacongas.AspNetCore.Authentication.AuthenticationSchemeOptionsSerializer" />
-    /// <seealso cref="Aguacongas.AspNetCore.Authentication.Redis.IRedisAuthenticationSchemeOptionsSerializer{TSchemeDefinition}" />
-    public class RedisAuthenticationSchemeOptionsSerializer<TSchemeDefinition> : AuthenticationSchemeOptionsSerializer, IRedisAuthenticationSchemeOptionsSerializer<TSchemeDefinition> 
+    /// <seealso cref="Aguacongas.AspNetCore.Authentication.Redis.ISchemeDefinitionSerializer{TSchemeDefinition}" />
+    public class SchemeDefinitionSerializer<TSchemeDefinition> : AuthenticationSchemeOptionsSerializer, ISchemeDefinitionSerializer<TSchemeDefinition> 
         where TSchemeDefinition: SchemeDefinition
     {
         /// <summary>

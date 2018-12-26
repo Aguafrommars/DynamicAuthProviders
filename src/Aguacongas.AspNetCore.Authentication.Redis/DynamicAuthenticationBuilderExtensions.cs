@@ -126,11 +126,11 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var services = builder.Services;
 
-            services.AddTransient<IRedisAuthenticationSchemeOptionsSerializer<TSchemeDefinition>, RedisAuthenticationSchemeOptionsSerializer<TSchemeDefinition>>();
+            services.AddTransient<ISchemeDefinitionSerializer<TSchemeDefinition>, SchemeDefinitionSerializer<TSchemeDefinition>>();
             services.AddTransient<IDynamicProviderStore<TSchemeDefinition>>(provider =>
             {
                 var db = getDatabase(provider);
-                var serializer = provider.GetRequiredService<IRedisAuthenticationSchemeOptionsSerializer<TSchemeDefinition>>();
+                var serializer = provider.GetRequiredService<ISchemeDefinitionSerializer<TSchemeDefinition>>();
                 var logger = provider.GetRequiredService<ILogger<DynamicProviderStore<TSchemeDefinition>>>();
 
                 return new DynamicProviderStore<TSchemeDefinition>(db, serializer, logger);

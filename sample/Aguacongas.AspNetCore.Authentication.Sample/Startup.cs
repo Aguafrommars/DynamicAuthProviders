@@ -130,7 +130,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                         template: "{controller=Home}/{action=Index}/{id?}");
                 })
                 // load dynamyc authentication configuration from store
-                .LoadDynamicAuthenticationConfiguration();
+                .LoadDynamicAuthenticationConfiguration<SchemeDefinition>();
         }
     }
 }

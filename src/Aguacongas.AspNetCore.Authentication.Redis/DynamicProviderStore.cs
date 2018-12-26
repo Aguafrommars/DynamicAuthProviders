@@ -22,7 +22,7 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
         /// <param name="db">The Redis db.</param>
         /// <param name="authenticationSchemeOptionsSerializer">The authentication scheme options serializer.</param>
         /// <param name="logger">The logger.</param>
-        public DynamicProviderStore(IDatabase db, IRedisAuthenticationSchemeOptionsSerializer<SchemeDefinition> authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore> logger) : base(db, authenticationSchemeOptionsSerializer, logger)
+        public DynamicProviderStore(IDatabase db, ISchemeDefinitionSerializer<SchemeDefinition> authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore> logger) : base(db, authenticationSchemeOptionsSerializer, logger)
         {
         }
     }
@@ -35,32 +35,49 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
     public class DynamicProviderStore<TSchemeDefinition> : IDynamicProviderStore<TSchemeDefinition>
         where TSchemeDefinition : SchemeDefinition, new()
     {
+        /// <summary>
+        /// The store key
+        /// </summary>
         public const string StoreKey = "schemes";
+        /// <summary>
+        /// The concurency key
+        /// </summary>
         public const string ConcurencyKey = "schemes-concurency";
 
         private readonly IDatabase _db;
-        private readonly IRedisAuthenticationSchemeOptionsSerializer<TSchemeDefinition> _authenticationSchemeOptionsSerializer;
+        private readonly ISchemeDefinitionSerializer<TSchemeDefinition> _authenticationSchemeOptionsSerializer;
         private readonly ILogger<DynamicProviderStore<TSchemeDefinition>> _logger;
 
 
+        /// <summary>
+        /// Gets the scheme definitions list.
+        /// </summary>
+        /// <value>
+        /// The scheme definitions list.
+        /// </value>
         public IQueryable<TSchemeDefinition> SchemeDefinitions => _db.HashGetAll(StoreKey)
             .Select(entry => _authenticationSchemeOptionsSerializer.Deserialize(entry.Value))
             .AsQueryable();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DynamicProviderStore{TSchemeDefinition, TContext}"/> class.
+        /// Initializes a new instance of the <see cref="DynamicProviderStore{TSchemeDefinition}" /> class.
         /// </summary>
         /// <param name="db">The Redis db.</param>
         /// <param name="authenticationSchemeOptionsSerializer">The authentication scheme options serializer.</param>
         /// <param name="logger">The logger.</param>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// db
         /// or
         /// authenticationSchemeOptionsSerializer
         /// or
         /// logger
         /// </exception>
-        public DynamicProviderStore(IDatabase db, IRedisAuthenticationSchemeOptionsSerializer<TSchemeDefinition> authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore<TSchemeDefinition>> logger)
+        /// <exception cref="System.ArgumentNullException">db
+        /// or
+        /// authenticationSchemeOptionsSerializer
+        /// or
+        /// logger</exception>
+        public DynamicProviderStore(IDatabase db, ISchemeDefinitionSerializer<TSchemeDefinition> authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore<TSchemeDefinition>> logger)
         {
             _db = db ?? throw new ArgumentNullException(nameof(db));
             _authenticationSchemeOptionsSerializer = authenticationSchemeOptionsSerializer ?? throw new ArgumentNullException(nameof(authenticationSchemeOptionsSerializer));

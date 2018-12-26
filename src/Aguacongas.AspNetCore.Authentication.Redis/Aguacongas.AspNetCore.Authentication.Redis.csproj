@@ -12,6 +12,14 @@
     <Description>Provider for DinamicAuthProviders that uses Redis.</Description>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Projects\Perso\DymamicAuthProviders\src\Aguacongas.AspNetCore.Authentication.Redis\Aguacongas.AspNetCore.Authentication.Redis.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Projects\Perso\DymamicAuthProviders\src\Aguacongas.AspNetCore.Authentication.Redis\Aguacongas.AspNetCore.Authentication.Redis.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="StackExchange.Redis.StrongName" Version="1.2.6" />
   </ItemGroup>

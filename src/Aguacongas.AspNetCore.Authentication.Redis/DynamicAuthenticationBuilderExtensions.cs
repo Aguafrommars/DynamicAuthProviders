@@ -17,11 +17,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Adds an Redis implementation of identity stores.
         /// </summary>
-        /// <typeparam name="TSchemeDefinition">The type of scheme definition.</typeparam>
-        /// <param name="builder">The <see cref="DynamicAuthenticationBuilder"/> instance this method extends.</param>
-        /// <param name="configure">Action to configure <see cref="ConfigurationOptions"/></param>
+        /// <param name="builder">The <see cref="DynamicAuthenticationBuilder" /> instance this method extends.</param>
+        /// <param name="configure">Action to configure <see cref="ConfigurationOptions" /></param>
         /// <param name="database">(Optional) The redis database to use</param>
-        /// <returns>The <see cref="IdentityBuilder"/> instance this method extends.</returns>
+        /// <returns>
+        /// The <see cref="DynamicAuthenticationBuilder" /> instance this method extends.
+        /// </returns>
         public static DynamicAuthenticationBuilder AddRedisStore(this DynamicAuthenticationBuilder builder, Action<ConfigurationOptions> configure, int? database = null)
         {
             return builder.AddRedisStore<SchemeDefinition>(configure, database);
@@ -31,10 +32,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds an Redis implementation of identity stores.
         /// </summary>
         /// <typeparam name="TSchemeDefinition">The type of scheme definition.</typeparam>
-        /// <param name="builder">The <see cref="DynamicAuthenticationBuilder"/> instance this method extends.</param>
-        /// <param name="configure">Action to configure <see cref="ConfigurationOptions"/></param>
+        /// <param name="builder">The <see cref="DynamicAuthenticationBuilder" /> instance this method extends.</param>
+        /// <param name="configure">Action to configure <see cref="ConfigurationOptions" /></param>
         /// <param name="database">(Optional) The redis database to use</param>
-        /// <returns>The <see cref="IdentityBuilder"/> instance this method extends.</returns>
+        /// <returns>
+        /// The <see cref="DynamicAuthenticationBuilder" /> instance this method extends.
+        /// </returns>
         public static DynamicAuthenticationBuilder AddRedisStore<TSchemeDefinition>(this DynamicAuthenticationBuilder builder, Action<ConfigurationOptions> configure, int? database = null)
             where TSchemeDefinition : SchemeDefinition, new()
         {
@@ -59,11 +62,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Adds an Redis implementation of identity stores.
         /// </summary>
-        /// <param name="builder">The <see cref="DynamicAuthenticationBuilder"/> instance this method extends.</param>
+        /// <param name="builder">The <see cref="DynamicAuthenticationBuilder" /> instance this method extends.</param>
         /// <param name="configuration">The redis configuration string</param>
         /// <param name="database">(Optional) The redis database to use</param>
-        /// <param name="log">(Optional) a <see cref="TextWriter"/> to write log</param>
-        /// <returns>The <see cref="IdentityBuilder"/> instance this method extends.</returns>
+        /// <returns>
+        /// The <see cref="DynamicAuthenticationBuilder" /> instance this method extends.
+        /// </returns>
         public static DynamicAuthenticationBuilder AddRedisStore(this DynamicAuthenticationBuilder builder, string configuration, int? database = null)
         {
             return builder.AddRedisStore<SchemeDefinition>(configuration, database);
@@ -73,11 +77,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds an Redis implementation of identity stores.
         /// </summary>
         /// <typeparam name="TSchemeDefinition">The type of scheme definition.</typeparam>
-        /// <param name="builder">The <see cref="DynamicAuthenticationBuilder"/> instance this method extends.</param>
+        /// <param name="builder">The <see cref="DynamicAuthenticationBuilder" /> instance this method extends.</param>
         /// <param name="configuration">The redis configuration string</param>
         /// <param name="database">(Optional) The redis database to use</param>
-        /// <param name="log">(Optional) a <see cref="TextWriter"/> to write log</param>
-        /// <returns>The <see cref="IdentityBuilder"/> instance this method extends.</returns>
+        /// <returns>
+        /// The <see cref="DynamicAuthenticationBuilder" /> instance this method extends.
+        /// </returns>
         public static DynamicAuthenticationBuilder AddRedisStore<TSchemeDefinition>(this DynamicAuthenticationBuilder builder, string configuration, int? database = null)
             where TSchemeDefinition : SchemeDefinition, new()
         {

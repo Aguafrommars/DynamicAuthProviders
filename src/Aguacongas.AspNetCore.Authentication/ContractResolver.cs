@@ -3,6 +3,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Collections;
 using System.Reflection;
 
 namespace Aguacongas.AspNetCore.Authentication
@@ -29,7 +30,7 @@ namespace Aguacongas.AspNetCore.Authentication
             var property = base.CreateProperty(member, memberSerialization);
             var propertyInfo = member as PropertyInfo;
             var propertyType = propertyInfo?.PropertyType;
-            property.ShouldSerialize = instance => propertyType != null && !propertyType.IsInterface && propertyInfo.CanWrite && !propertyType.IsSubclassOf(typeof(Delegate));
+            property.ShouldSerialize = instance => propertyType != null && (!propertyType.IsInterface || typeof(IEnumerable).IsAssignableFrom(propertyType)) && !propertyType.IsSubclassOf(typeof(Delegate));
 
             return property;
         }        

@@ -2,9 +2,20 @@
 
 namespace Aguacongas.AspNetCore.Authentication.Redis
 {
-    public class RedisAuthenticationSchemeOptionsSerializer<TSchemeDefinition> : AuthenticationSchemeOptionsSerializer, IRedisAuthenticationSchemeOptionsSerializer<TSchemeDefinition> 
+    /// <summary>
+    /// <see cref="SchemeDefinition"/> serializer.
+    /// </summary>
+    /// <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
+    /// <seealso cref="Aguacongas.AspNetCore.Authentication.AuthenticationSchemeOptionsSerializer" />
+    /// <seealso cref="Aguacongas.AspNetCore.Authentication.Redis.ISchemeDefinitionSerializer{TSchemeDefinition}" />
+    public class SchemeDefinitionSerializer<TSchemeDefinition> : AuthenticationSchemeOptionsSerializer, ISchemeDefinitionSerializer<TSchemeDefinition> 
         where TSchemeDefinition: SchemeDefinition
     {
+        /// <summary>
+        /// Serializes the specified definition.
+        /// </summary>
+        /// <param name="definition">The definition.</param>
+        /// <returns></returns>
         public string Serialize(TSchemeDefinition definition)
         {
             var options = definition.Options;
@@ -23,6 +34,11 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
             return result;
         }
 
+        /// <summary>
+        /// Deserializes the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
         public TSchemeDefinition Deserialize(string value)
         {
             var definition = base.Deserialize(value, typeof(TSchemeDefinition)) as TSchemeDefinition;

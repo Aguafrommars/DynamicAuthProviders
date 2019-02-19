@@ -14,6 +14,10 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
     {
         private readonly ILogger<RedisLogger> _logger;
 
+        /// <summary>
+        /// When overridden in a derived class, returns the character encoding in which the output is written.
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
         public override Encoding Encoding => throw new NotImplementedException();
 
         /// <summary>

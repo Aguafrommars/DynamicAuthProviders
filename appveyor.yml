@@ -46,7 +46,6 @@ deploy:
     on:
       branch: 
       - /preview\/*/
-      - /release\/*/
       CI_WINDOWS: true
   - provider: GitHub
     auth_token: $(GH_TOKEN)
@@ -55,7 +54,7 @@ deploy:
     release: $(Version)
     on:
       branch: 
-      - /preview*/ 
+      - /preview\/*/ 
       CI_WINDOWS: true
 for:
 -
@@ -77,7 +76,7 @@ for:
 -
   branches:
     only:
-    - /release>\/*/
+    - /release\/*/
   on_success:
     - cmd: semantic-release -b %APPVEYOR_REPO_BRANCH%
     - cmd: git config --global credential.helper store

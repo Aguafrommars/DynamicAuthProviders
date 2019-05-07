@@ -19,10 +19,10 @@ init:
 install:
   - sh: wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
   - sh: sudo dpkg -i packages-microsoft-prod.deb
-  - sh: sudo apt-get -y install apt-transport-https
   - sh: sudo apt-get update
-  - sh: chmod +x ./dotnet-install.sh
-  - sh: ./dotnet-install.sh -Channel Current -Version 3.0.100-preview5-011568
+  - sh: sudo apt-get -y install apt-transport-https
+  - sh: sudo chmod +x ./dotnet-install.sh
+  - sh: sudo ./dotnet-install.sh -Channel Current -Version 3.0.100-preview5-011568
   - sh: sudo apt -y install nuget
   - sh: nuget install GitVersion.CommandLine -ExcludeVersion
   - sh: mono GitVersion.CommandLine/tools/GitVersion.exe /l console /output buildserver

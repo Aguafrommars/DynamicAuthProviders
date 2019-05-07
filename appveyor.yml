@@ -21,6 +21,7 @@ install:
   - sh: sudo dpkg -i packages-microsoft-prod.deb
   - sh: sudo apt-get -y install apt-transport-https
   - sh: sudo apt-get update
+  - sh: chmod +x ./dotnet-install.sh
   - sh: ./dotnet-install.sh -Channel Current -Version 3.0.100-preview5-011568
   - sh: sudo apt -y install nuget
   - sh: nuget install GitVersion.CommandLine -ExcludeVersion

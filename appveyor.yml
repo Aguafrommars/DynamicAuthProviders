@@ -1,6 +1,6 @@
 version: 1.0.{build}
 skip_tags: true
-stack: node 9, redis
+stack: node 10, redis
 skip_commits:
   message: /^chore(release)/
 branches:
@@ -21,11 +21,11 @@ install:
   - sh: sudo dpkg -i packages-microsoft-prod.deb
   - sh: sudo apt-get -y install apt-transport-https
   - sh: sudo apt-get update
-  - sh: sudo apt-get -y install dotnet-sdk-2.2
+  - sh: ./dotnet-install.sh -Channel Current -Version 3.0.100-preview5-011568
   - sh: sudo apt -y install nuget
   - sh: nuget install GitVersion.CommandLine -ExcludeVersion
   - sh: mono GitVersion.CommandLine/tools/GitVersion.exe /l console /output buildserver
-  - ps: if ($isWindows) { .\dotnet-install.ps1 -Version 2.2.100 }
+  - ps: if ($isWindows) { .\dotnet-install.ps1 -Version 3.0.100-preview5-011568 }
   - cmd: nuget install redis-64 -excludeversion
   - cmd: redis-64\tools\redis-server.exe --service-install
   - cmd: redis-64\tools\redis-server.exe --service-start

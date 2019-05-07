@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <Authors>Olivier Lefebvre</Authors>
     <Copyright>Copyright (c) 2018 @Olivier Lefebvre</Copyright>
     <PackageLicense>https://raw.githubusercontent.com/aguacongas/DymamicAuthProviders/master/LICENSE</PackageLicense>
@@ -26,17 +26,17 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.WsFederation" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.0.0-preview5-19227-01" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.0.0-preview5-19227-01" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0-preview5-19227-01" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="3.0.0-preview5-19227-01" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.0.0-preview5-19227-01" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.0.0-preview5-19227-01" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.WsFederation" Version="3.0.0-preview5-19227-01" />
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview5-19227-01" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0-preview5-19227-01" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0-preview5-19227-01" />
     <PackageReference Include="Moq" Version="4.10.1" />
     <PackageReference Include="xunit.analyzers" Version="0.10.0" />
     <PackageReference Include="xunit.assert" Version="2.4.1" />

@@ -22,7 +22,8 @@ install:
   - sh: sudo apt-get update
   - sh: sudo apt-get -y install apt-transport-https
   - sh: sudo chmod +x ./dotnet-install.sh
-  - sh: sudo ./dotnet-install.sh -Channel Current -Version 3.0.100-preview5-011568
+  - sh: sudo ./dotnet-install.sh -Channel Current -Version 3.0.100-preview5-011568 -InstallDir ./dotnetsdk
+  - sh: sudo export PATH=./dotnetsdk:$PATH
   - sh: sudo apt -y install nuget
   - sh: nuget install GitVersion.CommandLine -ExcludeVersion
   - sh: mono GitVersion.CommandLine/tools/GitVersion.exe /l console /output buildserver

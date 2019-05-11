@@ -22,16 +22,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ContractResolver.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Aguacongas.AspNetCore.Authentication.xml" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OAuth" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="3.0.0-preview5-27626-15" />
-    <PackageReference Include="System.Text.Json" Version="4.6.0-preview6.19259.10" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
+
 </Project>

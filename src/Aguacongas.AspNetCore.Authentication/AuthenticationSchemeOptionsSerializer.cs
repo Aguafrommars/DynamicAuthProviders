@@ -2,10 +2,10 @@
 // Copyright (c) 2018 @Olivier Lefebvre
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyModel;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Text.Json.Serialization;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
@@ -21,10 +21,13 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <value>
         /// The json serializer settings.
         /// </value>
-        public static JsonSerializerOptions JsonSerializerSettings { get; } = new JsonSerializerOptions
+        public static JsonSerializerSettings JsonSerializerSettings { get; } = new JsonSerializerSettings
         {
-            IgnoreNullValues = true,
-            WriteIndented = false,
+            NullValueHandling = NullValueHandling.Ignore,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            Formatting = Formatting.None,
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            ContractResolver = new ContractResolver()
         };
 
         /// <summary>
@@ -81,7 +84,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <returns></returns>
         protected virtual string Serialize(object value, Type type)
         {
-            return JsonSerializer.ToString(value, type, JsonSerializerSettings);
+            return JsonConvert.SerializeObject(value, type, JsonSerializerSettings);
         }
 
         /// <summary>
@@ -92,7 +95,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <returns></returns>
         protected virtual object Deserialize(string value, Type type)
         {
-            return JsonSerializer.Parse(value, type, JsonSerializerSettings);
+            return JsonConvert.DeserializeObject(value, type, JsonSerializerSettings);
         }
 
         private Type GetType(string typeName)

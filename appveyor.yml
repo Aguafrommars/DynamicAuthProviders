@@ -44,11 +44,10 @@ artifacts:
 deploy:
   - provider: NuGet
     api_key:
-      secure: 23wPDdRicGt2vZuJ8vd9TRBKmqjHkx5WjzZmKvyxd5j0fNPedjUScRTj/rT0ObJa
+      secure: S57o0WbfRlTkoQL26JackFN9GHt3L21yJWMgjRGMPuVMzdujY45mVehIHOs+arHH
     on:
       branch: 
       - /preview\/*/
-      - /release\/*/
       CI_WINDOWS: true
   - provider: GitHub
     auth_token: $(GH_TOKEN)
@@ -57,5 +56,5 @@ deploy:
     release: $(Version)
     on:
       branch: 
-      - /preview*/ 
+      - /preview\/*/ 
       CI_WINDOWS: true

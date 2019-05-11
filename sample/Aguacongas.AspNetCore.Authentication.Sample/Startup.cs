@@ -10,10 +10,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace Aguacongas.AspNetCore.Authentication.Sample
 {
@@ -95,18 +97,18 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                             var content = await response.Content.ReadAsStringAsync();
                             response.EnsureSuccessStatusCode();
 
-                            var user = JObject.Parse(content);
+                            using var doc = JsonDocument.Parse(content);
 
-                            context.RunClaimActions(user);
+                            context.RunClaimActions(doc.RootElement);
                         }
                     };
                 }); 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options => options.EnableEndpointRouting = false);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

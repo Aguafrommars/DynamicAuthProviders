@@ -179,7 +179,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             if (definition != null)
             {
                 Deserialize(definition);
-            };
+            }
 
             return definition;
         }

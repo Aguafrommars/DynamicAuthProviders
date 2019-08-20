@@ -14,6 +14,7 @@ image:
 environment:
   GH_TOKEN: 
     secure: 0NJdORJRFjpB0dwUYv7bVNsbkldkoBhnvWik/CTOwAF/k9kP+/uTWMFnDcpEpt8E
+  donetsdk: 3.0.100-preview8-013656
 init:
   - cmd: git config --global core.autocrlf true
 install:
@@ -22,12 +23,12 @@ install:
   - sh: sudo apt-get update
   - sh: sudo apt-get -y install apt-transport-https
   - sh: sudo chmod +x ./dotnet-install.sh
-  - sh: sudo ./dotnet-install.sh -Channel Current -Version 3.0.100-preview5-011568 -InstallDir ./dotnetsdk -NoPath
+  - sh: sudo ./dotnet-install.sh -Channel Current -Version $donetsdk -InstallDir ./dotnetsdk -NoPath
   - sh: export PATH=/home/appveyor/projects/dymamicauthproviders/dotnetsdk:$PATH
   - sh: sudo apt -y install nuget
   - sh: nuget install GitVersion.CommandLine -ExcludeVersion
   - sh: mono GitVersion.CommandLine/tools/GitVersion.exe /l console /output buildserver
-  - ps: if ($isWindows) { .\dotnet-install.ps1 -Version 3.0.100-preview5-011568 }
+  - ps: if ($isWindows) { .\dotnet-install.ps1 -Version 3.0.100-preview8-013656 }
   - cmd: nuget install redis-64 -excludeversion
   - cmd: redis-64\tools\redis-server.exe --service-install
   - cmd: redis-64\tools\redis-server.exe --service-start

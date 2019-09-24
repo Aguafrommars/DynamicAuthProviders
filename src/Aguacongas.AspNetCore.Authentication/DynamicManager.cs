@@ -1,11 +1,9 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2018 @Olivier Lefebvre
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -160,7 +158,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">definition</exception>
-        public virtual async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
             if (definition == null)
             {

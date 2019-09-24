@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Authors>Olivier Lefebvre</Authors>
     <Copyright>Copyright (c) 2018 @Olivier Lefebvre</Copyright>
     <PackageLicenseUrl>https://raw.githubusercontent.com/aguacongas/DymamicAuthProviders/master/LICENSE</PackageLicenseUrl>
@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StackExchange.Redis.StrongName" Version="1.2.6" />
+    <PackageReference Include="StackExchange.Redis.StrongName" Version="1.2.7-alpha-00002" />
   </ItemGroup>
 
   <ItemGroup>

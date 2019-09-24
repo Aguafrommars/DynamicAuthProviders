@@ -15,12 +15,11 @@ namespace Aguacongas.AspNetCore.Authentication
     /// <typeparam name="TOptions">The type of the options.</typeparam>
     /// <seealso cref="IOptionsMonitorCache{AuthenticationOptions}" />
     public class OptionsMonitorCacheWrapper<TOptions> : IOptionsMonitorCache<AuthenticationSchemeOptions>
-        where TOptions: AuthenticationSchemeOptions, new()
+        where TOptions: AuthenticationSchemeOptions
     {
-        private readonly Type _type;
         private readonly IEnumerable<IPostConfigureOptions<TOptions>> _postConfigures;
         private readonly IOptionsMonitorCache<TOptions> _parent;
-        private readonly Action<string, AuthenticationSchemeOptions> _onAdded;
+        private readonly Action<string, TOptions> _onAdded;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OptionsMonitorCacheWrapper{TOptions}"/> class.
@@ -36,10 +35,9 @@ namespace Aguacongas.AspNetCore.Authentication
         /// onAdded
         /// </exception>
         /// <remarks>For internal user, you should not use this class</remarks>
-        public OptionsMonitorCacheWrapper(IOptionsMonitorCache<TOptions> parent, IEnumerable<IPostConfigureOptions<TOptions>> postConfigures, Action<string, AuthenticationSchemeOptions> onAdded)
+        public OptionsMonitorCacheWrapper(IOptionsMonitorCache<TOptions> parent, IEnumerable<IPostConfigureOptions<TOptions>> postConfigures, Action<string, TOptions> onAdded)
         {
             _parent = parent ?? throw new ArgumentNullException(nameof(parent));
-            _type = parent.GetType();
             _postConfigures = postConfigures ?? throw new ArgumentNullException(nameof(postConfigures));
             _onAdded = onAdded ?? throw new ArgumentNullException(nameof(onAdded)); ;
         }
@@ -78,7 +76,7 @@ namespace Aguacongas.AspNetCore.Authentication
         public bool TryAdd(string name, AuthenticationSchemeOptions options)
         {
             var result = _parent.TryAdd(name, (TOptions)options);
-            _onAdded.Invoke(name, options);
+            _onAdded.Invoke(name, options as TOptions);
             foreach(var postConfigure in _postConfigures)
             {
                 postConfigure.PostConfigure(name, options as TOptions);

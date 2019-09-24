@@ -20,6 +20,7 @@ using System;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -190,7 +191,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 state.scheme as AuthenticationScheme,
                 state.options as FacebookOptions,
                 new HttpClient(),
-                OAuthTokenResponse.Failed(new Exception())));
+                OAuthTokenResponse.Failed(new Exception()),
+                JsonDocument.Parse("{ \"name\": \"test\"}").RootElement));
 
             Assert.True(eventCalled);
         }
@@ -245,7 +247,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 state.scheme as AuthenticationScheme,
                 state.options as GoogleOptions,
                 new HttpClient(),
-                OAuthTokenResponse.Failed(new Exception())));
+                OAuthTokenResponse.Failed(new Exception()),
+                JsonDocument.Parse("{ \"name\": \"test\"}").RootElement));
 
             Assert.True(eventCalled);
         }
@@ -354,7 +357,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 state.scheme as AuthenticationScheme,
                 state.options as MicrosoftAccountOptions,
                 new HttpClient(),
-                OAuthTokenResponse.Failed(new Exception())));
+                OAuthTokenResponse.Failed(new Exception()),
+                JsonDocument.Parse("{ \"name\": \"test\"}").RootElement));
 
             Assert.True(eventCalled);
         }

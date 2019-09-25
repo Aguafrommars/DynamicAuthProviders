@@ -1,3 +1,28 @@
+# [3.0.0](https://github.com/aguacongas/DymamicAuthProviders/compare/2.0.0...3.0.0) (2019-09-25)
+
+
+### Bug Fixes
+
+* versioning ([cc33b0b](https://github.com/aguacongas/DymamicAuthProviders/commit/cc33b0b))
+
+
+### Build System
+
+* target asp.net core 3.0 ([adfb120](https://github.com/aguacongas/DymamicAuthProviders/commit/adfb120))
+* update packages ([d83b865](https://github.com/aguacongas/DymamicAuthProviders/commit/d83b865))
+
+
+### Features
+
+* remove dependency to newtonsoft.json ([35be616](https://github.com/aguacongas/DymamicAuthProviders/commit/35be616))
+
+
+### BREAKING CHANGES
+
+* asp.net core 3.0 release
+* needs .net core 3.0
+* .Net Core 3.0
+
 # 1.0.0 (2019-03-16)
 
 

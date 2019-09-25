@@ -60,12 +60,37 @@ deploy:
       branch: 
       - /preview\/*/
       CI_WINDOWS: true
-  - provider: GitHub
-    auth_token: $(GH_TOKEN)
-    draft: true
-    prerelease: false
-    release: $(Version)
-    on:
-      branch: 
+for:
+-
+  branches:
+    only:
+      - master
+  on_success:
+    - cmd: git config --global credential.helper store 
+    - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n" }
+    - cmd: IF EXIST coverage\docs ( git config --global user.email "aguacongas@gmail.com" )
+    - cmd: IF EXIST coverage\docs ( git config --global user.name "Olivier Lefebvre" )
+    - cmd: IF EXIST coverage\docs ( git stash )
+    - cmd: IF EXIST coverage\docs ( git checkout gh-pages )
+    - cmd: IF EXIST latest ( rmdir /S /Q latest )
+    - cmd: IF EXIST coverage\docs ( move coverage\docs latest )
+    - cmd: IF EXIST latest ( git add latest )
+    - cmd: IF EXIST latest ( git commit latest -m "Appveyor build succed %APPVEYOR_BUILD_VERSION%" )
+    - cmd: IF EXIST latest ( git push )
+-
+  branches:
+    only:
       - /release\/*/
-      CI_WINDOWS: true
+  on_success:
+      - cmd: semantic-release -b %APPVEYOR_REPO_BRANCH%
+      - cmd: git config --global credential.helper store
+      - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n" }
+      - cmd: git config --global user.email "aguacongas@gmail.com"
+      - cmd: git config --global user.name "Olivier Lefebvre"
+      - cmd: git checkout gh-pages
+      - cmd: git stash
+      - cmd: mkdir %NextVersion%
+      - cmd: move coverage\docs %NextVersion%
+      - cmd: git add %NextVersion%
+      - cmd: git commit %NextVersion% -m "Appveyor build succed %APPVEYOR_BUILD_VERSION%"
+      - cmd: git push

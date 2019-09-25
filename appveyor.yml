@@ -49,6 +49,7 @@ deploy:
     on:
       branch: 
       - /preview\/*/
+      - /release\/*/
       CI_WINDOWS: true
   - provider: GitHub
     auth_token: $(GH_TOKEN)
@@ -57,5 +58,14 @@ deploy:
     release: $(Version)
     on:
       branch: 
-      - /preview\/*/ 
+      - /preview\/*/
+      CI_WINDOWS: true
+  - provider: GitHub
+    auth_token: $(GH_TOKEN)
+    draft: true
+    prerelease: false
+    release: $(Version)
+    on:
+      branch: 
+      - /release\/*/
       CI_WINDOWS: true

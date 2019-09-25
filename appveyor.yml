@@ -89,8 +89,8 @@ for:
       - cmd: git config --global user.name "Olivier Lefebvre"
       - cmd: git checkout gh-pages
       - cmd: git stash
-      - cmd: mkdir %NextVersion%
-      - cmd: move coverage\docs %NextVersion%
-      - cmd: git add %NextVersion%
-      - cmd: git commit %NextVersion% -m "Appveyor build succed %APPVEYOR_BUILD_VERSION%"
+      - cmd: mkdir %Version%
+      - cmd: move coverage\docs %Version%
+      - cmd: git add %Version%
+      - cmd: git commit %Version% -m "Appveyor build succed %APPVEYOR_BUILD_VERSION%"
       - cmd: git push

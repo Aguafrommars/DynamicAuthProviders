@@ -4,6 +4,7 @@ Store and manage Microsoft.AspNetCore.Authentication providers.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/c92qtam52ughrtv1?svg=true)](https://ci.appveyor.com/project/aguacongas/dymamicauthproviders)
 [![Latest Code coveragre](https://aguacongas.github.io/DymamicAuthProviders/latest/badge_linecoverage.svg)](https://aguacongas.github.io/DymamicAuthProviders/latest)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3160/badge)](https://bestpractices.coreinfrastructure.org/projects/3160)
 
 Nuget packages
 --------------

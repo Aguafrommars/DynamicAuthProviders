@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <Authors>Olivier Lefebvre</Authors>
     <Copyright>Copyright (c) 2018 @Olivier Lefebvre</Copyright>
@@ -10,6 +10,7 @@
     <RepositoryUrl>https://github.com/aguacongas/DymamicAuthProviders</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>aspnetcore authentication security sample</PackageTags>
+    <SonarQubeExclude>true</SonarQubeExclude>
   </PropertyGroup>
 
   <ItemGroup>

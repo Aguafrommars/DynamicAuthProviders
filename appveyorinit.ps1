@@ -24,4 +24,5 @@ appveyor SetVariable -Name Version -Value $nextversion
 appveyor UpdateBuild -Version $nextversion
 appveyor AddMessage "Version = $nextversion"
 
+dotnet tool install --global dotnet-sonarscanner
 dotnet restore

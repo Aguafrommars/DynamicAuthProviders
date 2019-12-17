@@ -14,7 +14,7 @@ image:
 environment:
   GH_TOKEN: 
     secure: 0NJdORJRFjpB0dwUYv7bVNsbkldkoBhnvWik/CTOwAF/k9kP+/uTWMFnDcpEpt8E
-  donetsdk: 3.0.100
+  donetsdk: 3.1.100
 init:
   - cmd: git config --global core.autocrlf true
 install:
@@ -28,7 +28,7 @@ install:
   - sh: sudo apt -y install nuget
   - sh: nuget install GitVersion.CommandLine -ExcludeVersion
   - sh: mono GitVersion.CommandLine/tools/GitVersion.exe /l console /output buildserver
-  - ps: if ($isWindows) { .\dotnet-install.ps1 -Version 3.0.100 }
+  - ps: if ($isWindows) { .\dotnet-install.ps1 -Version $env:donetsdk }
   - cmd: nuget install redis-64 -excludeversion
   - cmd: redis-64\tools\redis-server.exe --service-install
   - cmd: redis-64\tools\redis-server.exe --service-start
@@ -60,37 +60,18 @@ deploy:
       branch: 
       - /preview\/*/
       CI_WINDOWS: true
+  - provider: GitHub
+    auth_token: $(GH_TOKEN)
+    draft: true
+    release: $(Version)
+    on:
+      branch: 
+      - /release\/*/
+      CI_WINDOWS: true
 for:
--
-  branches:
-    only:
-      - master
-  on_success:
-    - cmd: git config --global credential.helper store 
-    - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n" }
-    - cmd: IF EXIST coverage\docs ( git config --global user.email "aguacongas@gmail.com" )
-    - cmd: IF EXIST coverage\docs ( git config --global user.name "Olivier Lefebvre" )
-    - cmd: IF EXIST coverage\docs ( git stash )
-    - cmd: IF EXIST coverage\docs ( git checkout gh-pages )
-    - cmd: IF EXIST latest ( rmdir /S /Q latest )
-    - cmd: IF EXIST coverage\docs ( move coverage\docs latest )
-    - cmd: IF EXIST latest ( git add latest )
-    - cmd: IF EXIST latest ( git commit latest -m "Appveyor build succed %APPVEYOR_BUILD_VERSION%" )
-    - cmd: IF EXIST latest ( git push )
 -
   branches:
     only:
       - /release\/*/
   on_success:
       - cmd: semantic-release -b %APPVEYOR_REPO_BRANCH%
-      - cmd: git config --global credential.helper store
-      - ps: if ($isWindows) { Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n" }
-      - cmd: git config --global user.email "aguacongas@gmail.com"
-      - cmd: git config --global user.name "Olivier Lefebvre"
-      - cmd: git checkout gh-pages
-      - cmd: git stash
-      - cmd: mkdir %Version%
-      - cmd: move coverage\docs %Version%
-      - cmd: git add %Version%
-      - cmd: git commit %Version% -m "Appveyor build succed %APPVEYOR_BUILD_VERSION%"
-      - cmd: git push

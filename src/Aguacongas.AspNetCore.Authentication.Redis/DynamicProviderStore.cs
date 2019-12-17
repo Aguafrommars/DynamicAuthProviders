@@ -13,7 +13,7 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
     /// <summary>
     /// Implement a store for <see cref="NoPersistentDynamicManager{TSchemeDefinition}"/> with EntityFramework.
     /// </summary>
-    /// <seealso cref="Aguacongas.AspNetCore.Authentication.IDynamicProviderStore{TSchemeDefinition}" />
+    /// <seealso cref="IDynamicProviderStore{TSchemeDefinition}" />
     public class DynamicProviderStore : DynamicProviderStore<SchemeDefinition>
     {
         /// <summary>
@@ -91,15 +91,12 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">definition</exception>
-        public virtual async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
-            if (definition == null)
-            {
-                throw new ArgumentNullException(nameof(definition));
-            }
+            definition = definition ?? throw new ArgumentNullException(nameof(definition));
 
             var tran = _db.CreateTransaction();
-            var notExistsCondition = tran.AddCondition(Condition.HashNotExists(StoreKey, definition.Scheme));
+            _ = tran.AddCondition(Condition.HashNotExists(StoreKey, definition.Scheme));
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             tran.HashSetAsync(StoreKey, 
                 definition.Scheme, 
@@ -125,12 +122,9 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
         /// An instance of TSchemeDefinition or null.
         /// </returns>
         /// <exception cref="System.ArgumentException">Parameter {nameof(scheme)}</exception>
-        public virtual async Task<TSchemeDefinition> FindBySchemeAsync(string scheme, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<TSchemeDefinition> FindBySchemeAsync(string scheme, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrWhiteSpace(scheme))
-            {
-                throw new ArgumentException($"Parameter {nameof(scheme)} cannor be null or empty");
-            }
+            CheckScheme(scheme);
 
             var value = await _db.HashGetAsync(StoreKey, scheme).ConfigureAwait(false);
             if (value.HasValue)
@@ -140,8 +134,9 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
                 return definition;
             }
 
-            return default(TSchemeDefinition);
+            return default;
         }
+
 
         /// <summary>
         /// Removes a scheme definition asynchronous.
@@ -150,15 +145,12 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">definition</exception>
-        public virtual async Task RemoveAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task RemoveAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
-            if (definition == null)
-            {
-                throw new ArgumentNullException(nameof(definition));
-            }
+            definition = definition ?? throw new ArgumentNullException(nameof(definition));
 
             var tran = _db.CreateTransaction();
-            var concurrencyCondition = tran.AddCondition(Condition.HashEqual(ConcurencyKey, definition.Scheme, definition.ConcurrencyStamp));
+            _ = tran.AddCondition(Condition.HashEqual(ConcurencyKey, definition.Scheme, definition.ConcurrencyStamp));
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             tran.HashDeleteAsync(StoreKey, definition.Scheme);
             tran.HashDeleteAsync(ConcurencyKey, definition.Scheme);
@@ -180,17 +172,14 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">definition</exception>
-        public virtual async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
-            if (definition == null)
-            {
-                throw new ArgumentNullException(nameof(definition));
-            }
+            definition = definition ?? throw new ArgumentNullException(nameof(definition));
 
             definition.ConcurrencyStamp = 0;
 
             var tran = _db.CreateTransaction();
-            var concurrencyCondition = tran.AddCondition(Condition.HashEqual(ConcurencyKey, definition.Scheme, definition.ConcurrencyStamp));
+            _ = tran.AddCondition(Condition.HashEqual(ConcurencyKey, definition.Scheme, definition.ConcurrencyStamp));
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             tran.HashSetAsync(StoreKey, definition.Scheme, _authenticationSchemeOptionsSerializer.Serialize(definition));
             var concurency = tran.HashIncrementAsync(ConcurencyKey, definition.Scheme);
@@ -205,6 +194,14 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
             definition.ConcurrencyStamp = concurency.Result;
 
             _logger.LogInformation("Scheme {scheme} updated for {handlerType} with options: {options}", definition.Scheme, definition.HandlerType, definition.SerializedOptions);
+        }
+
+        private static void CheckScheme(string scheme)
+        {
+            if (string.IsNullOrWhiteSpace(scheme))
+            {
+                throw new ArgumentException($"Parameter {nameof(scheme)} cannor be null or empty");
+            }
         }
     }
 }

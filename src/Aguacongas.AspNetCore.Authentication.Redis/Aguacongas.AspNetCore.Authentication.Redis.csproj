@@ -14,10 +14,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>C:\Projects\Perso\DymamicAuthProviders\src\Aguacongas.AspNetCore.Authentication.Redis\Aguacongas.AspNetCore.Authentication.Redis.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>Aguacongas.AspNetCore.Authentication.Redis.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>C:\Projects\Perso\DymamicAuthProviders\src\Aguacongas.AspNetCore.Authentication.Redis\Aguacongas.AspNetCore.Authentication.Redis.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>Aguacongas.AspNetCore.Authentication.Redis.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>

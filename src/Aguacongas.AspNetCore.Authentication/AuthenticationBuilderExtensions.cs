@@ -2,7 +2,6 @@
 // Copyright (c) 2018 @Olivier Lefebvre
 using Aguacongas.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
-using System;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

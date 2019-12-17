@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.WsFederation;
 using Moq;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
@@ -35,12 +36,13 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
     public abstract class DynamicManagerTestBase<TSchemeDefinition>
         where TSchemeDefinition: SchemeDefinitionBase, new()
     {
+        [SuppressMessage("Critical Code Smell", "S4487:Unread \"private\" fields should be removed", Justification = "XUnit log.")]
         private readonly ITestOutputHelper _output;
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicManagerTestBase{TSchemeDefinition}"/> class.
         /// </summary>
         /// <param name="output">The output.</param>
-        public DynamicManagerTestBase(ITestOutputHelper output)
+        protected DynamicManagerTestBase(ITestOutputHelper output)
         {
             _output = output;
         }
@@ -50,6 +52,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
         /// </summary>
         /// <returns></returns>
         [Fact]
+        [SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "Test fail on exception")]
         public async Task AddAsync_should_fail_on_duplicate_scheme()
         {
             var provider = CreateServiceProvider(options =>
@@ -82,7 +85,11 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 await sut.AddAsync(definition);
                 throw new InvalidOperationException("AddAsync should fail on ducplicate scheme");
             }
+#pragma warning disable CA1031 // Do not catch general exception types
+#pragma warning disable S108 // Nested blocks of code should not be left empty
             catch { }
+#pragma warning restore S108 // Nested blocks of code should not be left empty
+#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         /// <summary>
@@ -271,8 +278,10 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             {
                 options.AddJwtBearer(configure =>
                 {
-                    configure.Events = new JwtBearerEvents();
-                    configure.Events.OnMessageReceived = onMessageReceived;
+                    configure.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = onMessageReceived
+                    };
                 });
             });
 
@@ -540,7 +549,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
 
             var provider = CreateServiceProvider(options =>
             {
-                options.AddScheme<OAuthOptions, FakeGenericHandler<string, OAuthOptions>>("test", configure =>
+                options.AddScheme<OAuthOptions, FakeGenericHandler<OAuthOptions>>("test", configure =>
                 {
                     configure.Events.OnTicketReceived = onTicketReceived;
                 });
@@ -556,12 +565,12 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             {
                 Scheme = scheme,
                 DisplayName = "test",
-                HandlerType = typeof(FakeGenericHandler<string, OAuthOptions>),
+                HandlerType = typeof(FakeGenericHandler<OAuthOptions>),
                 Options = oAuthOptions
             };
 
             var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
-            Assert.Contains(typeof(FakeGenericHandler<string, OAuthOptions>), sut.ManagedHandlerType);
+            Assert.Contains(typeof(FakeGenericHandler<OAuthOptions>), sut.ManagedHandlerType);
 
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<OAuthOptions>(scheme, provider);
@@ -748,7 +757,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             Assert.NotNull(scheme);
 
             var optionsMonitorCache = provider.GetRequiredService<IOptionsMonitorCache<TOptions>>();
-            var options = optionsMonitorCache.GetOrAdd(schemeName, () => default(TOptions));
+            var options = optionsMonitorCache.GetOrAdd(schemeName, () => default);
             Assert.NotNull(options);
 
             return new { definition, scheme, options };
@@ -777,7 +786,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             return services.BuildServiceProvider();
         }
 
-        class FakeGenericHandler<TFakeOptions, TOptions> : AuthenticationHandler<TOptions>
+        class FakeGenericHandler<TOptions> : AuthenticationHandler<TOptions>
             where TOptions : AuthenticationSchemeOptions, new()
         {
             public FakeGenericHandler(IOptionsMonitor<TOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)

@@ -3,6 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -96,12 +97,10 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">definition</exception>
-        public virtual async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
-            if (definition == null)
-            {
-                throw new ArgumentNullException(nameof(definition));
-            }
+            definition = definition ?? throw new ArgumentNullException(nameof(definition));
+            
             cancellationToken.ThrowIfCancellationRequested();
 
             Serialize(definition);
@@ -119,12 +118,10 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">definition</exception>
-        public virtual async Task RemoveAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task RemoveAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
-            if (definition == null)
-            {
-                throw new ArgumentNullException(nameof(definition));
-            }
+            definition = definition ?? throw new ArgumentNullException(nameof(definition));
+            
             cancellationToken.ThrowIfCancellationRequested();
             _context.Remove(definition);
             await _context.SaveChangesAsync(cancellationToken);
@@ -139,12 +136,10 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">definition</exception>
-        public virtual async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
-            if (definition == null)
-            {
-                throw new ArgumentNullException(nameof(definition));
-            }
+            definition = definition ?? throw new ArgumentNullException(nameof(definition));
+            
             cancellationToken.ThrowIfCancellationRequested();
             _context.Attach(definition);
 
@@ -166,12 +161,9 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         /// An instance of TSchemeDefinition or null.
         /// </returns>
         /// <exception cref="System.ArgumentException">Parameter {nameof(scheme)}</exception>
-        public virtual async Task<TSchemeDefinition> FindBySchemeAsync(string scheme, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<TSchemeDefinition> FindBySchemeAsync(string scheme, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrWhiteSpace(scheme))
-            {
-                throw new ArgumentException($"Parameter {nameof(scheme)} cannor be null or empty");
-            }
+            CheckScheme(scheme);
 
             cancellationToken.ThrowIfCancellationRequested();
             var definition = await _context.FindAsync<TSchemeDefinition>(new[] { scheme }, cancellationToken);
@@ -184,12 +176,21 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             return definition;
         }
 
+        private static void CheckScheme(string scheme)
+        {
+            if (string.IsNullOrWhiteSpace(scheme))
+            {
+                throw new ArgumentException($"Parameter {nameof(scheme)} cannor be null or empty");
+            }
+        }
+
         private void Serialize(TSchemeDefinition definition)
         {
             definition.SerializedHandlerType = _authenticationSchemeOptionsSerializer.SerializeType(definition.HandlerType);
             definition.SerializedOptions = _authenticationSchemeOptionsSerializer.SerializeOptions(definition.Options, definition.HandlerType.GetAuthenticationSchemeOptionsType());
         }
 
+        [SuppressMessage("Minor Code Smell", "S3241:Methods should not return values that are never used", Justification = "Used in linq Select clause")]
         private TSchemeDefinition Deserialize(TSchemeDefinition definition)
         {
             definition.HandlerType = _authenticationSchemeOptionsSerializer.DeserializeType(definition.SerializedHandlerType);

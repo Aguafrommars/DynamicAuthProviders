@@ -47,7 +47,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <param name="definition">The definition.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public override async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
             await base.AddAsync(definition, cancellationToken);
             await _store.AddAsync(definition, cancellationToken);
@@ -59,7 +59,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <param name="name">The scheme.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public override async Task RemoveAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task RemoveAsync(string name, CancellationToken cancellationToken = default)
         {
             await base.RemoveAsync(name, cancellationToken);
             var definition = await _store.FindBySchemeAsync(name);
@@ -75,7 +75,7 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <param name="definition">The definition.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public override async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
             await base.UpdateAsync(definition, cancellationToken);
             await _store.UpdateAsync(definition, cancellationToken);
@@ -160,10 +160,8 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <exception cref="ArgumentNullException">definition</exception>
         public virtual async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
-            if (definition == null)
-            {
-                throw new ArgumentNullException(nameof(definition));
-            }
+            definition = definition ?? throw new ArgumentNullException(nameof(definition));
+
             var handlerType = definition.HandlerType;
             var optionsType = GetOptionsType(handlerType);
             var optionsMonitorCache = _wrapperFactory.Get(optionsType);
@@ -189,12 +187,10 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">definition</exception>
         /// <exception cref="InvalidOperationException">The scheme does not exist.</exception>
-        public virtual async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
-            if (definition == null)
-            {
-                throw new ArgumentNullException(nameof(definition));
-            }
+            definition = definition ?? throw new ArgumentNullException(nameof(definition));
+
             var handlerType = definition.HandlerType;
             var optionsType = GetOptionsType(handlerType);
             var scheme = definition.Scheme;
@@ -220,21 +216,26 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException">scheme cannot be null or white space.</exception>
-        public virtual async Task RemoveAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task RemoveAsync(string name, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentException($"{nameof(name)} cannot be null or white space.");
-            }
+            CheckName(name);
 
             var scheme = await _schemeProvider.GetSchemeAsync(name);
-            if(scheme != null)
+            if (scheme != null)
             {
                 var optionsType = GetOptionsType(scheme.HandlerType);
                 var optionsMonitorCache = _wrapperFactory.Get(optionsType);
 
                 _schemeProvider.RemoveScheme(name);
                 optionsMonitorCache.TryRemove(name);
+            }
+        }
+
+        private static void CheckName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException($"{nameof(name)} cannot be null or white space.");
             }
         }
 

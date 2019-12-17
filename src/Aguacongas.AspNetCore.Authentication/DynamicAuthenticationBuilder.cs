@@ -63,7 +63,7 @@ namespace Aguacongas.AspNetCore.Authentication
                     provider.GetRequiredService<IEnumerable<IPostConfigureOptions<TOptions>>>(),
                     (name, configure) =>
                     {
-                        configureOptions?.Invoke((TOptions)configure);
+                        configureOptions?.Invoke(configure);
                     }
                 )
             );

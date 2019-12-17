@@ -15,10 +15,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>C:\Projects\Perso\DymamicAuthProviders\src\Aguacongas.AspNetCore.Authentication\Aguacongas.AspNetCore.Authentication.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>Aguacongas.AspNetCore.Authentication.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>C:\Projects\Perso\DymamicAuthProviders\src\Aguacongas.AspNetCore.Authentication\Aguacongas.AspNetCore.Authentication.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>Aguacongas.AspNetCore.Authentication.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>

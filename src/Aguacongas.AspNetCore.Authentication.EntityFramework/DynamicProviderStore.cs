@@ -1,5 +1,5 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
-// Copyright (c) 2018 @Olivier Lefebvre
+// Copyright (c) 2020 @Olivier Lefebvre
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;

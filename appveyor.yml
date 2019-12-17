@@ -10,7 +10,7 @@ branches:
   - /release\/*/
 image: 
 - Ubuntu
-- Visual Studio 2017
+- Visual Studio 2019
 environment:
   GH_TOKEN: 
     secure: 0NJdORJRFjpB0dwUYv7bVNsbkldkoBhnvWik/CTOwAF/k9kP+/uTWMFnDcpEpt8E
@@ -26,13 +26,13 @@ install:
   - sh: sudo ./dotnet-install.sh -Channel Current -Version $donetsdk -InstallDir ./dotnetsdk -NoPath
   - sh: export PATH=/home/appveyor/projects/dymamicauthproviders/dotnetsdk:$PATH
   - sh: sudo apt -y install nuget
-  - sh: nuget install GitVersion.CommandLine -ExcludeVersion
-  - sh: GitVersion.CommandLine/tools/GitVersion.exe /l console /output buildserver
   - ps: if ($isWindows) { .\dotnet-install.ps1 -Version $env:donetsdk }
+  - ps: dotnet tool install --global GitVersion.Tool
+  - ps: dotnet gitversion /l console /output buildserver
+  - ps: dotnet tool install --global dotnet-sonarscanner
   - cmd: nuget install redis-64 -excludeversion
   - cmd: redis-64\tools\redis-server.exe --service-install
   - cmd: redis-64\tools\redis-server.exe --service-start
-  - cmd: gitversion /l console /output buildserver
   - cmd: nuget install ReportGenerator -ExcludeVersion
   - ps: ./appveyorinit.ps1
 build_script:

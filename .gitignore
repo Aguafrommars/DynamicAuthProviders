@@ -10,7 +10,7 @@
 *.sln.docstates
 .vscode
 .github
-
+.sonarqube
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -330,8 +330,12 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+*.xml
+
+# tools
 /ReportGenerator
 /coverage/docs
 coverage.*
-
-*.xml
+/redis-64
+/.sonarlint

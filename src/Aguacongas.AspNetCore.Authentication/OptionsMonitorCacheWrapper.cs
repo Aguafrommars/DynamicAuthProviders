@@ -39,7 +39,7 @@ namespace Aguacongas.AspNetCore.Authentication
         {
             _parent = parent ?? throw new ArgumentNullException(nameof(parent));
             _postConfigures = postConfigures ?? throw new ArgumentNullException(nameof(postConfigures));
-            _onAdded = onAdded ?? throw new ArgumentNullException(nameof(onAdded)); ;
+            _onAdded = onAdded ?? throw new ArgumentNullException(nameof(onAdded));
         }
 
         /// <summary>

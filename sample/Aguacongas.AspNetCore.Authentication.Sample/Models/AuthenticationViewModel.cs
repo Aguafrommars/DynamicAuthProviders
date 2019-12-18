@@ -1,5 +1,5 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
-// Copyright (c) 2018 @Olivier Lefebvre
+// Copyright (c) 2020 @Olivier Lefebvre
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 

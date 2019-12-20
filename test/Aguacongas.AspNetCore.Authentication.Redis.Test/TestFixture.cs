@@ -1,4 +1,6 @@
-﻿using StackExchange.Redis;
+﻿// Project: aguacongas/DymamicAuthProviders
+// Copyright (c) 2020 @Olivier Lefebvre
+using StackExchange.Redis;
 using Xunit;
 
 namespace Aguacongas.AspNetCore.Authentication.Redis.Test

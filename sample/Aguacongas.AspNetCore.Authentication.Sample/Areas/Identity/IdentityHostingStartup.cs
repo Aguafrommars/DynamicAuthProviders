@@ -1,3 +1,5 @@
+// Project: aguacongas/DymamicAuthProviders
+// Copyright (c) 2020 @Olivier Lefebvre
 using System;
 using Aguacongas.AspNetCore.Authentication.Sample.Areas.Identity.Data;
 using Microsoft.AspNetCore.Hosting;

@@ -1,4 +1,6 @@
-﻿namespace Aguacongas.AspNetCore.Authentication.Redis
+﻿// Project: aguacongas/DymamicAuthProviders
+// Copyright (c) 2020 @Olivier Lefebvre
+namespace Aguacongas.AspNetCore.Authentication.Redis
 {
     /// <summary>
     /// <see cref="SchemeDefinition"/> serializer interface.

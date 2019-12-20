@@ -1,6 +1,5 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2020 @Olivier Lefebvre
-
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System;

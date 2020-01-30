@@ -103,7 +103,7 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
             tran.HashSetAsync(ConcurencyKey, definition.Scheme, 0);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
-            var result = await tran.ExecuteAsync();
+            var result = await tran.ExecuteAsync().ConfigureAwait(false);
             if (!result)
             {
                 throw new InvalidOperationException($"The scheme {definition.Scheme} already exists");
@@ -129,7 +129,7 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
             if (value.HasValue)
             {
                 var definition = _authenticationSchemeOptionsSerializer.Deserialize(value);
-                definition.ConcurrencyStamp = (long)await _db.HashGetAsync(ConcurencyKey, scheme);
+                definition.ConcurrencyStamp = (long)await _db.HashGetAsync(ConcurencyKey, scheme).ConfigureAwait(false);
                 return definition;
             }
 
@@ -155,7 +155,7 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
             tran.HashDeleteAsync(ConcurencyKey, definition.Scheme);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
-            var result = await tran.ExecuteAsync();
+            var result = await tran.ExecuteAsync().ConfigureAwait(false);
             if (!result)
             {
                 throw new InvalidOperationException($"ConcurrencyStamp not match for scheme {definition.Scheme}");
@@ -184,7 +184,7 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
             var concurency = tran.HashIncrementAsync(ConcurencyKey, definition.Scheme);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
-            var result = await tran.ExecuteAsync();
+            var result = await tran.ExecuteAsync().ConfigureAwait(false);
             if (!result)
             {
                 throw new InvalidOperationException($"ConcurrencyStamp not match for scheme {definition.Scheme}");

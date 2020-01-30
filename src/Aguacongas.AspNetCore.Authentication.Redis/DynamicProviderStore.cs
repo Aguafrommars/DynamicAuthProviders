@@ -38,11 +38,11 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
         /// <summary>
         /// The store key
         /// </summary>
-        public const string StoreKey = "schemes";
+        public const string StoreKey = "{schemes}";
         /// <summary>
         /// The concurency key
         /// </summary>
-        public const string ConcurencyKey = "schemes-concurency";
+        public const string ConcurencyKey = "{schemes}-concurency";
 
         private readonly IDatabase _db;
         private readonly ISchemeDefinitionSerializer<TSchemeDefinition> _authenticationSchemeOptionsSerializer;
@@ -98,8 +98,8 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
             var tran = _db.CreateTransaction();
             _ = tran.AddCondition(Condition.HashNotExists(StoreKey, definition.Scheme));
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            tran.HashSetAsync(StoreKey, 
-                definition.Scheme, 
+            tran.HashSetAsync(StoreKey,
+                definition.Scheme,
                 _authenticationSchemeOptionsSerializer.Serialize(definition));
             tran.HashSetAsync(ConcurencyKey, definition.Scheme, 0);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed

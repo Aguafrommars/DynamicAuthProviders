@@ -1,6 +1,6 @@
 version: 1.0.{build}
 skip_tags: true
-stack: node, redis
+stack: node 13, redis
 skip_commits:
   message: /^chore(release)/
 branches:

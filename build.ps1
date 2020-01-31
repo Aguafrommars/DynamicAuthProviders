@@ -15,10 +15,11 @@ if ($isLinux) {
 	}
 } else {
 	$prNumber = $env:APPVEYOR_PULL_REQUEST_NUMBER
-	if ($prNumber)
-	{
-		$prArgs = -d:sonar.pullrequest.key=$prNumber
-	}
+	if ($prNumber) {
+        $prArgs = "-d:sonar.pullrequest.key=$prNumber"
+    } elseif ($env:APPVEYOR_REPO_BRANCH) {
+        $prArgs = "-d:sonar.branch.name=$env:APPVEYOR_REPO_BRANCH"
+    }
 	dotnet sonarscanner begin /k:aguacongas_DymamicAuthProviders -o:aguacongas -d:sonar.host.url=https://sonarcloud.io -d:sonar.login=$env:sonarqube -d:sonar.coverageReportPaths=coverage\SonarQube.xml $prArgs -v:$env:Version
 
 	dotnet build -c Release

@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/aguacongas/DymamicAuthProviders/compare/3.0.0...3.1.0) (2019-12-17)
+
+
+### Features
+
+* .netstandard2.1 ([5cb1b31](https://github.com/aguacongas/DymamicAuthProviders/commit/5cb1b31d91acca41ec4941b487263a955a16b84d))
+
 # [3.0.0](https://github.com/aguacongas/DymamicAuthProviders/compare/2.0.0...3.0.0) (2019-09-25)
 
 

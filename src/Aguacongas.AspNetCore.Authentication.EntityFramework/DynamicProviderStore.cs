@@ -1,5 +1,5 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
-// Copyright (c) 2018 @Olivier Lefebvre
+// Copyright (c) 2020 @Olivier Lefebvre
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -106,7 +106,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             Serialize(definition);
 
             _context.Add(definition);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             _logger.LogInformation("Scheme {scheme} added for {handlerType} with options: {options}", definition.Scheme, definition.HandlerType, definition.SerializedOptions);
         }
@@ -124,7 +124,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             
             cancellationToken.ThrowIfCancellationRequested();
             _context.Remove(definition);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             _logger.LogInformation("Scheme {scheme} removed", definition.Scheme);
         }
@@ -147,7 +147,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             definition.ConcurrencyStamp = Guid.NewGuid().ToString();
 
             _context.Update(definition);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             _logger.LogInformation("Scheme {scheme} updated for {handlerType} with options: {options}", definition.Scheme, definition.HandlerType, definition.SerializedOptions);
         }

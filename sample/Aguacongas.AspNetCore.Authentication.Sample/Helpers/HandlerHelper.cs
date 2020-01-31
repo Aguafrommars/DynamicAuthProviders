@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.Google;
+﻿// Project: aguacongas/DymamicAuthProviders
+// Copyright (c) 2020 @Olivier Lefebvre
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using System;
 using System.Collections.Generic;

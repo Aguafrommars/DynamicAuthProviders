@@ -1,4 +1,6 @@
-﻿using Aguacongas.AspNetCore.Authentication.EntityFramework;
+﻿// Project: aguacongas/DymamicAuthProviders
+// Copyright (c) 2020 @Olivier Lefebvre
+using Aguacongas.AspNetCore.Authentication.EntityFramework;
 using System.Threading.Tasks;
 
 namespace Aguacongas.AspNetCore.Authentication.Sample

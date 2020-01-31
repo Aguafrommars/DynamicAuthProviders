@@ -1,6 +1,6 @@
 version: 1.0.{build}
 skip_tags: true
-stack: node 10, redis
+stack: node 13, redis
 skip_commits:
   message: /^chore(release)/
 branches:
@@ -18,6 +18,7 @@ environment:
 init:
   - cmd: git config --global core.autocrlf true
 install:
+  - ps: if ($isWindows) { Install-Product node '' }
   - sh: wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
   - sh: sudo dpkg -i packages-microsoft-prod.deb
   - sh: sudo apt-get update

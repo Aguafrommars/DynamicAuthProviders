@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.OAuth;
+﻿// Project: aguacongas/DymamicAuthProviders
+// Copyright (c) 2020 @Olivier Lefebvre
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Xunit;
 
 namespace Aguacongas.AspNetCore.Authentication.Test

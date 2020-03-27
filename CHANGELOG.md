@@ -1,3 +1,11 @@
+## [3.1.1](https://github.com/aguacongas/DymamicAuthProviders/compare/3.1.0...3.1.1) (2020-03-27)
+
+
+### Bug Fixes
+
+* supporting redis clusters ([31dfa4b](https://github.com/aguacongas/DymamicAuthProviders/commit/31dfa4b4af7c8d02517f4af475c1c1e59b8581fe)), closes [#42](https://github.com/aguacongas/DymamicAuthProviders/issues/42)
+* supporting redis clusters ([0414370](https://github.com/aguacongas/DymamicAuthProviders/commit/0414370fc48e96c0e232760f271d6981d233e3e7)), closes [#39](https://github.com/aguacongas/DymamicAuthProviders/issues/39)
+
 # [3.1.0](https://github.com/aguacongas/DymamicAuthProviders/compare/3.0.0...3.1.0) (2019-12-17)
 
 

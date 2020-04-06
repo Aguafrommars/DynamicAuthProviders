@@ -39,7 +39,6 @@ In your Startup `ConfigureServices` method, add the following:
 // Add authentication
 var authBuilder = services
     .AddAuthentication()
-    // You must first create an app with Facebook and add its ID and Secret to your user-secrets.
     // https://developers.facebook.com/apps/
     // https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow#login
     .AddFacebook(options =>

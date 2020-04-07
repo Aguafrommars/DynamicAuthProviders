@@ -49,8 +49,8 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <returns></returns>
         public override async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
-            await base.AddAsync(definition, cancellationToken);
-            await _store.AddAsync(definition, cancellationToken);
+            await base.AddAsync(definition, cancellationToken).ConfigureAwait(false);
+            await _store.AddAsync(definition, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -61,11 +61,11 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <returns></returns>
         public override async Task RemoveAsync(string name, CancellationToken cancellationToken = default)
         {
-            await base.RemoveAsync(name, cancellationToken);
-            var definition = await _store.FindBySchemeAsync(name);
+            await base.RemoveAsync(name, cancellationToken).ConfigureAwait(false);
+            var definition = await _store.FindBySchemeAsync(name).ConfigureAwait(false);
             if (definition != null)
             {
-                await _store.RemoveAsync(definition, cancellationToken);
+                await _store.RemoveAsync(definition, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -77,8 +77,8 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <returns></returns>
         public override async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
-            await base.UpdateAsync(definition, cancellationToken);
-            await _store.UpdateAsync(definition, cancellationToken);
+            await base.UpdateAsync(definition, cancellationToken).ConfigureAwait(false);
+            await _store.UpdateAsync(definition, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
         /// Finds the definition by scheme asynchronous.
@@ -167,7 +167,7 @@ namespace Aguacongas.AspNetCore.Authentication
             var optionsMonitorCache = _wrapperFactory.Get(optionsType);
 
             var scheme = definition.Scheme;
-            if (await _schemeProvider.GetSchemeAsync(scheme) != null)
+            if (await _schemeProvider.GetSchemeAsync(scheme).ConfigureAwait(false) != null)
             {
                 _schemeProvider.RemoveScheme(scheme);
                 optionsMonitorCache.TryRemove(scheme);
@@ -195,7 +195,7 @@ namespace Aguacongas.AspNetCore.Authentication
             var optionsType = GetOptionsType(handlerType);
             var scheme = definition.Scheme;
 
-            if (await _schemeProvider.GetSchemeAsync(scheme) == null)
+            if (await _schemeProvider.GetSchemeAsync(scheme).ConfigureAwait(false) == null)
             {
                 throw new InvalidOperationException($"The scheme {scheme} does not exist.");
             }
@@ -220,7 +220,7 @@ namespace Aguacongas.AspNetCore.Authentication
         {
             CheckName(name);
 
-            var scheme = await _schemeProvider.GetSchemeAsync(name);
+            var scheme = await _schemeProvider.GetSchemeAsync(name).ConfigureAwait(false);
             if (scheme != null)
             {
                 var optionsType = GetOptionsType(scheme.HandlerType);

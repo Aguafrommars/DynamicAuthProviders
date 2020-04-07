@@ -36,18 +36,6 @@ In your Startup `ConfigureServices` method, add the following:
 ``` csharp
 /** Add dynamic management **/
 
-// Add authentication
-var authBuilder = services
-    .AddAuthentication()
-    // You must first create an app with Facebook and add its ID and Secret to your user-secrets.
-    // https://developers.facebook.com/apps/
-    // https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow#login
-    .AddFacebook(options =>
-    {
-        options.AppId = Configuration["facebook:appid"] ?? "not set";
-        options.AppSecret = Configuration["facebook:appsecret"] ?? "not set";
-    }); // this handler cannot be managed dynamically
-
 // Add the context to store schemes configurations.
 // The context can be any kind of DbContext having a DbSet<TSchemeDefinition>
 // where TSchemeDefinition is of type SchemeDefinition or derived.
@@ -55,6 +43,10 @@ services.AddDbContext<SchemeDbContext>(options =>
 {
     options.UseSqlServer(Configuration.GetConnectionString("Default"));
 }); 
+
+// Add authentication
+var authBuilder = services
+    .AddAuthentication();
 
 // Add the magic
 var dynamicBuilder = authBuilder

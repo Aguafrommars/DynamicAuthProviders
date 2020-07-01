@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Facebook;
 
 namespace Aguacongas.AspNetCore.Authentication.Sample.Helpers
 {
@@ -13,6 +14,10 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Helpers
     {
         public static string GetProviderName(string handlerType)
         {
+            if (handlerType == typeof(FacebookHandler).Name)
+            {
+                return "Facebook";
+            }
             if (handlerType == typeof(GoogleHandler).Name)
             {
                 return "Google";
@@ -22,7 +27,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Helpers
                 return "Github";
             }
 
-            throw new InvalidOperationException("Unknow hanlder type");
+            throw new InvalidOperationException("Unknown handler type");
         }
     }
 }

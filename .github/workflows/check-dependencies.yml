@@ -1,5 +1,4 @@
 # Update all depencies each days if needed
-
 name: Check Dependencies
 
 # Controls when the action will run.

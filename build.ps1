@@ -7,7 +7,8 @@ if ($isLinux) {
 		 } `
 	| ForEach-Object { 
 		Set-Location $_.DirectoryName
-		dotnet test
+		dotnet build -c Release
+		dotnet test -c Release --no-build
 	
 		if ($LASTEXITCODE -ne 0) {
 			$result = $LASTEXITCODE

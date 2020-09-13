@@ -1,13 +1,16 @@
 $result = 0
 
 if ($isLinux) {
+        dotnet build -c Release
+	
 	Get-ChildItem -rec `
 	| Where-Object { $_.Name -like "*.IntegrationTest.csproj" `
 		   -Or $_.Name -like "*.Test.csproj" `
 		 } `
 	| ForEach-Object { 
 		Set-Location $_.DirectoryName
-		dotnet test
+		
+		dotnet test -c Release --no-build
 	
 		if ($LASTEXITCODE -ne 0) {
 			$result = $LASTEXITCODE

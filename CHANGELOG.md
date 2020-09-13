@@ -1,3 +1,10 @@
+## [3.1.2](https://github.com/aguacongas/DymamicAuthProviders/compare/3.1.1...3.1.2) (2020-04-08)
+
+
+### Bug Fixes
+
+* support create migration with multiple context ([a8cb4c4](https://github.com/aguacongas/DymamicAuthProviders/commit/a8cb4c4b5c6d5c9aa3737b9a474086caacafde82))
+
 ## [3.1.1](https://github.com/aguacongas/DymamicAuthProviders/compare/3.1.0...3.1.1) (2020-03-27)
 
 

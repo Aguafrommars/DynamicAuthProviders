@@ -1,7 +1,7 @@
 $result = 0
 
 if ($isLinux) {
-        dotnet build -c Release
+  dotnet build -c Release
 	
 	Get-ChildItem -rec `
 	| Where-Object { $_.Name -like "*.IntegrationTest.csproj" `

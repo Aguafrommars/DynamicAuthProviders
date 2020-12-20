@@ -1,4 +1,4 @@
-# DymamicAuthProviders
+# DynamicAuthProviders
 
 Store and manage Microsoft.AspNetCore.Authentication providers.
 

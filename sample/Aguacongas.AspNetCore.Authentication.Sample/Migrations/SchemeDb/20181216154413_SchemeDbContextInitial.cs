@@ -1,5 +1,5 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
-// Copyright (c) 2020 @Olivier Lefebvre
+// Copyright (c) 2021 @Olivier Lefebvre
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Aguacongas.AspNetCore.Authentication.Sample.Migrations.SchemeDb

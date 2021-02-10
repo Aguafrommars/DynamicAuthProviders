@@ -1,5 +1,5 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
-// Copyright (c) 2020 @Olivier Lefebvre
+// Copyright (c) 2021 @Olivier Lefebvre
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System;
@@ -30,7 +30,7 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
     /// Implement a store for <see cref="NoPersistentDynamicManager{TSchemeDefinition}"/> with EntityFramework.
     /// </summary>
     /// <typeparam name="TSchemeDefinition">The type of the definition.</typeparam>
-    /// <seealso cref="Aguacongas.AspNetCore.Authentication.IDynamicProviderStore{TSchemeDefinition}" />
+    /// <seealso cref="IDynamicProviderStore{TSchemeDefinition}" />
     public class DynamicProviderStore<TSchemeDefinition> : IDynamicProviderStore<TSchemeDefinition>
         where TSchemeDefinition : SchemeDefinition, new()
     {
@@ -170,7 +170,7 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
         /// <param name="definition">The definition.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentNullException">definition</exception>
+        /// <exception cref="ArgumentNullException">definition</exception>
         public virtual async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
             definition = definition ?? throw new ArgumentNullException(nameof(definition));

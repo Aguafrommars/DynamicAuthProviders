@@ -1,5 +1,5 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
-// Copyright (c) 2020 @Olivier Lefebvre
+// Copyright (c) 2021 @Olivier Lefebvre
 using Microsoft.AspNetCore.Authentication;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace Aguacongas.AspNetCore.Authentication
     /// Dynamic scheme manager which persist the changes.
     /// </summary>
     /// <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
-    /// <seealso cref="Aguacongas.AspNetCore.Authentication.NoPersistentDynamicManager{TSchemeDefinition}" />
+    /// <seealso cref="NoPersistentDynamicManager{TSchemeDefinition}" />
     public class PersistentDynamicManager<TSchemeDefinition> : NoPersistentDynamicManager<TSchemeDefinition>
         where TSchemeDefinition : SchemeDefinitionBase, new()
     {

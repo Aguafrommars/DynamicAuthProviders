@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Authors>Olivier Lefebvre</Authors>
+    <Copyright>Copyright (c) 2018 @Olivier Lefebvre</Copyright>
+    <PackageLicense>https://raw.githubusercontent.com/aguacongas/DymamicAuthProviders/master/LICENSE</PackageLicense>
+    <PackageProjectUrl>https://github.com/aguacongas/DymamicAuthProviders/tree/master/src/Aguacongas.AspNetCore.Authentication.RavenDb</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/aguacongas/DymamicAuthProviders</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>aspnetcore;authentication;security;entityframeworkcore</PackageTags>
+    <Description>Provider for DinamicAuthProviders that uses Entity Framework Core.</Description>
+    <DebugType>Full</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Projects\Perso\DymamicAuthProviders\src\Aguacongas.AspNetCore.Authentication.RavenDb\Aguacongas.AspNetCore.Authentication.RavenDb.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>Aguacongas.AspNetCore.Authentication.RavenDb.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Projects\Perso\DymamicAuthProviders\src\Aguacongas.AspNetCore.Authentication.RavenDb\Aguacongas.AspNetCore.Authentication.RavenDb.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>Aguacongas.AspNetCore.Authentication.RavenDb.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Aguacongas.AspNetCore.Authentication.RavenDb.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RavenDB.Client" Version="5.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aguacongas.AspNetCore.Authentication\Aguacongas.AspNetCore.Authentication.csproj" />
+  </ItemGroup>
+
+</Project>

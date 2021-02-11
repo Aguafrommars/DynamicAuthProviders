@@ -1,6 +1,6 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2021 @Olivier Lefebvre
-using Aguacongas.AspNetCore.Authentication.EntityFramework;
+using Aguacongas.AspNetCore.Authentication.RavenDb;
 
 namespace Microsoft.AspNetCore.Builder
 {

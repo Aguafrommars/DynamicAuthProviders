@@ -1,5 +1,5 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
-// Copyright (c) 2020 @Olivier Lefebvre
+// Copyright (c) 2021 @Olivier Lefebvre
 using System;
 
 namespace Aguacongas.AspNetCore.Authentication.Redis
@@ -8,8 +8,8 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
     /// <see cref="SchemeDefinition"/> serializer.
     /// </summary>
     /// <typeparam name="TSchemeDefinition">The type of the scheme definition.</typeparam>
-    /// <seealso cref="Aguacongas.AspNetCore.Authentication.AuthenticationSchemeOptionsSerializer" />
-    /// <seealso cref="Aguacongas.AspNetCore.Authentication.Redis.ISchemeDefinitionSerializer{TSchemeDefinition}" />
+    /// <seealso cref="AuthenticationSchemeOptionsSerializer" />
+    /// <seealso cref="ISchemeDefinitionSerializer{TSchemeDefinition}" />
     public class SchemeDefinitionSerializer<TSchemeDefinition> : AuthenticationSchemeOptionsSerializer, ISchemeDefinitionSerializer<TSchemeDefinition> 
         where TSchemeDefinition: SchemeDefinition
     {

@@ -1,16 +1,11 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
-// Copyright (c) 2020 @Olivier Lefebvre
-using JetBrains.Annotations;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+// Copyright (c) 2021 @Olivier Lefebvre
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 

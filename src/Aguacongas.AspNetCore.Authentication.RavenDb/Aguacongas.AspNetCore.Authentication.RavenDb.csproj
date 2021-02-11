@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/aguacongas/DymamicAuthProviders</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>aspnetcore;authentication;security;entityframeworkcore</PackageTags>
-    <Description>Provider for DinamicAuthProviders that uses Entity Framework Core.</Description>
+    <Description>Provider for DinamicAuthProviders that uses RavenDB.</Description>
     <DebugType>Full</DebugType>
   </PropertyGroup>
 

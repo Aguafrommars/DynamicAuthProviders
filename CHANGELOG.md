@@ -1,3 +1,28 @@
+# [3.2.0](https://github.com/Aguafrommars/DynamicAuthProviders/compare/3.1.2...3.2.0) (2021-02-11)
+
+
+### Bug Fixes
+
+* update packages ([75f3a10](https://github.com/Aguafrommars/DynamicAuthProviders/commit/75f3a1090753259f913f38cba174caced4076b4f))
+* update packages ([5ad83a1](https://github.com/Aguafrommars/DynamicAuthProviders/commit/5ad83a132a3851f60fbb6cfc468af55aaedda9d1))
+* update packages ([52b3e37](https://github.com/Aguafrommars/DynamicAuthProviders/commit/52b3e373ba29af3f326d0928d65870fddc1e1bf1))
+* update packages ([b991f06](https://github.com/Aguafrommars/DynamicAuthProviders/commit/b991f0647da87d5abc19570bde55a63d52671008))
+* update packages ([8788095](https://github.com/Aguafrommars/DynamicAuthProviders/commit/8788095d7df62240264a62f042aeb85bf9730d32))
+* update packages ([999bb4c](https://github.com/Aguafrommars/DynamicAuthProviders/commit/999bb4cdf9071e5d3804f2410e238a0cbde8206d))
+* update packages ([e8ecd12](https://github.com/Aguafrommars/DynamicAuthProviders/commit/e8ecd1274a335d2501c199857ee73c6e41c41f42))
+* update packages ([a08a9ae](https://github.com/Aguafrommars/DynamicAuthProviders/commit/a08a9ae1253699d78450df637a3d5390e9ed4998))
+* update packages ([24f17e8](https://github.com/Aguafrommars/DynamicAuthProviders/commit/24f17e8a104b7c9376e0953246d6f5ecd112e8d2))
+* update packages ([22365d4](https://github.com/Aguafrommars/DynamicAuthProviders/commit/22365d40f7ca4c83f220299b6605232d1e177d21))
+* update packages ([e37f0ce](https://github.com/Aguafrommars/DynamicAuthProviders/commit/e37f0ce258daa08b48667f744c56e8b383e1a106))
+* update packages ([3b26f23](https://github.com/Aguafrommars/DynamicAuthProviders/commit/3b26f230c8fdd0b6d4ea96ac0d85124812fa9a36))
+* update packages ([306db62](https://github.com/Aguafrommars/DynamicAuthProviders/commit/306db6247aff7912b5722308b8d813aac70458c5))
+* update packages ([010522f](https://github.com/Aguafrommars/DynamicAuthProviders/commit/010522f157f453117ec92176e3e5d00c2e7ea0cc))
+
+
+### Features
+
+* ravendb store ([1762500](https://github.com/Aguafrommars/DynamicAuthProviders/commit/1762500d5eb76e67eff896a79aa2437afcc65edc))
+
 ## [3.1.2](https://github.com/aguacongas/DymamicAuthProviders/compare/3.1.1...3.1.2) (2020-04-08)
 
 

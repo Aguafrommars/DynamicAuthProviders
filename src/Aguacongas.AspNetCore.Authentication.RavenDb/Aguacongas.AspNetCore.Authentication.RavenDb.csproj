@@ -8,7 +8,7 @@
     <PackageProjectUrl>https://github.com/aguacongas/DymamicAuthProviders/tree/master/src/Aguacongas.AspNetCore.Authentication.RavenDb</PackageProjectUrl>
     <RepositoryUrl>https://github.com/aguacongas/DymamicAuthProviders</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>aspnetcore;authentication;security;entityframeworkcore</PackageTags>
+    <PackageTags>aspnetcore;authentication;security;ravendb</PackageTags>
     <Description>Provider for DinamicAuthProviders that uses RavenDB.</Description>
     <DebugType>Full</DebugType>
   </PropertyGroup>

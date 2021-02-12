@@ -13,7 +13,7 @@ var authBuilder = services
 // Add the magic
 var dynamicBuilder = authBuilder
     .AddDynamic<SchemeDefinition>()
-    .AddRavenDbStorekStore();
+    .AddRavenDbStore();
 
 // Add the ravendb document store
 service.AddSingleton(p => new DocumentStore()
@@ -41,7 +41,7 @@ var authBuilder = services
 // Add the magic
 var dynamicBuilder = authBuilder
     .AddDynamic<SchemeDefinition>()
-    .AddRavenDbStorekStore(p => new DocumentStore()
+    .AddRavenDbStore(p => new DocumentStore()
     {
         // Define the cluster node URLs (required)
         Urls = new[] { "http://your_RavenDB_cluster_node", 

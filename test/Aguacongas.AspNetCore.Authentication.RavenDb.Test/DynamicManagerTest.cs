@@ -19,7 +19,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework.Test
         protected override DynamicAuthenticationBuilder AddStore(DynamicAuthenticationBuilder builder)
         {
             builder.Services.AddSingleton(p => new RavenDbTestDriverWrapper().GetDocumentStore());
-            return builder.AddRavenDbStorekStore();
+            return builder.AddRavenDbStore();
         }
     }
 

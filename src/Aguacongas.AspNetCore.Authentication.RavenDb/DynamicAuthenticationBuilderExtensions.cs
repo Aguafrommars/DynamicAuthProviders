@@ -19,24 +19,30 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds the entity framework store.
         /// </summary>
         /// <param name="builder">The builder.</param>
-        /// <param name="dataBase">The data base.</param>
+        /// <param name="getDocumentStore">(Optional) The get document store function. When null the document store is retrived from the DI.</param>
+        /// <param name="dataBase">(Optional) The data base When null the default document store data base is used.</param>
         /// <returns>
         /// The <see cref="DynamicAuthenticationBuilder" />
         /// </returns>
-        public static DynamicAuthenticationBuilder AddRavenDbStorekStore(this DynamicAuthenticationBuilder builder, string dataBase = null)
+        public static DynamicAuthenticationBuilder AddRavenDbStore(this DynamicAuthenticationBuilder builder, Func<IServiceProvider, IDocumentStore> getDocumentStore = null, string dataBase = null)
         {
-            AddStore(builder.Services, builder.DefinitionType, dataBase);
+            if (getDocumentStore == null)
+            {
+                getDocumentStore = p => p.GetRequiredService<IDocumentStore>();
+            }
+
+            AddStore(builder.Services, builder.DefinitionType, getDocumentStore, dataBase);
             return builder;
         }
 
-        private static void AddStore(IServiceCollection service, Type definitionType, string dataBase)
+        private static void AddStore(IServiceCollection service, Type definitionType, Func<IServiceProvider, IDocumentStore> getDocumentStore, string dataBase)
         {
             var storeType = typeof(DynamicProviderStore<>).MakeGenericType(definitionType);
             var loggerType = typeof(ILogger<>).MakeGenericType(storeType);
 
             service.TryAddTransient(typeof(IDynamicProviderStore<>).MakeGenericType(definitionType), p =>
             {
-                var session = p.GetRequiredService<IDocumentStore>().OpenAsyncSession(new SessionOptions
+                var session = getDocumentStore(p).OpenAsyncSession(new SessionOptions
                 {
                     Database = dataBase
                 });

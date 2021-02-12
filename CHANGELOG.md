@@ -1,3 +1,10 @@
+## [3.2.1](https://github.com/Aguafrommars/DynamicAuthProviders/compare/3.2.0...3.2.1) (2021-02-12)
+
+
+### Bug Fixes
+
+* update packages ([a895a39](https://github.com/Aguafrommars/DynamicAuthProviders/commit/a895a391fdca401ddd420f625f0051bb1c74a7ec))
+
 # [3.2.0](https://github.com/Aguafrommars/DynamicAuthProviders/compare/3.1.2...3.2.0) (2021-02-11)
 
 

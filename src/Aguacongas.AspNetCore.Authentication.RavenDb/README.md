@@ -6,8 +6,8 @@ We need a `IDocumentStore`to be registered in DI.
 
 ```cs
 // Add authentication
-            var authBuilder = services
-                .AddAuthentication();
+var authBuilder = services
+    .AddAuthentication();
 
 // Add the magic
 var dynamicBuilder = authBuilder

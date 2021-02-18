@@ -1,6 +1,6 @@
 # DynamicAuthProviders
 
-Store and manage Microsoft.AspNetCore.Authentication providers.
+Store and manage Microsoft.AspNetCore.Authentication providers dynamicaly.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/c92qtam52ughrtv1?svg=true)](https://ci.appveyor.com/project/aguacongas/dymamicauthproviders)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=aguacongas_DymamicAuthProviders&metric=alert_status)](https://sonarcloud.io/dashboard?id=aguacongas_DymamicAuthProviders)

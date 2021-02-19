@@ -37,6 +37,7 @@ namespace Aguacongas.AspNetCore.Authentication.RavenDb
         private readonly IAsyncDocumentSession _session;
         private readonly IAuthenticationSchemeOptionsSerializer _authenticationSchemeOptionsSerializer;
         private readonly ILogger<DynamicProviderStore<TSchemeDefinition>> _logger;
+        private readonly string _entitybasePath;
 
         /// <summary>
         /// Gets the scheme definitions list.
@@ -44,7 +45,7 @@ namespace Aguacongas.AspNetCore.Authentication.RavenDb
         /// <value>
         /// The scheme definitions list.
         /// </value>
-        public virtual IQueryable<TSchemeDefinition> SchemeDefinitions => _session.Query<SerializedData>()
+        public virtual IQueryable<TSchemeDefinition> SchemeDefinitions => _session.Query<TSchemeDefinition>()
             .ToListAsync().ConfigureAwait(false).GetAwaiter().GetResult()
             .Select(Deserialize)
             .AsQueryable();
@@ -67,6 +68,7 @@ namespace Aguacongas.AspNetCore.Authentication.RavenDb
             _session = session ?? throw new ArgumentNullException(nameof(session));
             _authenticationSchemeOptionsSerializer = authenticationSchemeOptionsSerializer ?? throw new ArgumentNullException(nameof(authenticationSchemeOptionsSerializer));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _entitybasePath = typeof(TSchemeDefinition).Name.ToLower() + "/";
         }
 
         /// <summary>
@@ -83,7 +85,7 @@ namespace Aguacongas.AspNetCore.Authentication.RavenDb
             cancellationToken.ThrowIfCancellationRequested();
 
             var data = Serialize(definition);
-            await _session.StoreAsync(data, cancellationToken).ConfigureAwait(false);
+            await _session.StoreAsync(data, $"{_entitybasePath}{definition.Scheme}", cancellationToken).ConfigureAwait(false);
             await _session.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             _logger.LogInformation("Scheme {scheme} added for {handlerType} with options: {options}", definition.Scheme, definition.HandlerType, data.SerializedOptions);
@@ -102,7 +104,7 @@ namespace Aguacongas.AspNetCore.Authentication.RavenDb
             
             cancellationToken.ThrowIfCancellationRequested();
 
-            var data = await _session.LoadAsync<SerializedData>(definition.Scheme, cancellationToken).ConfigureAwait(false);
+            var data = await _session.LoadAsync<TSchemeDefinition>($"{_entitybasePath}{definition.Scheme}", cancellationToken).ConfigureAwait(false);
             _session.Delete(data);
             await _session.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
@@ -124,7 +126,7 @@ namespace Aguacongas.AspNetCore.Authentication.RavenDb
 
             var serialized = Serialize(definition);
             
-            var data = await _session.LoadAsync<SerializedData>(definition.Scheme, cancellationToken).ConfigureAwait(false);
+            var data = await _session.LoadAsync<TSchemeDefinition>($"{_entitybasePath}{definition.Scheme}", cancellationToken).ConfigureAwait(false);
 
             data.SerializedOptions = serialized.SerializedOptions;
             data.SerializedHandlerType = serialized.SerializedHandlerType;
@@ -149,7 +151,7 @@ namespace Aguacongas.AspNetCore.Authentication.RavenDb
             CheckScheme(scheme);
 
             cancellationToken.ThrowIfCancellationRequested();
-            var data = await _session.LoadAsync<SerializedData>(scheme, cancellationToken).ConfigureAwait(false);
+            var data = await _session.LoadAsync<TSchemeDefinition>($"{_entitybasePath}{scheme}", cancellationToken).ConfigureAwait(false);
 
             if (data != null)
             {
@@ -167,35 +169,22 @@ namespace Aguacongas.AspNetCore.Authentication.RavenDb
             }
         }
 
-        private SerializedData Serialize(TSchemeDefinition definition)
+        private TSchemeDefinition Serialize(TSchemeDefinition definition)
         {
-            return new SerializedData
-            {
-                Id = definition.Scheme,
-                SerializedHandlerType = _authenticationSchemeOptionsSerializer.SerializeType(definition.HandlerType),
-                SerializedOptions = _authenticationSchemeOptionsSerializer.SerializeOptions(definition.Options, definition.HandlerType.GetAuthenticationSchemeOptionsType())
-            };
+            var data = (TSchemeDefinition)definition.Clone();
+            data.SerializedHandlerType = _authenticationSchemeOptionsSerializer.SerializeType(definition.HandlerType);
+            data.SerializedOptions = _authenticationSchemeOptionsSerializer.SerializeOptions(definition.Options, definition.HandlerType.GetAuthenticationSchemeOptionsType());
+            data.HandlerType = null;
+            data.Options = null;
+            return data;
         }
 
-        private TSchemeDefinition Deserialize(SerializedData data)
+        private TSchemeDefinition Deserialize(TSchemeDefinition data)
         {            
             var handlerType = _authenticationSchemeOptionsSerializer.DeserializeType(data.SerializedHandlerType);
-            return new TSchemeDefinition
-            {
-                Scheme = data.Id,
-                HandlerType = handlerType,
-                Options = _authenticationSchemeOptionsSerializer.DeserializeOptions(data.SerializedOptions, handlerType.GetAuthenticationSchemeOptionsType())
-            };
-        }
-
-        class SerializedData
-        {
-            public string Id { get; set; }
-
-            public string SerializedOptions { get; set; }
-
-            public string SerializedHandlerType { get; set; }
-            
-        }
+            data.HandlerType = handlerType;
+            data.Options = _authenticationSchemeOptionsSerializer.DeserializeOptions(data.SerializedOptions, handlerType.GetAuthenticationSchemeOptionsType());
+            return data;
+        }        
     }
 }

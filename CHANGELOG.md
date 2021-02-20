@@ -1,3 +1,18 @@
+# [4.0.0](https://github.com/Aguafrommars/DynamicAuthProviders/compare/3.2.0...4.0.0) (2021-02-20)
+
+
+### Bug Fixes
+
+* derived properties not saved ([d457803](https://github.com/Aguafrommars/DynamicAuthProviders/commit/d457803b8c4e7e7f0570f59a0240643e9b33cee4))
+* rename add raven db extension ([805c90c](https://github.com/Aguafrommars/DynamicAuthProviders/commit/805c90cd7e3eac5d9af8a5025fb64d90ff348e04))
+* update packages ([62b9844](https://github.com/Aguafrommars/DynamicAuthProviders/commit/62b98441191794b7b43445dd128088c3bc8f6a66))
+* update packages ([a895a39](https://github.com/Aguafrommars/DynamicAuthProviders/commit/a895a391fdca401ddd420f625f0051bb1c74a7ec))
+
+
+### BREAKING CHANGES
+
+* RavenDb ids
+
 # [3.2.0](https://github.com/Aguafrommars/DynamicAuthProviders/compare/3.1.2...3.2.0) (2021-02-11)
 
 

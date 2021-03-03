@@ -14,13 +14,13 @@ image:
 environment:
   GH_TOKEN: 
     secure: 0NJdORJRFjpB0dwUYv7bVNsbkldkoBhnvWik/CTOwAF/k9kP+/uTWMFnDcpEpt8E
-  donetsdk: 5.0.102
+  donetsdk: 5.0.103
   JAVA_HOME: C:\Program Files\Java\jdk14
 init:
   - cmd: git config --global core.autocrlf true
 install:
   - ps: if ($isWindows) { Install-Product node '' }
-  - sh: wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
+  - sh: wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
   - sh: sudo dpkg -i packages-microsoft-prod.deb
   - sh: sudo apt-get update
   - sh: sudo apt-get -y install apt-transport-https

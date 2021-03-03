@@ -20,7 +20,7 @@ init:
   - cmd: git config --global core.autocrlf true
 install:
   - ps: if ($isWindows) { Install-Product node '' }
-  - sh: wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
+  - sh: wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
   - sh: sudo dpkg -i packages-microsoft-prod.deb
   - sh: sudo apt-get update
   - sh: sudo apt-get -y install apt-transport-https

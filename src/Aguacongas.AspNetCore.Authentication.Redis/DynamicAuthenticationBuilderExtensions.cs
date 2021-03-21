@@ -127,7 +127,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var services = builder.Services;
 
             services.AddTransient<ISchemeDefinitionSerializer<TSchemeDefinition>, SchemeDefinitionSerializer<TSchemeDefinition>>();
-            services.AddTransient<IDynamicProviderStore<TSchemeDefinition>>(provider =>
+            services.AddTransient<DynamicProviderStore<TSchemeDefinition>>(provider =>
             {
                 var db = getDatabase(provider);
                 var serializer = provider.GetRequiredService<ISchemeDefinitionSerializer<TSchemeDefinition>>();
@@ -135,6 +135,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 return new DynamicProviderStore<TSchemeDefinition>(db, serializer, logger);
             });
+            services.AddTransient<IDynamicProviderStore>(sp => sp.GetRequiredService<DynamicProviderStore<TSchemeDefinition>>());
+            services.AddTransient<IDynamicProviderMutationStore<TSchemeDefinition>>(sp => sp.GetRequiredService<DynamicProviderStore<TSchemeDefinition>>());
             return builder;
         }
         private static RedisLogger CreateLogger(IServiceProvider provider)

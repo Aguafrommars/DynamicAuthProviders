@@ -4,7 +4,9 @@ using Microsoft.Extensions.Logging;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,7 +33,7 @@ namespace Aguacongas.AspNetCore.Authentication.RavenDb
     /// Implement a store for <see cref="NoPersistentDynamicManager{TSchemeDefinition}"/> with EntityFramework.
     /// </summary>
     /// <typeparam name="TSchemeDefinition">The type of the definition.</typeparam>
-    public class DynamicProviderStore<TSchemeDefinition> : IDynamicProviderStore<TSchemeDefinition>
+    public class DynamicProviderStore<TSchemeDefinition> : IDynamicProviderStore, IDynamicProviderMutationStore<TSchemeDefinition>
         where TSchemeDefinition : SchemeDefinition, new()
     {
         private readonly IAsyncDocumentSession _session;
@@ -42,13 +44,17 @@ namespace Aguacongas.AspNetCore.Authentication.RavenDb
         /// <summary>
         /// Gets the scheme definitions list.
         /// </summary>
-        /// <value>
+        /// <returns>
         /// The scheme definitions list.
-        /// </value>
-        public virtual IQueryable<TSchemeDefinition> SchemeDefinitions => _session.Query<TSchemeDefinition>()
-            .ToListAsync().ConfigureAwait(false).GetAwaiter().GetResult()
-            .Select(Deserialize)
-            .AsQueryable();
+        /// </returns>
+        public async IAsyncEnumerable<ISchemeDefinition> GetSchemeDefinitionsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            var items = await _session.Query<TSchemeDefinition>().ToListAsync(cancellationToken);
+            foreach (var item in items)
+            {
+                yield return Deserialize(item);
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicProviderStore{TSchemeDefinition}"/> class.
@@ -185,6 +191,6 @@ namespace Aguacongas.AspNetCore.Authentication.RavenDb
             data.HandlerType = handlerType;
             data.Options = _authenticationSchemeOptionsSerializer.DeserializeOptions(data.SerializedOptions, handlerType.GetAuthenticationSchemeOptionsType());
             return data;
-        }        
+        }
     }
 }

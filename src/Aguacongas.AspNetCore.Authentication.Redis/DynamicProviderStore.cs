@@ -3,7 +3,9 @@
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,7 +33,7 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
     /// </summary>
     /// <typeparam name="TSchemeDefinition">The type of the definition.</typeparam>
     /// <seealso cref="IDynamicProviderStore{TSchemeDefinition}" />
-    public class DynamicProviderStore<TSchemeDefinition> : IDynamicProviderStore<TSchemeDefinition>
+    public class DynamicProviderStore<TSchemeDefinition> : IDynamicProviderStore, IDynamicProviderMutationStore<TSchemeDefinition>
         where TSchemeDefinition : SchemeDefinition, new()
     {
         /// <summary>
@@ -54,10 +56,14 @@ namespace Aguacongas.AspNetCore.Authentication.Redis
         /// <value>
         /// The scheme definitions list.
         /// </value>
-        public IQueryable<TSchemeDefinition> SchemeDefinitions => _db.HashGetAll(StoreKey)
-            .Select(entry => _authenticationSchemeOptionsSerializer.Deserialize(entry.Value))
-            .AsQueryable();
-
+        public async IAsyncEnumerable<ISchemeDefinition> GetSchemeDefinitionsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            var items = await _db.HashGetAllAsync(StoreKey).ConfigureAwait(false);
+            foreach (var item in items)
+            {
+                yield return _authenticationSchemeOptionsSerializer.Deserialize(item.Value);
+            }
+        }
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicProviderStore{TSchemeDefinition}" /> class.
         /// </summary>

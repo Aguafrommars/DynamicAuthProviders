@@ -16,20 +16,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TSchemeDefinition">The type of the definition.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
-        public static DynamicAuthenticationBuilder AddDynamic<TSchemeDefinition>(this AuthenticationBuilder builder)
-            where TSchemeDefinition: SchemeDefinitionBase, new()
+        public static DynamicAuthenticationBuilder AddDynamicAuthentication(this AuthenticationBuilder builder)
         {
-            var dynamicBuilder = new DynamicAuthenticationBuilder(builder.Services, typeof(TSchemeDefinition));
+            DynamicAuthenticationBuilder dynamicBuilder = new DynamicAuthenticationBuilder(builder.Services);
             builder.Services
                 .AddSingleton<OptionsMonitorCacheWrapperFactory>()
-                .AddTransient(provider => new PersistentDynamicManager<TSchemeDefinition>
-                (
-                    provider.GetRequiredService<IAuthenticationSchemeProvider>(),
-                    provider.GetRequiredService<OptionsMonitorCacheWrapperFactory>(),
-                    provider.GetRequiredService<IDynamicProviderStore<TSchemeDefinition>>(),
-                    dynamicBuilder.HandlerTypes
-                ))
-                .AddTransient(provider => new NoPersistentDynamicManager<TSchemeDefinition>
+                .AddTransient(provider => new AuthenticationSchemeProviderWrapper
                 (
                     provider.GetRequiredService<IAuthenticationSchemeProvider>(),
                     provider.GetRequiredService<OptionsMonitorCacheWrapperFactory>(),

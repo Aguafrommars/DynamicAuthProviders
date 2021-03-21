@@ -3,6 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
@@ -52,23 +53,13 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
     /// <typeparam name="TSchemeDefinition">The type of the definition.</typeparam>
     /// <typeparam name="TContext">The type of the context.</typeparam>
     /// <seealso cref="Aguacongas.AspNetCore.Authentication.IDynamicProviderStore{TSchemeDefinition}" />
-    public class DynamicProviderStore<TSchemeDefinition, TContext> : IDynamicProviderStore<TSchemeDefinition>
-        where TContext: DbContext
-        where TSchemeDefinition: SchemeDefinition, new()
+    public class DynamicProviderStore<TSchemeDefinition, TContext> : IDynamicProviderStore, IDynamicProviderMutationStore<TSchemeDefinition> where TContext : DbContext
+        where TSchemeDefinition : SchemeDefinition, new()
     {
         private readonly DbContext _context;
         private readonly IAuthenticationSchemeOptionsSerializer _authenticationSchemeOptionsSerializer;
         private readonly ILogger<DynamicProviderStore<TSchemeDefinition, TContext>> _logger;
 
-        /// <summary>
-        /// Gets the scheme definitions list.
-        /// </summary>
-        /// <value>
-        /// The scheme definitions list.
-        /// </value>
-        public virtual IQueryable<TSchemeDefinition> SchemeDefinitions => _context.Set<TSchemeDefinition>()
-            .Select(Deserialize)
-            .AsQueryable();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicProviderStore{TSchemeDefinition, TContext}"/> class.
@@ -100,7 +91,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         public virtual async Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
             definition = definition ?? throw new ArgumentNullException(nameof(definition));
-            
+
             cancellationToken.ThrowIfCancellationRequested();
 
             Serialize(definition);
@@ -121,7 +112,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         public virtual async Task RemoveAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
             definition = definition ?? throw new ArgumentNullException(nameof(definition));
-            
+
             cancellationToken.ThrowIfCancellationRequested();
             _context.Remove(definition);
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -139,7 +130,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         public virtual async Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default)
         {
             definition = definition ?? throw new ArgumentNullException(nameof(definition));
-            
+
             cancellationToken.ThrowIfCancellationRequested();
             _context.Attach(definition);
 
@@ -196,6 +187,17 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             definition.HandlerType = _authenticationSchemeOptionsSerializer.DeserializeType(definition.SerializedHandlerType);
             definition.Options = _authenticationSchemeOptionsSerializer.DeserializeOptions(definition.SerializedOptions, definition.HandlerType.GetAuthenticationSchemeOptionsType());
             return definition;
+        }
+
+        /// <summary>
+        /// Gets the scheme definitions list.
+        /// </summary>
+        /// <value>
+        /// The scheme definitions list.
+        /// </value>
+        public IAsyncEnumerable<ISchemeDefinition> GetSchemeDefinitionsAsync(CancellationToken cancellationToken = default)
+        {
+            return _context.Set<TSchemeDefinition>().AsAsyncEnumerable().Select(Deserialize);
         }
     }
 }

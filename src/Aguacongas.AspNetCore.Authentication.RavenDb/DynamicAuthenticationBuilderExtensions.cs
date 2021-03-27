@@ -1,6 +1,7 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2021 @Olivier Lefebvre
 using Aguacongas.AspNetCore.Authentication;
+using Aguacongas.AspNetCore.Authentication.Persistence;
 using Aguacongas.AspNetCore.Authentication.RavenDb;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -39,7 +40,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// The <see cref="DynamicAuthenticationBuilder" />
         /// </returns>
         public static DynamicAuthenticationBuilder AddRavenDbStore<TDefinitionType>(this DynamicAuthenticationBuilder builder, Func<IServiceProvider, IDocumentStore> getDocumentStore = null, string dataBase = null)
-            where TDefinitionType: SchemeDefinition
+            where TDefinitionType : SchemeDefinition
         {
             if (getDocumentStore == null)
             {
@@ -52,22 +53,23 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static void AddStore(IServiceCollection service, Type definitionType, Func<IServiceProvider, IDocumentStore> getDocumentStore, string dataBase)
         {
-            var storeType = typeof(DynamicProviderStore<>).MakeGenericType(definitionType);
-            var loggerType = typeof(ILogger<>).MakeGenericType(storeType);
+            Type storeType = typeof(DynamicProviderStore<>).MakeGenericType(definitionType);
+            Type loggerType = typeof(ILogger<>).MakeGenericType(storeType);
 
             service.TryAddTransient(storeType, p =>
             {
-                var session = getDocumentStore(p).OpenAsyncSession(new SessionOptions
+                IAsyncDocumentSession session = getDocumentStore(p).OpenAsyncSession(new SessionOptions
                 {
                     Database = dataBase
                 });
                 session.Advanced.UseOptimisticConcurrency = true;
-                var constructor = storeType.GetConstructor(new[] { typeof(IAsyncDocumentSession), typeof(IAuthenticationSchemeOptionsSerializer), loggerType });
+                System.Reflection.ConstructorInfo constructor = storeType.GetConstructor(new[] { typeof(IAsyncDocumentSession), typeof(IAuthenticationSchemeOptionsSerializer), loggerType });
                 return constructor.Invoke(new[] { session, p.GetRequiredService<IAuthenticationSchemeOptionsSerializer>(), p.GetRequiredService(loggerType) });
             });
             service.TryAddTransient(typeof(IDynamicProviderMutationStore<>).MakeGenericType(definitionType), p => p.GetRequiredService(storeType));
             service.TryAddTransient(typeof(IDynamicProviderStore), p => p.GetRequiredService(storeType));
-            service.AddTransient<IAuthenticationSchemeOptionsSerializer, AuthenticationSchemeOptionsSerializer>();
+            service.TryAddTransient<IDynamicProviderUpdatedEventHandler, InProcDynamicProviderUpdatedEventHandler>();
+            service.TryAddTransient<IAuthenticationSchemeOptionsSerializer, AuthenticationSchemeOptionsSerializer>();
         }
     }
 }

@@ -115,7 +115,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             });
 
             var sut = provider.GetRequiredService<AuthenticationSchemeProviderWrapper>();
-            Assert.Contains(typeof(CookieAuthenticationHandler), sut.ManagedHandlerTypes);
+            Assert.Contains(typeof(CookieAuthenticationHandler), sut.GetManagedHandlerTypes());
 
             var cookieOptions = new CookieAuthenticationOptions
             {
@@ -170,7 +170,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             });
 
             var sut = provider.GetRequiredService<AuthenticationSchemeProviderWrapper>();
-            Assert.Contains(typeof(FacebookHandler), sut.ManagedHandlerTypes);
+            Assert.Contains(typeof(FacebookHandler), sut.GetManagedHandlerTypes());
 
             var facebookOptions = new FacebookOptions
             {
@@ -227,7 +227,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             });
 
             var sut = provider.GetRequiredService<AuthenticationSchemeProviderWrapper>();
-            Assert.Contains(typeof(GoogleHandler), sut.ManagedHandlerTypes);
+            Assert.Contains(typeof(GoogleHandler), sut.GetManagedHandlerTypes());
 
             var googleOptions = new GoogleOptions
             {
@@ -301,7 +301,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<AuthenticationSchemeProviderWrapper>();
-            Assert.Contains(typeof(JwtBearerHandler), sut.ManagedHandlerTypes);
+            Assert.Contains(typeof(JwtBearerHandler), sut.GetManagedHandlerTypes());
 
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<JwtBearerOptions>(scheme, provider);
@@ -353,7 +353,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<AuthenticationSchemeProviderWrapper>();
-            Assert.Contains(typeof(MicrosoftAccountHandler), sut.ManagedHandlerTypes);
+            Assert.Contains(typeof(MicrosoftAccountHandler), sut.GetManagedHandlerTypes());
 
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<MicrosoftAccountOptions>(scheme, provider);
@@ -410,7 +410,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<AuthenticationSchemeProviderWrapper>();
-            Assert.Contains(typeof(OpenIdConnectHandler), sut.ManagedHandlerTypes);
+            Assert.Contains(typeof(OpenIdConnectHandler), sut.GetManagedHandlerTypes());
 
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<OpenIdConnectOptions>(scheme, provider);
@@ -463,7 +463,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<AuthenticationSchemeProviderWrapper>();
-            Assert.Contains(typeof(TwitterHandler), sut.ManagedHandlerTypes);
+            Assert.Contains(typeof(TwitterHandler), sut.GetManagedHandlerTypes());
 
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<TwitterOptions>(scheme, provider);
@@ -518,7 +518,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<AuthenticationSchemeProviderWrapper>();
-            Assert.Contains(typeof(WsFederationHandler), sut.ManagedHandlerTypes);
+            Assert.Contains(typeof(WsFederationHandler), sut.GetManagedHandlerTypes());
 
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<WsFederationOptions>(scheme, provider);
@@ -570,7 +570,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<AuthenticationSchemeProviderWrapper>();
-            Assert.Contains(typeof(FakeGenericHandler<OAuthOptions>), sut.ManagedHandlerTypes);
+            Assert.Contains(typeof(FakeGenericHandler<OAuthOptions>), sut.GetManagedHandlerTypes());
 
             await sut.AddAsync(definition);
             var state = await VerifyAddedAsync<OAuthOptions>(scheme, provider);
@@ -627,8 +627,8 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<AuthenticationSchemeProviderWrapper>();
-            Assert.Contains(typeof(CookieAuthenticationHandler), sut.ManagedHandlerTypes);
-            Assert.Contains(typeof(WsFederationHandler), sut.ManagedHandlerTypes);
+            Assert.Contains(typeof(CookieAuthenticationHandler), sut.GetManagedHandlerTypes());
+            Assert.Contains(typeof(WsFederationHandler), sut.GetManagedHandlerTypes());
 
             await Assert.ThrowsAsync<InvalidOperationException>(() => sut.UpdateAsync(definition));
 
@@ -692,7 +692,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
             };
 
             var sut = provider.GetRequiredService<AuthenticationSchemeProviderWrapper>();
-            Assert.Contains(typeof(CookieAuthenticationHandler), sut.ManagedHandlerTypes);
+            Assert.Contains(typeof(CookieAuthenticationHandler), sut.GetManagedHandlerTypes());
 
             await sut.AddAsync(definition);
             await VerifyAddedAsync<CookieAuthenticationOptions>(scheme, provider);

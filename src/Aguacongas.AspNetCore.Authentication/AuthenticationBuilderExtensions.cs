@@ -2,6 +2,7 @@
 // Copyright (c) 2021 @Olivier Lefebvre
 using Aguacongas.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -19,14 +20,14 @@ namespace Microsoft.Extensions.DependencyInjection
         public static DynamicAuthenticationBuilder AddDynamicAuthentication(this AuthenticationBuilder builder)
         {
             DynamicAuthenticationBuilder dynamicBuilder = new DynamicAuthenticationBuilder(builder.Services);
-            builder.Services
-                .AddSingleton<OptionsMonitorCacheWrapperFactory>()
-                .AddTransient(provider => new AuthenticationSchemeProviderWrapper
+            builder.Services.TryAddSingleton<OptionsMonitorCacheWrapperFactory>();
+            builder.Services.TryAddTransient(provider => new AuthenticationSchemeProviderWrapper
                 (
                     provider.GetRequiredService<IAuthenticationSchemeProvider>(),
                     provider.GetRequiredService<OptionsMonitorCacheWrapperFactory>(),
                     dynamicBuilder.HandlerTypes
                 ));
+            builder.Services.TryAddTransient<IDynamicProviderHandlerTypeProvider>(sp => sp.GetRequiredService<AuthenticationSchemeProviderWrapper>());
             return dynamicBuilder;
         }
     }

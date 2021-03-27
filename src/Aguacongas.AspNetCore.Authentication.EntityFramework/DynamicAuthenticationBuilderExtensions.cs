@@ -2,6 +2,7 @@
 // Copyright (c) 2021 @Olivier Lefebvre
 using Aguacongas.AspNetCore.Authentication;
 using Aguacongas.AspNetCore.Authentication.EntityFramework;
+using Aguacongas.AspNetCore.Authentication.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
@@ -42,7 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>The <see cref="DynamicAuthenticationBuilder"/></returns>
         public static DynamicAuthenticationBuilder AddEntityFrameworkStore<TContext, TDefinitionType>(this DynamicAuthenticationBuilder builder)
             where TContext : DbContext
-            where TDefinitionType: SchemeDefinition
+            where TDefinitionType : SchemeDefinition
         {
             AddStore(builder.Services, typeof(TDefinitionType), typeof(TContext));
             return builder;
@@ -51,11 +52,12 @@ namespace Microsoft.Extensions.DependencyInjection
         private static void AddStore(IServiceCollection service, Type definitionType, Type contextType)
         {
 
-            var storeType = typeof(DynamicProviderStore<,>).MakeGenericType(definitionType, contextType);
+            Type storeType = typeof(DynamicProviderStore<,>).MakeGenericType(definitionType, contextType);
 
             service.TryAddTransient(typeof(IDynamicProviderStore), storeType);
             service.TryAddTransient(typeof(IDynamicProviderMutationStore<>).MakeGenericType(definitionType), storeType);
-            service.AddTransient<IAuthenticationSchemeOptionsSerializer, AuthenticationSchemeOptionsSerializer>();
+            service.TryAddTransient<IAuthenticationSchemeOptionsSerializer, AuthenticationSchemeOptionsSerializer>();
+            service.TryAddTransient<IDynamicProviderUpdatedEventHandler, InProcDynamicProviderUpdatedEventHandler>();
 
         }
     }

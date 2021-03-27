@@ -13,7 +13,7 @@ namespace Aguacongas.AspNetCore.Authentication
     /// Dynamic scheme manager which not persist the changes.
     /// </summary>
     /// <typeparam name="ISchemeDefinition">The type of the scheme definition.</typeparam>
-    public class AuthenticationSchemeProviderWrapper
+    public class AuthenticationSchemeProviderWrapper : IDynamicProviderHandlerTypeProvider
     {
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly OptionsMonitorCacheWrapperFactory _wrapperFactory;
@@ -32,14 +32,19 @@ namespace Aguacongas.AspNetCore.Authentication
         {
             _schemeProvider = schemeProvider ?? throw new ArgumentNullException(nameof(schemeProvider));
             _wrapperFactory = wrapperFactory ?? throw new ArgumentNullException(nameof(wrapperFactory));
-            ManagedHandlerTypes = managedTypes ?? throw new ArgumentNullException(nameof(managedTypes));
+            managedHandlerTypes = managedTypes ?? throw new ArgumentNullException(nameof(managedTypes));
         }
+
+        private readonly IEnumerable<Type> managedHandlerTypes;
 
         /// <summary>
         /// Gets the type of the managed handler.
         /// </summary>
-        /// <value>The type of the managed handler.</value>
-        public virtual IEnumerable<Type> ManagedHandlerTypes { get; }
+        /// <returns>The type of the managed handler.</returns>
+        public virtual IEnumerable<Type> GetManagedHandlerTypes()
+        {
+            return managedHandlerTypes;
+        }
 
         /// <summary>
         /// Adds a scheme asynchronously.
@@ -70,12 +75,12 @@ namespace Aguacongas.AspNetCore.Authentication
         public virtual async Task InitializeAsync(IEnumerable<ISchemeDefinition> schemeDefinitions, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            IList<AuthenticationScheme> toRemove = (await _schemeProvider.GetAllSchemesAsync()).Where(s => ManagedHandlerTypes.Contains(s.HandlerType)).ToList();
+            IList<AuthenticationScheme> toRemove = (await _schemeProvider.GetAllSchemesAsync()).Where(s => GetManagedHandlerTypes().Contains(s.HandlerType)).ToList();
             if (schemeDefinitions != null)
             {
                 foreach (ISchemeDefinition definition in schemeDefinitions)
                 {
-                    if (ManagedHandlerTypes.Contains(definition.HandlerType))
+                    if (GetManagedHandlerTypes().Contains(definition.HandlerType))
                     {
                         await AddAsync(definition, cancellationToken).ConfigureAwait(false);
                         toRemove = toRemove.Where(s => s.HandlerType != definition.HandlerType).ToList();

@@ -3,11 +3,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Aguacongas.AspNetCore.Authentication.RavenDb
+namespace Aguacongas.AspNetCore.Authentication.Persistence
 {
-    public interface IDynamicProviderMutationStore<TSchemeDefinition> where TSchemeDefinition : SchemeDefinition, new()
+    public interface IDynamicProviderMutationStore<TSchemeDefinition> where TSchemeDefinition : ISchemeDefinition, new()
     {
         Task AddAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default);
+        Task<TSchemeDefinition> FindBySchemeAsync(string scheme, CancellationToken cancellationToken = default);
         Task RemoveAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default);
         Task UpdateAsync(TSchemeDefinition definition, CancellationToken cancellationToken = default);
     }

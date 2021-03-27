@@ -1,5 +1,6 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2021 @Olivier Lefebvre
+using Aguacongas.AspNetCore.Authentication.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,9 +13,9 @@ using System.Threading.Tasks;
 namespace Aguacongas.AspNetCore.Authentication.EntityFramework
 {
     /// <summary>
-    /// Implement a store for <see cref="NoPersistentDynamicManager{TSchemeDefinition}"/> with EntityFramework.
+    /// Implement a store for <see cref="IDynamicProviderMutationStore{TSchemeDefinition}"/> with EntityFramework.
     /// </summary>
-    /// <seealso cref="Aguacongas.AspNetCore.Authentication.IDynamicProviderStore{TSchemeDefinition}" />
+    /// <seealso cref="Aguacongas.AspNetCore.Authentication.IDynamicProviderStore" />
     public class DynamicProviderStore : DynamicProviderStore<SchemeDefinition>
     {
         /// <summary>
@@ -22,17 +23,21 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="authenticationSchemeOptionsSerializer">The authentication scheme options serializer.</param>
+        /// <param name="providerUpdatedEventHandler">The event handler</param>
         /// <param name="logger">The logger.</param>
-        public DynamicProviderStore(SchemeDbContext context, IAuthenticationSchemeOptionsSerializer authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore> logger) : base(context, authenticationSchemeOptionsSerializer, logger)
+        public DynamicProviderStore(SchemeDbContext context,
+            IAuthenticationSchemeOptionsSerializer authenticationSchemeOptionsSerializer,
+            IDynamicProviderUpdatedEventHandler providerUpdatedEventHandler,
+            ILogger<DynamicProviderStore> logger) : base(context, authenticationSchemeOptionsSerializer, providerUpdatedEventHandler, logger)
         {
         }
     }
 
     /// <summary>
-    /// Implement a store for <see cref="NoPersistentDynamicManager{TSchemeDefinition}"/> with EntityFramework.
+    /// Implement a store for <see cref="IDynamicProviderMutationStore{TSchemeDefinition}"/> with EntityFramework.
     /// </summary>
     /// <typeparam name="TSchemeDefinition">The type of the definition.</typeparam>
-    /// <seealso cref="Aguacongas.AspNetCore.Authentication.IDynamicProviderStore{TSchemeDefinition}" />
+    /// <seealso cref="Aguacongas.AspNetCore.Authentication.IDynamicProviderStore" />
     public class DynamicProviderStore<TSchemeDefinition> : DynamicProviderStore<TSchemeDefinition, SchemeDbContext<TSchemeDefinition>>
         where TSchemeDefinition : SchemeDefinition, new()
     {
@@ -41,23 +46,28 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="authenticationSchemeOptionsSerializer">The authentication scheme options serializer.</param>
+        /// <param name="providerUpdatedEventHandler">The event handler</param>
         /// <param name="logger">The logger.</param>
-        public DynamicProviderStore(SchemeDbContext<TSchemeDefinition> context, IAuthenticationSchemeOptionsSerializer authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore<TSchemeDefinition>> logger) : base(context, authenticationSchemeOptionsSerializer, logger)
+        public DynamicProviderStore(SchemeDbContext<TSchemeDefinition> context,
+            IAuthenticationSchemeOptionsSerializer authenticationSchemeOptionsSerializer,
+            IDynamicProviderUpdatedEventHandler providerUpdatedEventHandler,
+            ILogger<DynamicProviderStore<TSchemeDefinition>> logger) : base(context, authenticationSchemeOptionsSerializer, providerUpdatedEventHandler, logger)
         {
         }
     }
 
     /// <summary>
-    /// Implement a store for <see cref="NoPersistentDynamicManager{TSchemeDefinition}"/> with EntityFramework.
+    /// Implement a store for <see cref="IDynamicProviderMutationStore{TSchemeDefinition}"/> with EntityFramework.
     /// </summary>
     /// <typeparam name="TSchemeDefinition">The type of the definition.</typeparam>
     /// <typeparam name="TContext">The type of the context.</typeparam>
-    /// <seealso cref="Aguacongas.AspNetCore.Authentication.IDynamicProviderStore{TSchemeDefinition}" />
+    /// <seealso cref="IDynamicProviderStore" />
     public class DynamicProviderStore<TSchemeDefinition, TContext> : IDynamicProviderStore, IDynamicProviderMutationStore<TSchemeDefinition> where TContext : DbContext
         where TSchemeDefinition : SchemeDefinition, new()
     {
         private readonly DbContext _context;
         private readonly IAuthenticationSchemeOptionsSerializer _authenticationSchemeOptionsSerializer;
+        private readonly IDynamicProviderUpdatedEventHandler _providerUpdatedEventHandler;
         private readonly ILogger<DynamicProviderStore<TSchemeDefinition, TContext>> _logger;
 
 
@@ -66,6 +76,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="authenticationSchemeOptionsSerializer">The authentication scheme options serializer.</param>
+        /// <param name="providerUpdatedEventHandler">The event handler</param>
         /// <param name="logger">The logger.</param>
         /// <exception cref="System.ArgumentNullException">
         /// context
@@ -74,10 +85,14 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
         /// or
         /// logger
         /// </exception>
-        public DynamicProviderStore(TContext context, IAuthenticationSchemeOptionsSerializer authenticationSchemeOptionsSerializer, ILogger<DynamicProviderStore<TSchemeDefinition, TContext>> logger)
+        public DynamicProviderStore(TContext context,
+            IAuthenticationSchemeOptionsSerializer authenticationSchemeOptionsSerializer,
+            IDynamicProviderUpdatedEventHandler providerUpdatedEventHandler,
+            ILogger<DynamicProviderStore<TSchemeDefinition, TContext>> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _authenticationSchemeOptionsSerializer = authenticationSchemeOptionsSerializer ?? throw new ArgumentNullException(nameof(authenticationSchemeOptionsSerializer));
+            _providerUpdatedEventHandler = providerUpdatedEventHandler ?? throw new ArgumentNullException(nameof(providerUpdatedEventHandler));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -99,6 +114,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             _context.Add(definition);
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
+            await _providerUpdatedEventHandler.HandleAsync(new DynamicProviderUpdatedEvent(DynamicProviderUpdateType.Added, definition)).ConfigureAwait(false);
             _logger.LogInformation("Scheme {scheme} added for {handlerType} with options: {options}", definition.Scheme, definition.HandlerType, definition.SerializedOptions);
         }
 
@@ -117,6 +133,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             _context.Remove(definition);
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
+            await _providerUpdatedEventHandler.HandleAsync(new DynamicProviderUpdatedEvent(DynamicProviderUpdateType.Removed, definition)).ConfigureAwait(false);
             _logger.LogInformation("Scheme {scheme} removed", definition.Scheme);
         }
 
@@ -140,6 +157,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             _context.Update(definition);
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
+            await _providerUpdatedEventHandler.HandleAsync(new DynamicProviderUpdatedEvent(DynamicProviderUpdateType.Updated, definition)).ConfigureAwait(false);
             _logger.LogInformation("Scheme {scheme} updated for {handlerType} with options: {options}", definition.Scheme, definition.HandlerType, definition.SerializedOptions);
         }
 
@@ -157,7 +175,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             CheckScheme(scheme);
 
             cancellationToken.ThrowIfCancellationRequested();
-            var definition = await _context.FindAsync<TSchemeDefinition>(new[] { scheme }, cancellationToken);
+            TSchemeDefinition definition = await _context.FindAsync<TSchemeDefinition>(new[] { scheme }, cancellationToken);
 
             if (definition != null)
             {
@@ -166,6 +184,18 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
 
             return definition;
         }
+
+        /// <summary>
+        /// Gets the scheme definitions list.
+        /// </summary>
+        /// <value>
+        /// The scheme definitions list.
+        /// </value>
+        public IAsyncEnumerable<ISchemeDefinition> GetSchemeDefinitionsAsync(CancellationToken cancellationToken = default)
+        {
+            return _context.Set<TSchemeDefinition>().AsAsyncEnumerable().Select(Deserialize);
+        }
+
 
         private static void CheckScheme(string scheme)
         {
@@ -187,17 +217,6 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             definition.HandlerType = _authenticationSchemeOptionsSerializer.DeserializeType(definition.SerializedHandlerType);
             definition.Options = _authenticationSchemeOptionsSerializer.DeserializeOptions(definition.SerializedOptions, definition.HandlerType.GetAuthenticationSchemeOptionsType());
             return definition;
-        }
-
-        /// <summary>
-        /// Gets the scheme definitions list.
-        /// </summary>
-        /// <value>
-        /// The scheme definitions list.
-        /// </value>
-        public IAsyncEnumerable<ISchemeDefinition> GetSchemeDefinitionsAsync(CancellationToken cancellationToken = default)
-        {
-            return _context.Set<TSchemeDefinition>().AsAsyncEnumerable().Select(Deserialize);
         }
     }
 }

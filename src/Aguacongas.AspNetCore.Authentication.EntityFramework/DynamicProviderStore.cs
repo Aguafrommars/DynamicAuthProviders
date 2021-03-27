@@ -175,7 +175,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework
             CheckScheme(scheme);
 
             cancellationToken.ThrowIfCancellationRequested();
-            TSchemeDefinition definition = await _context.FindAsync<TSchemeDefinition>(new[] { scheme }, cancellationToken);
+            var definition = await _context.FindAsync<TSchemeDefinition>(new[] { scheme }, cancellationToken);
 
             if (definition != null)
             {

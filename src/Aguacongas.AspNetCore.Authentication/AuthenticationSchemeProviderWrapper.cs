@@ -57,11 +57,11 @@ namespace Aguacongas.AspNetCore.Authentication
         {
             definition = definition ?? throw new ArgumentNullException(nameof(definition));
 
-            Type handlerType = definition.HandlerType;
-            Type optionsType = GetOptionsType(handlerType);
-            Microsoft.Extensions.Options.IOptionsMonitorCache<AuthenticationSchemeOptions> optionsMonitorCache = _wrapperFactory.Get(optionsType);
+            var handlerType = definition.HandlerType;
+            var optionsType = GetOptionsType(handlerType);
+            var optionsMonitorCache = _wrapperFactory.Get(optionsType);
 
-            string scheme = definition.Scheme;
+            var scheme = definition.Scheme;
             if (await _schemeProvider.GetSchemeAsync(scheme).ConfigureAwait(false) != null)
             {
                 _schemeProvider.RemoveScheme(scheme);
@@ -78,7 +78,7 @@ namespace Aguacongas.AspNetCore.Authentication
             IList<AuthenticationScheme> toRemove = (await _schemeProvider.GetAllSchemesAsync()).Where(s => GetManagedHandlerTypes().Contains(s.HandlerType)).ToList();
             if (schemeDefinitions != null)
             {
-                foreach (ISchemeDefinition definition in schemeDefinitions)
+                foreach (var definition in schemeDefinitions)
                 {
                     if (GetManagedHandlerTypes().Contains(definition.HandlerType))
                     {
@@ -90,7 +90,7 @@ namespace Aguacongas.AspNetCore.Authentication
 
             if (toRemove.Count > 0)
             {
-                foreach (AuthenticationScheme scheme in toRemove)
+                foreach (var scheme in toRemove)
                 {
                     Remove(scheme);
                 }
@@ -123,16 +123,16 @@ namespace Aguacongas.AspNetCore.Authentication
         {
             definition = definition ?? throw new ArgumentNullException(nameof(definition));
 
-            Type handlerType = definition.HandlerType;
-            Type optionsType = GetOptionsType(handlerType);
-            string scheme = definition.Scheme;
+            var handlerType = definition.HandlerType;
+            var optionsType = GetOptionsType(handlerType);
+            var scheme = definition.Scheme;
 
             if (await _schemeProvider.GetSchemeAsync(scheme).ConfigureAwait(false) == null)
             {
                 throw new InvalidOperationException($"The scheme {scheme} does not exist.");
             }
 
-            Microsoft.Extensions.Options.IOptionsMonitorCache<AuthenticationSchemeOptions> optionsMonitorCache = _wrapperFactory.Get(optionsType);
+            var optionsMonitorCache = _wrapperFactory.Get(optionsType);
 
             _schemeProvider.RemoveScheme(scheme);
             optionsMonitorCache.TryRemove(scheme);
@@ -158,8 +158,8 @@ namespace Aguacongas.AspNetCore.Authentication
         {
             if (scheme != null)
             {
-                Type optionsType = GetOptionsType(scheme.HandlerType);
-                Microsoft.Extensions.Options.IOptionsMonitorCache<AuthenticationSchemeOptions> optionsMonitorCache = _wrapperFactory.Get(optionsType);
+                var optionsType = GetOptionsType(scheme.HandlerType);
+                var optionsMonitorCache = _wrapperFactory.Get(optionsType);
 
                 _schemeProvider.RemoveScheme(scheme.Name);
                 optionsMonitorCache.TryRemove(scheme.Name);

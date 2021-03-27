@@ -21,7 +21,7 @@ namespace Aguacongas.AspNetCore.Authentication
                 return false;
             }
 
-            TypeInfo typeInfo = type.GetTypeInfo();
+            var typeInfo = type.GetTypeInfo();
             if (typeInfo.IsGenericType &&
                 typeInfo.GetGenericArguments().Length == 1 && //exclude dictionary
                 (typeInfo.GetGenericTypeDefinition() == typeof(Nullable<>) || typeof(IEnumerable).IsAssignableFrom(type)))
@@ -60,13 +60,13 @@ namespace Aguacongas.AspNetCore.Authentication
         /// </returns>
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
-            JsonProperty property = base.CreateProperty(member, memberSerialization);
-            PropertyInfo propertyInfo = member as PropertyInfo;
-            Type propertyType = propertyInfo?.PropertyType;
+            var property = base.CreateProperty(member, memberSerialization);
+            var propertyInfo = member as PropertyInfo;
+            var propertyType = propertyInfo?.PropertyType;
             if (propertyType != null && IsSupportedType(propertyType) && typeof(AuthenticationSchemeOptions).IsAssignableFrom(member.DeclaringType) &&
                 property.DefaultValue == null)
             {
-                if (!defaultOptionsObjects.TryGetValue(member.DeclaringType, out AuthenticationSchemeOptions defaultOptions))
+                if (!defaultOptionsObjects.TryGetValue(member.DeclaringType, out var defaultOptions))
                 {
                     try
                     {

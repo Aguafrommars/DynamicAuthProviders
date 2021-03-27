@@ -52,7 +52,7 @@ namespace Microsoft.Extensions.DependencyInjection
         private static void AddStore(IServiceCollection service, Type definitionType, Type contextType)
         {
 
-            Type storeType = typeof(DynamicProviderStore<,>).MakeGenericType(definitionType, contextType);
+            var storeType = typeof(DynamicProviderStore<,>).MakeGenericType(definitionType, contextType);
 
             service.TryAddTransient(typeof(IDynamicProviderStore), storeType);
             service.TryAddTransient(typeof(IDynamicProviderMutationStore<>).MakeGenericType(definitionType), storeType);

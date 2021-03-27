@@ -20,11 +20,11 @@ namespace Microsoft.AspNetCore.Builder
         /// <returns></returns>
         public static IServiceProvider LoadDynamicAuthenticationConfiguration(this IServiceProvider provider)
         {
-            using (IServiceScope scope = provider.CreateScope())
+            using (var scope = provider.CreateScope())
             {
-                AuthenticationSchemeProviderWrapper manager = scope.ServiceProvider.GetRequiredService<AuthenticationSchemeProviderWrapper>();
-                IDynamicProviderStore store = scope.ServiceProvider.GetService<IDynamicProviderStore>();
-                List<ISchemeDefinition> schemes = store?.GetSchemeDefinitionsAsync().ToListAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                var manager = scope.ServiceProvider.GetRequiredService<AuthenticationSchemeProviderWrapper>();
+                var store = scope.ServiceProvider.GetService<IDynamicProviderStore>();
+                var schemes = store?.GetSchemeDefinitionsAsync().ToListAsync().ConfigureAwait(false).GetAwaiter().GetResult();
                 manager.InitializeAsync(schemes).ConfigureAwait(false).GetAwaiter().GetResult();
             }
             return provider;

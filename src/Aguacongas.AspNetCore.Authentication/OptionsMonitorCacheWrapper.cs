@@ -65,9 +65,9 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <returns>Whether anything was added.</returns>
         public bool TryAdd(string name, AuthenticationSchemeOptions options)
         {
-            bool result = _parent.TryAdd(name, (TOptions)options);
+            var result = _parent.TryAdd(name, (TOptions)options);
             _onAdded.Invoke(name, options as TOptions);
-            foreach (IPostConfigureOptions<TOptions> postConfigure in _postConfigures)
+            foreach (var postConfigure in _postConfigures)
             {
                 postConfigure.PostConfigure(name, options as TOptions);
             }
@@ -112,8 +112,8 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <remarks>For internal user, you should not use this class</remarks>
         public IOptionsMonitorCache<AuthenticationSchemeOptions> Get(Type optionsType)
         {
-            Type type = typeof(OptionsMonitorCacheWrapper<>).MakeGenericType(optionsType);
-            object wrapper = _serviceProvider.GetRequiredService(type);
+            var type = typeof(OptionsMonitorCacheWrapper<>).MakeGenericType(optionsType);
+            var wrapper = _serviceProvider.GetRequiredService(type);
             return (IOptionsMonitorCache<AuthenticationSchemeOptions>)wrapper;
         }
     }

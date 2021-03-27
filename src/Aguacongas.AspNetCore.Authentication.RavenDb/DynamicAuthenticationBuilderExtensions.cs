@@ -53,17 +53,17 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static void AddStore(IServiceCollection service, Type definitionType, Func<IServiceProvider, IDocumentStore> getDocumentStore, string dataBase)
         {
-            Type storeType = typeof(DynamicProviderStore<>).MakeGenericType(definitionType);
-            Type loggerType = typeof(ILogger<>).MakeGenericType(storeType);
+            var storeType = typeof(DynamicProviderStore<>).MakeGenericType(definitionType);
+            var loggerType = typeof(ILogger<>).MakeGenericType(storeType);
 
             service.TryAddTransient(storeType, p =>
             {
-                IAsyncDocumentSession session = getDocumentStore(p).OpenAsyncSession(new SessionOptions
+                var session = getDocumentStore(p).OpenAsyncSession(new SessionOptions
                 {
                     Database = dataBase
                 });
                 session.Advanced.UseOptimisticConcurrency = true;
-                System.Reflection.ConstructorInfo constructor = storeType.GetConstructor(new[] { typeof(IAsyncDocumentSession), typeof(IAuthenticationSchemeOptionsSerializer), loggerType });
+                var constructor = storeType.GetConstructor(new[] { typeof(IAsyncDocumentSession), typeof(IAuthenticationSchemeOptionsSerializer), loggerType });
                 return constructor.Invoke(new[] { session, p.GetRequiredService<IAuthenticationSchemeOptionsSerializer>(), p.GetRequiredService(loggerType) });
             });
             service.TryAddTransient(typeof(IDynamicProviderMutationStore<>).MakeGenericType(definitionType), p => p.GetRequiredService(storeType));

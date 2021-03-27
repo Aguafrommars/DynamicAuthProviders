@@ -25,8 +25,8 @@ namespace System
                 throw new ArgumentException($"Parameter {nameof(handlerType)} should be a {nameof(AuthenticationHandler<AuthenticationSchemeOptions>)}");
             }
 
-            Type[] genericTypeArguments = GetGenericTypeArguments(handlerType);
-            Type optionsType = genericTypeArguments[0];
+            var genericTypeArguments = GetGenericTypeArguments(handlerType);
+            var optionsType = genericTypeArguments[0];
             return optionsType;
         }
 

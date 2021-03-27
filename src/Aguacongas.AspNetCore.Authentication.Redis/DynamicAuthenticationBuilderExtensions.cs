@@ -43,20 +43,20 @@ namespace Microsoft.Extensions.DependencyInjection
         public static DynamicAuthenticationBuilder AddRedisStore<TSchemeDefinition>(this DynamicAuthenticationBuilder builder, Action<ConfigurationOptions> configure, int? database = null)
             where TSchemeDefinition : SchemeDefinition, new()
         {
-            IServiceCollection services = builder.Services;
+            var services = builder.Services;
 
             services.Configure(configure)
                 .AddSingleton<IConnectionMultiplexer>(provider =>
                 {
-                    ConfigurationOptions options = provider.GetRequiredService<IOptions<ConfigurationOptions>>().Value;
-                    RedisLogger redisLogger = CreateLogger(provider);
+                    var options = provider.GetRequiredService<IOptions<ConfigurationOptions>>().Value;
+                    var redisLogger = CreateLogger(provider);
                     return ConnectionMultiplexer.Connect(options, redisLogger);
                 });
 
             return builder.AddRedisStore<TSchemeDefinition>(provider =>
             {
-                ConfigurationOptions options = provider.GetRequiredService<IOptions<ConfigurationOptions>>().Value;
-                IConnectionMultiplexer multiplexer = provider.GetRequiredService<IConnectionMultiplexer>();
+                var options = provider.GetRequiredService<IOptions<ConfigurationOptions>>().Value;
+                var multiplexer = provider.GetRequiredService<IConnectionMultiplexer>();
                 return multiplexer.GetDatabase(database ?? (options.DefaultDatabase ?? -1));
             });
         }
@@ -88,11 +88,11 @@ namespace Microsoft.Extensions.DependencyInjection
         public static DynamicAuthenticationBuilder AddRedisStore<TSchemeDefinition>(this DynamicAuthenticationBuilder builder, string configuration, int? database = null)
             where TSchemeDefinition : SchemeDefinition, new()
         {
-            IServiceCollection services = builder.Services;
+            var services = builder.Services;
 
             services.AddSingleton<IConnectionMultiplexer>(provider =>
             {
-                RedisLogger redisLogger = CreateLogger(provider);
+                var redisLogger = CreateLogger(provider);
 
                 return ConnectionMultiplexer.Connect(configuration, redisLogger);
             });
@@ -100,7 +100,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder
                 .AddRedisStore<TSchemeDefinition>(provider =>
                 {
-                    IConnectionMultiplexer multiplexer = provider.GetRequiredService<IConnectionMultiplexer>();
+                    var multiplexer = provider.GetRequiredService<IConnectionMultiplexer>();
                     return multiplexer.GetDatabase(database ?? -1);
                 });
         }
@@ -126,15 +126,15 @@ namespace Microsoft.Extensions.DependencyInjection
         public static DynamicAuthenticationBuilder AddRedisStore<TSchemeDefinition>(this DynamicAuthenticationBuilder builder, Func<IServiceProvider, IDatabase> getDatabase)
             where TSchemeDefinition : SchemeDefinition, new()
         {
-            IServiceCollection services = builder.Services;
+            var services = builder.Services;
 
             services.TryAddTransient<ISchemeDefinitionSerializer<TSchemeDefinition>, SchemeDefinitionSerializer<TSchemeDefinition>>();
             services.TryAddTransient<DynamicProviderStore<TSchemeDefinition>>(provider =>
             {
-                IDatabase db = getDatabase(provider);
-                ISchemeDefinitionSerializer<TSchemeDefinition> serializer = provider.GetRequiredService<ISchemeDefinitionSerializer<TSchemeDefinition>>();
-                ILogger<DynamicProviderStore<TSchemeDefinition>> logger = provider.GetRequiredService<ILogger<DynamicProviderStore<TSchemeDefinition>>>();
-                IDynamicProviderUpdatedEventHandler eventHandler = provider.GetRequiredService<IDynamicProviderUpdatedEventHandler>();
+                var db = getDatabase(provider);
+                var serializer = provider.GetRequiredService<ISchemeDefinitionSerializer<TSchemeDefinition>>();
+                var logger = provider.GetRequiredService<ILogger<DynamicProviderStore<TSchemeDefinition>>>();
+                var eventHandler = provider.GetRequiredService<IDynamicProviderUpdatedEventHandler>();
 
                 return new DynamicProviderStore<TSchemeDefinition>(db, serializer, eventHandler, logger);
             });
@@ -145,8 +145,8 @@ namespace Microsoft.Extensions.DependencyInjection
         }
         private static RedisLogger CreateLogger(IServiceProvider provider)
         {
-            ILogger<RedisLogger> logger = provider.GetService<ILogger<RedisLogger>>();
-            RedisLogger redisLogger = logger != null ? new RedisLogger(logger) : null;
+            var logger = provider.GetService<ILogger<RedisLogger>>();
+            var redisLogger = logger != null ? new RedisLogger(logger) : null;
             return redisLogger;
         }
     }

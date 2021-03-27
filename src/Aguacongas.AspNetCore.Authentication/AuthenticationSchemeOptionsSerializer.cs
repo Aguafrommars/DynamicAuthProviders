@@ -96,7 +96,7 @@ namespace Aguacongas.AspNetCore.Authentication
         {
             if (type.IsGenericType)
             {
-                Type genericType = type.GetGenericTypeDefinition();
+                var genericType = type.GetGenericTypeDefinition();
                 return new TypeDefinition
                 {
                     Name = genericType.FullName,
@@ -113,8 +113,8 @@ namespace Aguacongas.AspNetCore.Authentication
 
         private Type GetType(string typeName)
         {
-            string platform = Environment.OSVersion.Platform.ToString();
-            System.Collections.Generic.IEnumerable<AssemblyName> runtimeAssemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(platform);
+            var platform = Environment.OSVersion.Platform.ToString();
+            var runtimeAssemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(platform);
 
             return runtimeAssemblyNames
                     .Select(Assembly.Load)
@@ -126,8 +126,8 @@ namespace Aguacongas.AspNetCore.Authentication
         {
             if (typeDefinition.ArgsTypeDefinition != null)
             {
-                Type type = GetType(typeDefinition.Name);
-                Type[] argsTypes = typeDefinition.ArgsTypeDefinition.Select(GetType).ToArray();
+                var type = GetType(typeDefinition.Name);
+                var argsTypes = typeDefinition.ArgsTypeDefinition.Select(GetType).ToArray();
 
                 return type.MakeGenericType(argsTypes);
             }

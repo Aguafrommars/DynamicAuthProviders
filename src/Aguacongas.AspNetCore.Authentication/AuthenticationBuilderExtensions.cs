@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static DynamicAuthenticationBuilder AddDynamicAuthentication(this AuthenticationBuilder builder)
         {
-            DynamicAuthenticationBuilder dynamicBuilder = new DynamicAuthenticationBuilder(builder.Services);
+            var dynamicBuilder = new DynamicAuthenticationBuilder(builder.Services);
             builder.Services.TryAddSingleton<OptionsMonitorCacheWrapperFactory>();
             builder.Services.TryAddTransient(provider => new AuthenticationSchemeProviderWrapper
                 (

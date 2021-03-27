@@ -88,7 +88,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
         public async Task<IActionResult> Update(string scheme)
         {
             AuthenticationViewModel model;
-            SchemeDefinition definition = await _mutationStore.FindBySchemeAsync(scheme);
+            var definition = await _mutationStore.FindBySchemeAsync(scheme);
             if (definition == null)
             {
                 return NotFound();
@@ -102,7 +102,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
                     HandlerType = definition.HandlerType.Name
                 };
 
-                OAuthOptions oAuthOptions = definition.Options as OAuthOptions; // GoogleOptions is OAuthOptions
+                var oAuthOptions = definition.Options as OAuthOptions; // GoogleOptions is OAuthOptions
                 model.ClientId = oAuthOptions.ClientId;
                 model.ClientSecret = oAuthOptions.ClientSecret;
             }
@@ -117,7 +117,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
         {
             if (ModelState.IsValid)
             {
-                SchemeDefinition definition = await _mutationStore.FindBySchemeAsync(model.Scheme);
+                var definition = await _mutationStore.FindBySchemeAsync(model.Scheme);
                 if (definition == null)
                 {
                     return NotFound();
@@ -141,12 +141,12 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
         [Route("List")]
         public async Task<IActionResult> List()
         {
-            System.Collections.Generic.IEnumerable<AuthenticationScheme> schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
+            var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
 
-            System.Collections.Generic.IEnumerable<string> managedSchemes = schemes.Where(s => _handerTypeProvider.GetManagedHandlerTypes().Any(h => s.HandlerType == h))
+            var managedSchemes = schemes.Where(s => _handerTypeProvider.GetManagedHandlerTypes().Any(h => s.HandlerType == h))
                 .Select(s => s.Name);
 
-            System.Collections.Generic.IEnumerable<SchemeDefinition> definitions = managedSchemes.Select(name => _mutationStore.FindBySchemeAsync(name).GetAwaiter().GetResult());
+            var definitions = managedSchemes.Select(name => _mutationStore.FindBySchemeAsync(name).GetAwaiter().GetResult());
             return View(definitions.Select(definition => new AuthenticationViewModel
             {
                 Scheme = definition.Scheme,
@@ -159,7 +159,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
         [Route("Delete/{scheme}")]
         public async Task<IActionResult> Delete(string scheme)
         {
-            SchemeDefinition definition = await _mutationStore.FindBySchemeAsync(scheme);
+            var definition = await _mutationStore.FindBySchemeAsync(scheme);
             if (definition == null)
             {
                 return NotFound();

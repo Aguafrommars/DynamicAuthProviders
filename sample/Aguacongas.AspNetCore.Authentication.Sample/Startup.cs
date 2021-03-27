@@ -49,13 +49,13 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
             });
 
             // Add authentication
-            var authBuilder = services
+            AuthenticationBuilder authBuilder = services
                 .AddAuthentication();
 
             // Add the magic
-            var dynamicBuilder = authBuilder
-                .AddDynamic<SchemeDefinition>()
-                .AddEntityFrameworkStore<SchemeDbContext>();
+            DynamicAuthenticationBuilder dynamicBuilder = authBuilder
+                .AddDynamicAuthentication()
+                .AddEntityFrameworkStore();
 
             // Add providers handlers managed dynamically
             dynamicBuilder
@@ -79,22 +79,22 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                         OnCreatingTicket = async context =>
                         {
                             // Get the GitHub user
-                            var request = new HttpRequestMessage(HttpMethod.Get, context.Options.UserInformationEndpoint);
+                            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, context.Options.UserInformationEndpoint);
                             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", context.AccessToken);
                             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                             // A user-agent header is required by GitHub. See (https://developer.github.com/v3/#user-agent-required)
                             request.Headers.UserAgent.Add(new ProductInfoHeaderValue("DynamicAuthProviders-sample", "1.0.0"));
 
-                            var response = await context.Backchannel.SendAsync(request, context.HttpContext.RequestAborted);
-                            var content = await response.Content.ReadAsStringAsync();
+                            HttpResponseMessage response = await context.Backchannel.SendAsync(request, context.HttpContext.RequestAborted);
+                            string content = await response.Content.ReadAsStringAsync();
                             response.EnsureSuccessStatusCode();
 
-                            using var doc = JsonDocument.Parse(content);
+                            using JsonDocument doc = JsonDocument.Parse(content);
 
                             context.RunClaimActions(doc.RootElement);
                         }
                     };
-                }); 
+                });
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
         }
@@ -124,7 +124,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample
                         template: "{controller=Home}/{action=Index}/{id?}");
                 })
                 // load dynamyc authentication configuration from store
-                .LoadDynamicAuthenticationConfiguration<SchemeDefinition>();
+                .UseDynamicAuthenticationConfiguration();
         }
     }
 }

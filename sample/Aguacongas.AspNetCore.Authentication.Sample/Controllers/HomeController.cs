@@ -1,6 +1,7 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2021 @Olivier Lefebvre
 using Aguacongas.AspNetCore.Authentication.EntityFramework;
+using Aguacongas.AspNetCore.Authentication.Persistence;
 using Aguacongas.AspNetCore.Authentication.Sample.Helpers;
 using Aguacongas.AspNetCore.Authentication.Sample.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -17,18 +18,25 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly PersistentDynamicManager<SchemeDefinition> _manager;
+        private readonly IDynamicProviderStore _providerStore;
+        private readonly IDynamicProviderHandlerTypeProvider _handerTypeProvider;
+        private readonly IDynamicProviderMutationStore<SchemeDefinition> _mutationStore;
         private readonly SignInManager<IdentityUser> _signInManager;
 
-        public HomeController(PersistentDynamicManager<SchemeDefinition> manager, SignInManager<IdentityUser> signInManager)
+        public HomeController(
+            IDynamicProviderStore providerStore,
+            IDynamicProviderHandlerTypeProvider handerTypeProvider,
+            IDynamicProviderMutationStore<SchemeDefinition> store, SignInManager<IdentityUser> signInManager)
         {
-            _manager = manager ?? throw new ArgumentNullException(nameof(manager));
+            _providerStore = providerStore;
+            _handerTypeProvider = handerTypeProvider;
+            _mutationStore = store ?? throw new ArgumentNullException(nameof(store));
             _signInManager = signInManager;
         }
 
         public IActionResult Index()
         {
-            return View(_manager.ManagedHandlerType.Select(t => t.Name));
+            return View(_handerTypeProvider.GetManagedHandlerTypes().Select(t => t.Name));
         }
 
         // Returns an empty details view to create a scheme for a type of handler
@@ -62,11 +70,11 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
                 oAuthOptions.ClientSecret = model.ClientSecret;
                 oAuthOptions.CallbackPath = "/signin-" + model.Scheme;
 
-                await _manager.AddAsync(new SchemeDefinition
+                await _mutationStore.AddAsync(new SchemeDefinition
                 {
                     Scheme = model.Scheme,
                     DisplayName = model.DisplayName,
-                    HandlerType = _manager.ManagedHandlerType.First(t => t.Name == model.HandlerType),
+                    HandlerType = _handerTypeProvider.GetManagedHandlerTypes().First(t => t.Name == model.HandlerType),
                     Options = oAuthOptions
                 });
                 return RedirectToAction("List");
@@ -80,7 +88,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
         public async Task<IActionResult> Update(string scheme)
         {
             AuthenticationViewModel model;
-            var definition = await _manager.FindBySchemeAsync(scheme);
+            SchemeDefinition definition = await _mutationStore.FindBySchemeAsync(scheme);
             if (definition == null)
             {
                 return NotFound();
@@ -94,7 +102,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
                     HandlerType = definition.HandlerType.Name
                 };
 
-                var oAuthOptions = definition.Options as OAuthOptions; // GoogleOptions is OAuthOptions
+                OAuthOptions oAuthOptions = definition.Options as OAuthOptions; // GoogleOptions is OAuthOptions
                 model.ClientId = oAuthOptions.ClientId;
                 model.ClientSecret = oAuthOptions.ClientSecret;
             }
@@ -109,7 +117,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
         {
             if (ModelState.IsValid)
             {
-                var definition = await _manager.FindBySchemeAsync(model.Scheme);
+                SchemeDefinition definition = await _mutationStore.FindBySchemeAsync(model.Scheme);
                 if (definition == null)
                 {
                     return NotFound();
@@ -123,7 +131,7 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
 
                 definition.DisplayName = model.DisplayName;
 
-                await _manager.UpdateAsync(definition);
+                await _mutationStore.UpdateAsync(definition);
             }
 
             return View(model);
@@ -133,12 +141,12 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
         [Route("List")]
         public async Task<IActionResult> List()
         {
-            var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
+            System.Collections.Generic.IEnumerable<AuthenticationScheme> schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
 
-            var managedSchemes = schemes.Where(s => _manager.ManagedHandlerType.Any(h => s.HandlerType == h))
+            System.Collections.Generic.IEnumerable<string> managedSchemes = schemes.Where(s => _handerTypeProvider.GetManagedHandlerTypes().Any(h => s.HandlerType == h))
                 .Select(s => s.Name);
 
-            var definitions = managedSchemes.Select(name => _manager.FindBySchemeAsync(name).GetAwaiter().GetResult());
+            System.Collections.Generic.IEnumerable<SchemeDefinition> definitions = managedSchemes.Select(name => _mutationStore.FindBySchemeAsync(name).GetAwaiter().GetResult());
             return View(definitions.Select(definition => new AuthenticationViewModel
             {
                 Scheme = definition.Scheme,
@@ -151,13 +159,13 @@ namespace Aguacongas.AspNetCore.Authentication.Sample.Controllers
         [Route("Delete/{scheme}")]
         public async Task<IActionResult> Delete(string scheme)
         {
-            var definition = await _manager.FindBySchemeAsync(scheme);
+            SchemeDefinition definition = await _mutationStore.FindBySchemeAsync(scheme);
             if (definition == null)
             {
                 return NotFound();
             }
 
-            await _manager.RemoveAsync(scheme);
+            await _mutationStore.RemoveAsync(definition);
             return RedirectToAction("List");
         }
 

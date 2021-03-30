@@ -150,10 +150,17 @@ namespace Aguacongas.AspNetCore.Authentication.RavenDb
 
             data.SerializedOptions = serialized.SerializedOptions;
             data.SerializedHandlerType = serialized.SerializedHandlerType;
+            var handlerType = definition.HandlerType;
+            var options = definition.Options;
 
-            await _session.StoreAsync(data).ConfigureAwait(false);
+            data.HandlerType = null;
+            data.Options = null;
+
             await _session.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             await _providerUpdatedEventHandler.HandleAsync(new DynamicProviderUpdatedEvent(DynamicProviderUpdateType.Updated, definition)).ConfigureAwait(false);
+
+            definition.HandlerType = handlerType;
+            definition.Options = options;
 
             _logger.LogInformation("Scheme {scheme} updated for {handlerType} with options: {options}", definition.Scheme, definition.HandlerType, data.SerializedOptions);
         }

@@ -95,7 +95,14 @@ namespace Aguacongas.AspNetCore.Authentication
         /// <returns></returns>
         protected virtual object Deserialize(string value, Type type)
         {
-            return JsonConvert.DeserializeObject(value, type, JsonSerializerSettings);
+            var result = JsonConvert.DeserializeObject(value, type, JsonSerializerSettings);
+            var requireHttpsMetaDataProperty = type.GetProperty("RequireHttpsMetadata");
+            if (requireHttpsMetaDataProperty != null && value.Contains("\"RequireHttpsMetadata\":false"))
+            {
+                requireHttpsMetaDataProperty.SetValue(result, false);
+            }
+
+            return result;
         }
 
         private Type GetType(string typeName)

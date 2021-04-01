@@ -26,7 +26,7 @@ namespace Aguacongas.AspNetCore.Authentication
             NullValueHandling = NullValueHandling.Ignore,
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             Formatting = Formatting.None,
-            DefaultValueHandling = DefaultValueHandling.Ignore,
+            DefaultValueHandling = DefaultValueHandling.Include,
             ContractResolver = new ContractResolver()
         };
 

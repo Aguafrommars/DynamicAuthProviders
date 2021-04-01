@@ -1,3 +1,11 @@
+## [4.0.3](https://github.com/Aguafrommars/DynamicAuthProviders/compare/4.0.2...4.0.3) (2021-04-01)
+
+
+### Bug Fixes
+
+* load configuration with WS-federation options ([6f1b72d](https://github.com/Aguafrommars/DynamicAuthProviders/commit/6f1b72d34ab879764334f70df1d9dcc702688ad4)), closes [#98](https://github.com/Aguafrommars/DynamicAuthProviders/issues/98)
+* update packages ([63435b2](https://github.com/Aguafrommars/DynamicAuthProviders/commit/63435b2c92aac03cdd94657e4ed5922c45a61de1))
+
 ## [4.0.2](https://github.com/Aguafrommars/DynamicAuthProviders/compare/4.0.1...4.0.2) (2021-03-31)
 
 

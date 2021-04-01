@@ -1,3 +1,11 @@
+## [4.0.2](https://github.com/Aguafrommars/DynamicAuthProviders/compare/4.0.1...4.0.2) (2021-03-31)
+
+
+### Bug Fixes
+
+* require https metadata deserialization ([0973f1c](https://github.com/Aguafrommars/DynamicAuthProviders/commit/0973f1ccfa692c539e87b12bedb4f9e92c6b1c26)), closes [#93](https://github.com/Aguafrommars/DynamicAuthProviders/issues/93)
+* update packages ([1af30d5](https://github.com/Aguafrommars/DynamicAuthProviders/commit/1af30d530329dd4c2b5c7e250c69dcbbcee58bbe))
+
 ## [4.0.1](https://github.com/Aguafrommars/DynamicAuthProviders/compare/4.0.0...4.0.1) (2021-03-29)
 
 

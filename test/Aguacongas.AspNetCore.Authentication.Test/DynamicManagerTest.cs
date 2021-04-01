@@ -55,6 +55,7 @@ namespace Aguacongas.AspNetCore.Authentication.Test
             await Assert.ThrowsAsync<ArgumentException>(() => manager.FindBySchemeAsync(""));
             await Assert.ThrowsAsync<ArgumentException>(() => manager.FindBySchemeAsync("  "));
         }
+
     }
     public class FakeSchemeDefinition : SchemeDefinitionBase
     { }

@@ -38,5 +38,21 @@ namespace Aguacongas.AspNetCore.Authentication.Test
 
             Assert.False(result.RequireHttpsMetadata);
         }
+
+        [Fact]
+        public void SeserializeOptions_should_seserialize_default_value()
+        {
+            var sut = new AuthenticationSchemeOptionsSerializer();
+            var result = sut.SerializeOptions(new WsFederationOptions
+            {
+                RequireHttpsMetadata = false
+            }, typeof(WsFederationOptions));
+
+            Assert.Contains(nameof(WsFederationOptions.RequireHttpsMetadata), result);
+
+            var deserialized = sut.DeserializeOptions(result, typeof(WsFederationOptions)) as WsFederationOptions;
+
+            Assert.False(deserialized.RequireHttpsMetadata);
+        }
     }
 }

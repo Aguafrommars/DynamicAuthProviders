@@ -10,6 +10,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>aspnetcore;authentication;security;test</PackageTags>
     <IsPackable>true</IsPackable>
+    <IsTestProject>false</IsTestProject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

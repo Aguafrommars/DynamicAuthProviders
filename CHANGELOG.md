@@ -1,3 +1,47 @@
+## [4.0.3](https://github.com/Aguafrommars/DynamicAuthProviders/compare/4.0.2...4.0.3) (2021-04-01)
+
+
+### Bug Fixes
+
+* load configuration with WS-federation options ([6f1b72d](https://github.com/Aguafrommars/DynamicAuthProviders/commit/6f1b72d34ab879764334f70df1d9dcc702688ad4)), closes [#98](https://github.com/Aguafrommars/DynamicAuthProviders/issues/98)
+* update packages ([63435b2](https://github.com/Aguafrommars/DynamicAuthProviders/commit/63435b2c92aac03cdd94657e4ed5922c45a61de1))
+
+## [4.0.2](https://github.com/Aguafrommars/DynamicAuthProviders/compare/4.0.1...4.0.2) (2021-03-31)
+
+
+### Bug Fixes
+
+* require https metadata deserialization ([0973f1c](https://github.com/Aguafrommars/DynamicAuthProviders/commit/0973f1ccfa692c539e87b12bedb4f9e92c6b1c26)), closes [#93](https://github.com/Aguafrommars/DynamicAuthProviders/issues/93)
+* update packages ([1af30d5](https://github.com/Aguafrommars/DynamicAuthProviders/commit/1af30d530329dd4c2b5c7e250c69dcbbcee58bbe))
+
+## [4.0.1](https://github.com/Aguafrommars/DynamicAuthProviders/compare/4.0.0...4.0.1) (2021-03-29)
+
+
+### Bug Fixes
+
+* ravendb update fail with serialization issue ([a18f632](https://github.com/Aguafrommars/DynamicAuthProviders/commit/a18f632b6368124fc93428dd4ce06ba7082ee8eb))
+* update packages ([116617c](https://github.com/Aguafrommars/DynamicAuthProviders/commit/116617c2c6eb2db24ab6a48819fae62b9e4cb2f9))
+* update packages ([cde4640](https://github.com/Aguafrommars/DynamicAuthProviders/commit/cde464011f3fa564730ac50308636ff4fbfe38a7))
+* update packages ([d8399b9](https://github.com/Aguafrommars/DynamicAuthProviders/commit/d8399b910fc93c23e6b2014db17f3e194e810300))
+* update packages ([74780fc](https://github.com/Aguafrommars/DynamicAuthProviders/commit/74780fcc73c162d6e8893cbc556545b89565c9e4))
+* update packages ([a745dd5](https://github.com/Aguafrommars/DynamicAuthProviders/commit/a745dd587ab964c775f3e9e97ce1d621dbfeef09))
+* update packages ([db5deed](https://github.com/Aguafrommars/DynamicAuthProviders/commit/db5deed37dd38ed34b6d2e9e2cf1680e3a1e6df0))
+
+# [4.0.0](https://github.com/Aguafrommars/DynamicAuthProviders/compare/3.2.0...4.0.0) (2021-02-20)
+
+
+### Bug Fixes
+
+* derived properties not saved ([d457803](https://github.com/Aguafrommars/DynamicAuthProviders/commit/d457803b8c4e7e7f0570f59a0240643e9b33cee4))
+* rename add raven db extension ([805c90c](https://github.com/Aguafrommars/DynamicAuthProviders/commit/805c90cd7e3eac5d9af8a5025fb64d90ff348e04))
+* update packages ([62b9844](https://github.com/Aguafrommars/DynamicAuthProviders/commit/62b98441191794b7b43445dd128088c3bc8f6a66))
+* update packages ([a895a39](https://github.com/Aguafrommars/DynamicAuthProviders/commit/a895a391fdca401ddd420f625f0051bb1c74a7ec))
+
+
+### BREAKING CHANGES
+
+* RavenDb ids
+
 # [3.2.0](https://github.com/Aguafrommars/DynamicAuthProviders/compare/3.1.2...3.2.0) (2021-02-11)
 
 

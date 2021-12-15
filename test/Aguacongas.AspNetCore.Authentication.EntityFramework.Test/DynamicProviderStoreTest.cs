@@ -33,7 +33,7 @@ namespace Aguacongas.AspNetCore.Authentication.EntityFramework.Test
 
     class FakeDbContextOptions : DbContextOptions
     {
-        public FakeDbContextOptions() : base(new Mock<IReadOnlyDictionary<Type, IDbContextOptionsExtension>>().Object)
+        public FakeDbContextOptions() : base(new Dictionary<Type, IDbContextOptionsExtension>())
         {
         }
 

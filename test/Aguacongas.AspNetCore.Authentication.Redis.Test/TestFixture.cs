@@ -18,7 +18,7 @@ namespace Aguacongas.AspNetCore.Authentication.Redis.Test
                 {
                     ["redis"] = "localhost,allowAdmin=true"
                 })
-                .AddUserSecrets<TestFixture>()
+                .AddUserSecrets<TestFixture>(true)
                 .Build();
             var redisConnectionString = configuration.GetValue<string>("redis");
             var multiplexer = ConnectionMultiplexer.Connect(redisConnectionString);

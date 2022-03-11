@@ -2,6 +2,11 @@
 // Copyright (c) 2021 @Olivier Lefebvre
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authentication.WsFederation;
+using Newtonsoft.Json;
+using System;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using System.Text.Json.Serialization;
 using Xunit;
 
 namespace Aguacongas.AspNetCore.Authentication.Test
@@ -54,5 +59,36 @@ namespace Aguacongas.AspNetCore.Authentication.Test
 
             Assert.False(deserialized.RequireHttpsMetadata);
         }
+
+        [Fact]
+        public void SerializationOptions_should_serialize_x509_certificate()
+        {
+            var holder = new CertificateHolder();
+            holder.Certificate = CertificateHolder.CreateCertificate();
+            var str = JsonConvert.SerializeObject(holder);
+            var holderRestored = JsonConvert.DeserializeObject<CertificateHolder>(str);
+            var holderStr = holder.Certificate.ToString();
+            var holderRestoredStr = holderRestored.Certificate.ToString();
+            Assert.Equal(holderStr, holderRestoredStr);
+            holder.Dispose();
+            holderRestored.Dispose();
+        }
     }
+
+    public class CertificateHolder : IDisposable
+    {
+        [Newtonsoft.Json.JsonConverter(typeof(X509Certificate2JsonConverter))]
+        public X509Certificate2 Certificate { get; set; }
+
+        public void Dispose() => Certificate?.Dispose();
+
+        public static X509Certificate2 CreateCertificate()
+        {
+            var ecdsa = ECDsa.Create();
+            var req = new CertificateRequest("cn=foobar", ecdsa, HashAlgorithmName.SHA256);
+            var c = req.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(5));
+            return c;
+        }
+    }
+
 }

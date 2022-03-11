@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28315.86
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32210.308
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{245AA4AB-ECF4-4C69-B63D-C59D4B3F918C}"
 EndProject
@@ -20,7 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		build.ps1 = build.ps1
 		dotnet-install.ps1 = dotnet-install.ps1
 		dotnet-install.sh = dotnet-install.sh
-		global.json = global.json
 		LICENSE = LICENSE
 		NuGet.Config = NuGet.Config
 		publish.cmd = publish.cmd
@@ -46,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication.RavenDb", "src\Aguacongas.AspNetCore.Authentication.RavenDb\Aguacongas.AspNetCore.Authentication.RavenDb.csproj", "{227C6C5A-5297-4C02-938A-61BA88C42DEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aguacongas.AspNetCore.Authentication.RavenDb.Test", "test\Aguacongas.AspNetCore.Authentication.RavenDb.Test\Aguacongas.AspNetCore.Authentication.RavenDb.Test.csproj", "{50BA6357-C8CF-4E23-A27C-26406300D165}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aguacongas.AspNetCore.Authentication.RavenDb.Test", "test\Aguacongas.AspNetCore.Authentication.RavenDb.Test\Aguacongas.AspNetCore.Authentication.RavenDb.Test.csproj", "{50BA6357-C8CF-4E23-A27C-26406300D165}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

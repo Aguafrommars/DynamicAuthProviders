@@ -1,3 +1,48 @@
+# [4.1.0](https://github.com/Aguafrommars/DynamicAuthProviders/compare/4.0.3...4.1.0) (2022-03-11)
+
+
+### Bug Fixes
+
+* update packages ([0bbcace](https://github.com/Aguafrommars/DynamicAuthProviders/commit/0bbcacebee0d27b8c3c00376ac0db294b8709a59))
+* update packages ([6ccad22](https://github.com/Aguafrommars/DynamicAuthProviders/commit/6ccad2259925bca49964ff241b464f666bc075ba))
+* update packages ([a1de581](https://github.com/Aguafrommars/DynamicAuthProviders/commit/a1de581dbde61ed08da44fbad55bdcfb05eb256c))
+* update packages ([03d84ad](https://github.com/Aguafrommars/DynamicAuthProviders/commit/03d84ad96bab436c6899854176060a9e8b1dd5ca))
+* update packages ([cfc95ff](https://github.com/Aguafrommars/DynamicAuthProviders/commit/cfc95ffa5d8f2bfa2c8d47b77ebbe062d262c3d6))
+* update packages ([e2223d5](https://github.com/Aguafrommars/DynamicAuthProviders/commit/e2223d5109141ee3e726b18ffb871f06654ae101))
+* update packages ([705372a](https://github.com/Aguafrommars/DynamicAuthProviders/commit/705372a1fea03fdd37d08b05cfacccb0477f3b64))
+* update packages ([da0e720](https://github.com/Aguafrommars/DynamicAuthProviders/commit/da0e720e5df769592265c650027043042103a7b3))
+* update packages ([0f4de4c](https://github.com/Aguafrommars/DynamicAuthProviders/commit/0f4de4cf1e2608fdccd0e787124d0e8567188e12))
+* update packages ([c077d82](https://github.com/Aguafrommars/DynamicAuthProviders/commit/c077d82ee0795fbe50a8cf776e36e1ac02d703c3))
+* update packages ([32eabe4](https://github.com/Aguafrommars/DynamicAuthProviders/commit/32eabe4f1a14ce1248b839b5beb0137e7e22f62c))
+* update packages ([7763d47](https://github.com/Aguafrommars/DynamicAuthProviders/commit/7763d475a438c2e0a08dc5fb95a877d71458a737))
+* update packages ([ee5a2fa](https://github.com/Aguafrommars/DynamicAuthProviders/commit/ee5a2fa3208645af69431aadac3fcae53f702ebc))
+* update packages ([a0eb318](https://github.com/Aguafrommars/DynamicAuthProviders/commit/a0eb318d2ccc0cd3cfe32d8f664b39212aa86f4f))
+* update packages ([a29c358](https://github.com/Aguafrommars/DynamicAuthProviders/commit/a29c358584f7d8a8262f91be70fac40206cea614))
+* update packages ([1115e02](https://github.com/Aguafrommars/DynamicAuthProviders/commit/1115e0201a14ac1df50f3b3bb262d962d7774346))
+* update packages ([1568e9b](https://github.com/Aguafrommars/DynamicAuthProviders/commit/1568e9bb1b6232504b616ca76e129c500e82c95d))
+* update packages ([4a9c24f](https://github.com/Aguafrommars/DynamicAuthProviders/commit/4a9c24f5df40ddf0c66f45ffeb64b7c7ff0bdcd3))
+* update packages ([ed04163](https://github.com/Aguafrommars/DynamicAuthProviders/commit/ed041638dc22695b7e8c2b755b8e2104967155af))
+* update packages ([d59d33f](https://github.com/Aguafrommars/DynamicAuthProviders/commit/d59d33fabf75bd672eb424bc2712d8d6b98925b6))
+* update packages ([a59fc49](https://github.com/Aguafrommars/DynamicAuthProviders/commit/a59fc498a561314a6ba560a2f176425c8d507e37))
+* update packages ([1148ff7](https://github.com/Aguafrommars/DynamicAuthProviders/commit/1148ff7c984d058dc852c776fecdbd21816dc773))
+* update packages ([ae752dd](https://github.com/Aguafrommars/DynamicAuthProviders/commit/ae752dd7c56ad0b567c13900949f97d66ba6c7b8))
+* update packages ([1b68eef](https://github.com/Aguafrommars/DynamicAuthProviders/commit/1b68eefeaeef7cfe7fc1544e317791b52871d420))
+* update packages ([3906cec](https://github.com/Aguafrommars/DynamicAuthProviders/commit/3906cec0e71c9ec45f5e002fd66d5e699da5af7d))
+* update packages ([76b561a](https://github.com/Aguafrommars/DynamicAuthProviders/commit/76b561a0da2f53ec59657088974526d200715c93))
+* update packages ([db8dc7c](https://github.com/Aguafrommars/DynamicAuthProviders/commit/db8dc7c95a156ccf3eaf3befe0b43f1c5a5652bb))
+* update packages ([24f867f](https://github.com/Aguafrommars/DynamicAuthProviders/commit/24f867f86eecb6e022c94c325cf778a31c81d439))
+* update packages ([3fa4797](https://github.com/Aguafrommars/DynamicAuthProviders/commit/3fa479798ad4d7b75cc9716e923d2b91cb11ed5b))
+* update packages ([70b19cb](https://github.com/Aguafrommars/DynamicAuthProviders/commit/70b19cb209bdc7eaba9cdd590c984923926a7b64))
+* update packages ([d0b4a21](https://github.com/Aguafrommars/DynamicAuthProviders/commit/d0b4a21bab93a26c81ea8a456738f7eff2cf0838))
+* update packages ([908e183](https://github.com/Aguafrommars/DynamicAuthProviders/commit/908e183273cfd0fe661b3485bffc6dd409c3fe49))
+* update packages ([b4ef877](https://github.com/Aguafrommars/DynamicAuthProviders/commit/b4ef87713a39db0a8fa670c9bccb72883cb0c340))
+
+
+### Features
+
+* support for x509 Certificate Serialization. ([7e13275](https://github.com/Aguafrommars/DynamicAuthProviders/commit/7e13275a47e22f88e1ed5a9e66b40c40c424dbbe))
+* update sdk ([29f5a68](https://github.com/Aguafrommars/DynamicAuthProviders/commit/29f5a6806d882b911ce7ae9aea74e7d0d5724eeb))
+
 ## [4.0.3](https://github.com/Aguafrommars/DynamicAuthProviders/compare/4.0.2...4.0.3) (2021-04-01)
 
 

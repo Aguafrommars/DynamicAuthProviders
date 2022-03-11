@@ -6,9 +6,55 @@ using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Aguacongas.AspNetCore.Authentication
 {
+    /// <summary>
+    /// Converter For x509 Data
+    /// </summary>
+    public class X509Certificate2JsonConverter : JsonConverter
+    {
+        /// <summary>
+        /// Is the object fed to this a match for our converter type.
+        /// </summary>
+        /// <param name="objectType"></param>
+        /// <returns></returns>
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(X509Certificate2);
+        }
+
+        /// <summary>
+        /// Read method. 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="objectType"></param>
+        /// <param name="existingValue"></param>
+        /// <param name="serializer"></param>
+        /// <returns></returns>
+        public override object ReadJson(JsonReader reader,
+            Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var deserializedRaw = serializer.Deserialize<byte[]>(reader);
+            var deserialized = new X509Certificate2(deserializedRaw);
+            return deserialized;
+        }
+
+        /// <summary>
+        /// Write method.
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="value"></param>
+        /// <param name="serializer"></param>
+        public override void WriteJson(JsonWriter writer,
+            object value, JsonSerializer serializer)
+        {
+            byte[] certData = ((X509Certificate2)value).Export(X509ContentType.Pfx);
+            serializer.Serialize(writer, certData);
+        }
+    }
+
     /// <summary>
     /// Manage <see cref="AuthenticationSchemeOptions"/> serialization.
     /// </summary>
@@ -27,7 +73,11 @@ namespace Aguacongas.AspNetCore.Authentication
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             Formatting = Formatting.None,
             DefaultValueHandling = DefaultValueHandling.Include,
-            ContractResolver = new ContractResolver()
+            ContractResolver = new ContractResolver(),
+            Converters =
+            {
+                new X509Certificate2JsonConverter()
+            }
         };
 
         /// <summary>

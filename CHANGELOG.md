@@ -1,3 +1,15 @@
+## [4.1.1](https://github.com/Aguafrommars/DynamicAuthProviders/compare/4.1.0...4.1.1) (2022-04-26)
+
+
+### Bug Fixes
+
+* security issue ([0e73940](https://github.com/Aguafrommars/DynamicAuthProviders/commit/0e7394061b01d08365211e2d452d99ef0130d908))
+* update packages ([967ae6a](https://github.com/Aguafrommars/DynamicAuthProviders/commit/967ae6ab344af195d18db7101a2191d92fc0fd91))
+* update packages ([9bee582](https://github.com/Aguafrommars/DynamicAuthProviders/commit/9bee582c7774dc2625f7b8e07b30ad47d4488a6b))
+* update packages ([e007ee6](https://github.com/Aguafrommars/DynamicAuthProviders/commit/e007ee61e46503dd5d0678eaf8917aff8bf6ac98))
+* update packages ([81dac5d](https://github.com/Aguafrommars/DynamicAuthProviders/commit/81dac5de68b91ee5ee056ab80b014930ae0b0b72))
+* update packages ([0b70144](https://github.com/Aguafrommars/DynamicAuthProviders/commit/0b7014406296a4e308ccdf8e7f8bdf1cb898bf25))
+
 # [4.1.0](https://github.com/Aguafrommars/DynamicAuthProviders/compare/4.0.3...4.1.0) (2022-03-11)
 
 

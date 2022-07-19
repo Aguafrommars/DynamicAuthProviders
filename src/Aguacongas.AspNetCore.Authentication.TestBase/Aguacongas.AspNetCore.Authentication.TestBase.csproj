@@ -31,6 +31,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.WsFederation" Version="6.0.4" />

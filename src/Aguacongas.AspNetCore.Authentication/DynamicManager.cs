@@ -175,8 +175,6 @@ namespace Aguacongas.AspNetCore.Authentication
 
             _schemeProvider.AddScheme(new AuthenticationScheme(scheme, definition.DisplayName, handlerType));
             optionsMonitorCache.TryAdd(scheme, definition.Options);
-
-
         }
 
         /// <summary>

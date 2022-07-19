@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.Twitter;
@@ -529,6 +530,58 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
                 state.scheme as AuthenticationScheme,
                 state.options as WsFederationOptions,
                 new AuthenticationTicket(new ClaimsPrincipal(), scheme)));
+
+            Assert.True(eventCalled);
+        }
+
+        /// <summary>
+        /// AddAsync method should add ws federation handler.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task AddAsync_should_add_negotiate_handler()
+        {
+            var eventCalled = false;
+            Task onAuthenticated(AuthenticatedContext context)
+            {
+                eventCalled = true;
+                return Task.CompletedTask;
+            }
+
+            var provider = CreateServiceProvider(options =>
+            {
+                options.AddNegotiate(configure =>
+                {
+                    configure.Events.OnAuthenticated = onAuthenticated;
+                });
+            });
+
+            var negotiateOptions = new NegotiateOptions
+            {
+                Events = new NegotiateEvents()
+            };
+            negotiateOptions.EnableLdap(settings => settings.Domain = "ne.ch");
+
+            var scheme = Guid.NewGuid().ToString();
+            var definition = new TSchemeDefinition
+            {
+                Scheme = scheme,
+                DisplayName = "test",
+                HandlerType = typeof(NegotiateHandler),
+                Options = negotiateOptions,
+            };
+
+            var sut = provider.GetRequiredService<PersistentDynamicManager<TSchemeDefinition>>();
+            Assert.Contains(typeof(NegotiateHandler), sut.ManagedHandlerType);
+
+            await sut.AddAsync(definition);
+            var state = await VerifyAddedAsync<NegotiateOptions>(scheme, provider);
+
+            var httpContext = new Mock<HttpContext>().Object;
+            state.options.Events.OnAuthenticated(new AuthenticatedContext(
+                httpContext,
+                state.scheme as AuthenticationScheme,
+                state.options as NegotiateOptions));
 
             Assert.True(eventCalled);
         }

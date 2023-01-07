@@ -1,26 +1,15 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2021 @Olivier Lefebvre
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Builder;
 
-namespace Aguacongas.AspNetCore.Authentication.Sample
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateWebHostBuilder(args).Build().Run();
-        }
+var builder = WebApplication.CreateBuilder(args);
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
-    }
-}
+// DI setup
+builder.AddSample();
+
+var app = builder.Build();
+
+// Midleware pipeline setup
+app.UseSample(builder.Environment);
+
+app.Run();

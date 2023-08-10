@@ -38,7 +38,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
-    <PackageReference Include="Moq" Version="4.20.1" />
+    <PackageReference Include="Moq" Version="4.20.2" />
     <PackageReference Include="xunit.analyzers" Version="1.2.0" />
     <PackageReference Include="xunit.assert" Version="2.5.0" />
     <PackageReference Include="xunit.core" Version="2.5.0" />

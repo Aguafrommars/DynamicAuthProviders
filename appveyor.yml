@@ -14,7 +14,7 @@ image:
 environment:
   GH_TOKEN: 
     secure: 0NJdORJRFjpB0dwUYv7bVNsbkldkoBhnvWik/CTOwAF/k9kP+/uTWMFnDcpEpt8E
-  donetsdk: 7.0.400
+  donetsdk: 7.0.401
   JAVA_HOME: C:\Program Files\Java\jdk14
 init:
   - cmd: git config --global core.autocrlf true

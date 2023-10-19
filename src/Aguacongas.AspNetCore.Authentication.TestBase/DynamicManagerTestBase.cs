@@ -789,7 +789,7 @@ namespace Aguacongas.AspNetCore.Authentication.TestBase
         class FakeGenericHandler<TOptions> : AuthenticationHandler<TOptions>
             where TOptions : AuthenticationSchemeOptions, new()
         {
-            public FakeGenericHandler(IOptionsMonitor<TOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+            public FakeGenericHandler(IOptionsMonitor<TOptions> options, ILoggerFactory logger, UrlEncoder encoder) : base(options, logger, encoder)
             {
             }
 

@@ -5,44 +5,39 @@ function UpdatePackages {
     )
 
     $currentDirectoy = Get-Location
-
     $return = $false
     
-    $dir = Split-Path $project
+	$dir = Split-Path $project
     Write-Host 'Set-Location' $dir
     
     Set-Location $dir
 
     # Get outdated packages
-    $packageLineList = dotnet list package --outdated
+    $packageLineList = dotnet list package --outdated --include-prerelease
     
     foreach($line in $packageLineList) {
        Write-Host $line
        
-       $match = $line -match '>\s(\S*)\s*\S*\s*\S*\s*(\S*)'
+       $match = $line -match '>\s(Microsoft.\S*)\s*\S*\s*\S*\s*(\S*)'
        if (!$match) {
           # the line doesn't contain a package information, continue
           continue
        }
        
-       Write-Host $match
-       
-       $packageName = $Matches.1
-       $version = $Matches.2
        # update an outdated package
-       $added = dotnet add package $packageName --version $version
+       $added = dotnet add package $Matches.1 --version $Matches.2
+	  
        if ($LASTEXITCODE -ne 0) {
            # error while updating the package
-
-           Write-Error "dotnet add package $packageName --version $version exit with code $LASTEXITCODE"
+           Write-Error "dotnet add $project package $Matches.1 --version $Matches.2 exit with code $LASTEXITCODE"
            Write-Host $added
            break
        }
 
-	   Write-Host 'package' $Matches.1 'version' $Matches.2 'updated'
-       $return = $true
+       Write-Host 'package' $Matches.1 'version' $Matches.2 'updated'
+	   $return = $true
     }
-	
+
     Set-Location $currentDirectoy
     return $return
 }
@@ -93,30 +88,3 @@ if (!$updated) {
 Write-Host "dotnet build -c Release"
 dotnet build -c Release
 
-# commit changes
-Write-Host "git config user.name github-actions"
-git config user.name github-actions
-Write-Host "git config user.email github-actions@github.com"
-git config user.email github-actions@github.com
-Write-Host "git add ."
-git add .
-Write-Host "git commit -m ""fix: update packages"""
-git commit -m "fix: update packages"
-Write-Host "git push"
-
-try {
-git push
-} catch {
-
-}
-
-# Create a pull request
-$authorization = "Bearer $env:GITHUB_TOKEN"
-$createPrUrl = "https://api.github.com/repos/$env:GITHUB_REPOSITORY/pulls"
-$headers = @{
-    Authorization = $authorization
-    Accept = "application/vnd.github.v3+json"
-}
-$payload = "{ ""title"": ""update packages"", ""head"": ""$src"", ""base"": ""$dest"" }"
-Write-Host "Invoke-WebRequest -Uri $createPrUrl -Body $payload"
-Invoke-WebRequest -Uri $createPrUrl -Headers $headers -Method "POST" -Body $payload

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Authors>Olivier Lefebvre</Authors>
     <Copyright>Copyright (c) 2018 @Olivier Lefebvre</Copyright>
     <PackageLicense>https://raw.githubusercontent.com/aguacongas/DymamicAuthProviders/master/LICENSE</PackageLicense>
@@ -12,7 +12,6 @@
     <Description>Provider for DinamicAuthProviders that uses Entity Framework Core.</Description>
     <DebugType>Full</DebugType>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>C:\Projects\Perso\DymamicAuthProviders\src\Aguacongas.AspNetCore.Authentication.EntityFramework\Aguacongas.AspNetCore.Authentication.EntityFramework.xml</DocumentationFile>
     <CodeAnalysisRuleSet>Aguacongas.AspNetCore.Authentication.EntityFramework.ruleset</CodeAnalysisRuleSet>
@@ -28,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0-rc.2.23480.1" />
   </ItemGroup>
 
   <ItemGroup>

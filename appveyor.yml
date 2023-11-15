@@ -27,10 +27,10 @@ install:
   - sh: sudo chmod +x ./dotnet-install.sh
   - sh: sudo ./dotnet-install.sh -Channel Current -Version $donetsdk -InstallDir ./dotnetsdk -NoPath
   - sh: export PATH=/home/appveyor/projects/dymamicauthproviders/dotnetsdk:$PATH
-  - sh: sudo ./dotnet-install.sh -Channel Current -Version 7.0.402 -InstallDir ./dotnetsdk -NoPath
+  - sh: sudo ./dotnet-install.sh -Channel Current -Version 7.0.404 -InstallDir ./dotnetsdk -NoPath
   - sh: sudo apt -y install nuget
   - cmd: pwsh .\dotnet-install.ps1 -Version %donetsdk%
-  - cmd: pwsh .\dotnet-install.ps1 -Version 7.0.402  
+  - cmd: pwsh .\dotnet-install.ps1 -Version 7.0.404  
   - ps: dotnet tool install --global GitVersion.Tool
   - ps: dotnet gitversion /l console /output buildserver
   - ps: if ($isWindows) { .\dotnet-install.ps1 -Version $env:donetsdk }  

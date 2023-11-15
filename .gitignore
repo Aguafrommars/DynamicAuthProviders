@@ -340,3 +340,4 @@ coverage.*
 /redis-64
 /.sonarlint
 /.dccache
+/global.json

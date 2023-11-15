@@ -1,6 +1,9 @@
 ﻿// Project: aguacongas/DymamicAuthProviders
 // Copyright (c) 2021 @Olivier Lefebvre
 using Microsoft.AspNetCore.Authentication;
+#if NET8_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
 
 namespace System
 {
@@ -15,7 +18,11 @@ namespace System
         /// <param name="handlerType">Type of the handler.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException">Parameter handlerType should be a <see cref="AuthenticationHandler{AuthenticationSchemeOptions}"/>}</exception>
+#if NET8_0_OR_GREATER
+        public static Type GetAuthenticationSchemeOptionsType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] this Type handlerType)
+#else    
         public static Type GetAuthenticationSchemeOptionsType(this Type handlerType)
+#endif
         {
             if (handlerType.GetInterface(nameof(IAuthenticationHandler)) == null)
             {

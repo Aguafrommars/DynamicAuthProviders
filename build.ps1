@@ -3,19 +3,7 @@ $result = 0
 if ($isLinux) {
   dotnet build -c Release
 	
-	Get-ChildItem -rec `
-	| Where-Object { $_.Name -like "*.IntegrationTest.csproj" `
-		   -Or $_.Name -like "*.Test.csproj" `
-		 } `
-	| ForEach-Object { 
-		Set-Location $_.DirectoryName
-		
-		dotnet test -c Release --no-build
-	
-		if ($LASTEXITCODE -ne 0) {
-			$result = $LASTEXITCODE
-		}
-	}
+	dotnet test -c Release --no-build	
 } else {
 	$prNumber = $env:APPVEYOR_PULL_REQUEST_NUMBER
 	if ($prNumber) {
@@ -32,17 +20,8 @@ if ($isLinux) {
 
 	dotnet build -c Release
 
-	Get-ChildItem -rec `
-	| Where-Object { $_.Name -like "*.IntegrationTest.csproj" `
-		   -Or $_.Name -like "*.Test.csproj" `
-		 } `
-	| ForEach-Object { 
-        &('dotnet') ('test', $_.FullName, '--logger', "trx;LogFileName=$_.trx", '--no-build', '-c', 'Release', '--collect:"XPlat Code Coverage"')    
-		if ($LASTEXITCODE -ne 0) {
-			$result = $LASTEXITCODE
-		}
-	  }
-
+	dotnet test -c Release --no-build --collect:"XPlat Code Coverage" --settings coverletArgs.runsettings -v q
+	
 	$merge = ""
 	Get-ChildItem -rec `
 	| Where-Object { $_.Name -like "coverage.cobertura.xml" } `

@@ -30,7 +30,7 @@ if ($isLinux) {
 		$merge = "$merge;$path"
 	}
 	Write-Host $merge
-	ReportGenerator\tools\net5.0\ReportGenerator.exe "-reports:$merge" "-targetdir:coverage" "-reporttypes:SonarQube"
+	ReportGenerator\tools\net8.0\ReportGenerator.exe "-reports:$merge" "-targetdir:coverage" "-reporttypes:SonarQube"
 	
 	if (-Not $env:APPVEYOR_PULL_REQUEST_NUMBER) {
 		dotnet sonarscanner end -d:sonar.login=$env:sonarqube

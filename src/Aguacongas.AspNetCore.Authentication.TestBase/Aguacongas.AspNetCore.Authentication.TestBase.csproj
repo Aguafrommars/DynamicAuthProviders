@@ -39,9 +39,9 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
     <PackageReference Include="Moq" Version="4.20.70" />
-    <PackageReference Include="xunit.analyzers" Version="1.8.0" />
-    <PackageReference Include="xunit.assert" Version="2.6.4" />
-    <PackageReference Include="xunit.core" Version="2.6.4" />
+    <PackageReference Include="xunit.analyzers" Version="1.9.0" />
+    <PackageReference Include="xunit.assert" Version="2.6.5" />
+    <PackageReference Include="xunit.core" Version="2.6.5" />
   </ItemGroup>
 
   <ItemGroup>

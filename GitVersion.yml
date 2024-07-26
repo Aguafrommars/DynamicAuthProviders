@@ -1,15 +1,16 @@
 mode: ContinuousDelivery
 branches:
   master:
-    lebel: ci
+    regex: master
+    label: ci
     is-main-branch: false
   release:
     regex: release/
-    lebel: ''
+    label: ''
     is-main-branch: true
   preview:
     regex: preview/ 
-    lebel: 'preview'
+    label: 'preview'
     is-main-branch: true
     source-branches: ['master']
 ignore:

@@ -155,7 +155,7 @@ namespace Aguacongas.AspNetCore.Authentication
             return result;
         }
 
-        private Type GetType(string typeName)
+        private static Type GetType(string typeName)
         {
             var platform = Environment.OSVersion.Platform.ToString();
             var runtimeAssemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(platform);

@@ -1,6 +1,6 @@
 version: 1.0.{build}
 skip_tags: true
-stack: node 18, redis
+stack: node 20, redis
 skip_commits:
   message: /^chore(release)/
 branches:
@@ -14,12 +14,12 @@ image:
 environment:
   GH_TOKEN: 
     secure: 0NJdORJRFjpB0dwUYv7bVNsbkldkoBhnvWik/CTOwAF/k9kP+/uTWMFnDcpEpt8E
-  donetsdk: 8.0.100
+  donetsdk: 8.0.403
   JAVA_HOME: C:\Program Files\Java\jdk19
 init:
   - cmd: git config --global core.autocrlf true
 install:
-  - ps: if ($isWindows) { Install-Product node 18 x64 }
+  - ps: if ($isWindows) { Install-Product node 20 x64 }
   - sh: wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
   - sh: sudo dpkg -i packages-microsoft-prod.deb
   - sh: sudo apt-get update

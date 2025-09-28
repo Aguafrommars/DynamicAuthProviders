@@ -23,7 +23,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="StackExchange.Redis" Version="2.9.17" />
+		<PackageReference Include="StackExchange.Redis" Version="2.9.24" />
 	</ItemGroup>
 
 	<ItemGroup>

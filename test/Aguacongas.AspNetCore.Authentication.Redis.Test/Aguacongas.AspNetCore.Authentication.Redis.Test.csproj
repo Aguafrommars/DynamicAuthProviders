@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <DebugType>Full</DebugType>
     <IsPackable>false</IsPackable>
     <UserSecretsId>1d86ad40-1ab4-497e-8815-1386d9af8f14</UserSecretsId>

@@ -18,13 +18,12 @@ environment:
 init:
   - cmd: git config --global core.autocrlf true
 install:
-  - ps: if ($isWindows) { Install-Product node 20 x64 }
-  - cmd: pwsh .\dotnet-install.ps1 -Version %donetsdk%
-  - cmd: pwsh .\dotnet-install.ps1 -Version 7.0.404  
-  - ps: dotnet tool install --global GitVersion.Tool
-  - ps: dotnet gitversion /l console /output buildserver
-  - ps: dotnet tool install --global dotnet-sonarscanner
-  - ps: if ($isWindows) { .\dotnet-install.ps1 -Version $env:donetsdk }  
+  - ps: Install-Product node 20 x64
+  - ps: .\dotnet-install.ps1 -Version 10.0.404 -InstallDir "C:\Program Files\dotnet"
+  - cmd: dotnet tool install --global GitVersion.Tool
+  - cmd: dotnet gitversion --output buildserver
+  - ps: .\dotnet-install.ps1 -Version $env:donetsdk -InstallDir "C:\Program Files\dotnet"
+  - cmd: dotnet tool install --global dotnet-sonarscanner
   - cmd: set PATH=%JAVA_HOME%\bin;%PATH%
   - cmd: nuget install redis-64 -excludeversion
   - cmd: redis-64\tools\redis-server.exe --service-install

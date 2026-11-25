@@ -1,17 +1,20 @@
-mode: ContinuousDelivery
-branches:
-  master:
-    regex: master
-    label: ci
-    is-main-branch: false
-  release:
-    regex: release/
-    label: ''
-    is-main-branch: true
-  preview:
-    regex: preview/ 
-    label: 'preview'
-    is-main-branch: true
-    source-branches: ['master']
-ignore:
-  sha: []
+calculation:
+  branches:
+    master:
+      is-main-branch: false
+      label: ci
+      regex: master
+    release:
+      is-main-branch: true
+      label: ''
+      regex: release/
+    preview:
+      is-main-branch: true
+      label: preview
+      regex: preview/
+      source-branches:
+        - master
+  ignore:
+    sha: []
+  mode: ContinuousDelivery
+output: {}
